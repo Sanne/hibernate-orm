@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.hibernate.util.ArrayHelper;
 
 /**
- * Helper to extract type innformation from {@link DatabaseMetaData JDBC metadata}
+ * Helper to extract type information from {@link DatabaseMetaData JDBC metadata}
  *
  * @author Steve Ebersole
  */

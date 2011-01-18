@@ -12,6 +12,7 @@ dependencies {
     compile( libraries.commons_annotations )
     compile( libraries.jpa )
     antlr( libraries.antlr )
+    compile( libraries.antlr )
     provided( libraries.javassist )
     provided( libraries.cglib ) {
         transitive = true
