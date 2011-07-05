@@ -378,6 +378,7 @@
                                         <goals>
                                             <goal>generate</goal>
                                             <goal>resources</goal>
+                                            <goal>translate</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
