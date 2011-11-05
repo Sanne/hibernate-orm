@@ -143,7 +143,10 @@ public final class IdentityMap<K,V> implements Map<K,V> {
 
 		@Override
         public int hashCode() {
-			return System.identityHashCode(key);
+			//Using a constant we degenerate the map structure to a List, but we avoid
+			// costly invocation to System.identityHashCode( x );
+			// This is more efficient for small Session sizes
+			return 3;
 		}
 
 		@Override
