@@ -101,19 +101,24 @@ public class ExplodedJarVisitor extends AbstractJarVisitor {
 	//TODO long term fix is to introduce a process interface (closure like) to addElements and then share the code
 	private void processZippedRoot(File rootFile) throws IOException {
 		JarFile jarFile = new JarFile(rootFile);
-		Enumeration<? extends ZipEntry> entries = jarFile.entries();
-		while ( entries.hasMoreElements() ) {
-			ZipEntry zipEntry = entries.nextElement();
-			String name = zipEntry.getName();
-			if ( !zipEntry.isDirectory() ) {
-				//build relative name
-				if ( name.startsWith( "/" ) ) name = name.substring( 1 );
-				addElement(
-						name,
-						new BufferedInputStream( jarFile.getInputStream( zipEntry ) ),
-						new BufferedInputStream( jarFile.getInputStream( zipEntry ) )
-				);
+		try {
+			Enumeration<? extends ZipEntry> entries = jarFile.entries();
+			while ( entries.hasMoreElements() ) {
+				ZipEntry zipEntry = entries.nextElement();
+				String name = zipEntry.getName();
+				if ( !zipEntry.isDirectory() ) {
+					//build relative name
+					if ( name.startsWith( "/" ) ) name = name.substring( 1 );
+					addElement(
+							name,
+							new BufferedInputStream( jarFile.getInputStream( zipEntry ) ),
+							new BufferedInputStream( jarFile.getInputStream( zipEntry ) )
+					);
+				}
 			}
+		}
+		finally {
+			jarFile.close();
 		}
 	}
 
