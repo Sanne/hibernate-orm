@@ -30,7 +30,8 @@ package org.hibernate.jpa.packaging.internal;
  * @author Emmanuel Bernard
  */
 public abstract class JavaElementFilter extends Filter {
-	private Class[] annotations;
+
+	private final Class[] annotations;
 
 	/**
 	 * @param retrieveStream Give back an open stream to the matching element or not

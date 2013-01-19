@@ -57,8 +57,7 @@ public abstract class AbstractJarVisitor implements JarVisitor {
 	private Set<FileFilter> fileFilters = new HashSet<FileFilter>();
 	private Set<JavaElementFilter> classFilters = new HashSet<JavaElementFilter>();
 	private Set<JavaElementFilter> packageFilters = new HashSet<JavaElementFilter>();
-	private Set[] entries;
-
+	private Set<Entry>[] entries;
 
 
 	/**
@@ -143,7 +142,7 @@ public abstract class AbstractJarVisitor implements JarVisitor {
 	 * @return array of Set of JarVisitor.Entry
 	 * @throws IOException if something went wrong
 	 */
-	public Set[] getMatchingEntries() throws IOException {
+	public Set<Entry>[] getMatchingEntries() throws IOException {
 		if ( !done ) {
 			//avoid url access and so on
 			if ( filters.size() > 0 ) doProcessElements();

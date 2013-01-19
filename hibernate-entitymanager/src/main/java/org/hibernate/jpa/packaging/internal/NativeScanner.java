@@ -193,7 +193,7 @@ public class NativeScanner implements Scanner {
 
 		final Set<Entry> fileEntries;
 		try {
-			fileEntries = ( Set<Entry> ) jarVisitor.getMatchingEntries()[FILE_FILTER_INDEX];
+			fileEntries = jarVisitor.getMatchingEntries()[FILE_FILTER_INDEX];
 		}
 		catch ( IOException e ) {
 			throw new RuntimeException( "Error while reading " + jarToScan.toString(), e );

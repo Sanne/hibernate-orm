@@ -42,5 +42,5 @@ public interface JarVisitor {
 	 * @return array of Set of JarVisitor.Entry
 	 * @throws java.io.IOException if something went wrong
 	 */
-	Set[] getMatchingEntries() throws IOException;
+	Set<Entry>[] getMatchingEntries() throws IOException;
 }
