@@ -59,7 +59,7 @@ public class FileZippedJarVisitor extends AbstractJarVisitor {
 
 	@Override
     protected void doProcessElements() throws IOException {
-		JarFile jarFile;
+		final JarFile jarFile;
 		try {
 			String filePart = jarUrl.getFile();
 			if ( filePart != null && filePart.indexOf( ' ' ) != -1 ) {
@@ -78,56 +78,62 @@ public class FileZippedJarVisitor extends AbstractJarVisitor {
             LOG.malformedUrlWarning(jarUrl, e);
 			return;
 		}
+		try {
 
-		if ( entry != null && entry.length() == 1 ) entry = null; //no entry
-		if ( entry != null && entry.startsWith( "/" ) ) entry = entry.substring( 1 ); //remove '/' header
-
-		Enumeration<? extends ZipEntry> entries = jarFile.entries();
-		while ( entries.hasMoreElements() ) {
-			ZipEntry zipEntry = entries.nextElement();
-			String name = zipEntry.getName();
-			if ( entry != null && ! name.startsWith( entry ) ) continue; //filter it out
-			if ( !zipEntry.isDirectory() ) {
-				if ( name.equals( entry ) ) {
-					//exact match, might be a nested jar entry (ie from jar:file:..../foo.ear!/bar.jar)
-					/*
-					 * This algorithm assumes that the zipped file is only the URL root (including entry), not just any random entry
-					 */
-					InputStream is = null;
-					try {
-						is = new BufferedInputStream( jarFile.getInputStream( zipEntry ) );
-						JarInputStream jis = new JarInputStream( is );
-						ZipEntry subZipEntry = jis.getNextEntry();
-						while (subZipEntry != null) {
-							if ( ! subZipEntry.isDirectory() ) {
-								//FIXME copy sucks
-								byte[] entryBytes = JarVisitorFactory.getBytesFromInputStream( jis );
-								String subname = subZipEntry.getName();
-								if ( subname.startsWith( "/" ) ) subname = subname.substring( 1 );
-								addElement(
-										subname,
-										new ByteArrayInputStream(entryBytes),
-										new ByteArrayInputStream(entryBytes)
-								);
+			if ( entry != null && entry.length() == 1 ) entry = null; //no entry
+			if ( entry != null && entry.startsWith( "/" ) ) entry = entry.substring( 1 ); //remove '/' header
+	
+			Enumeration<? extends ZipEntry> entries = jarFile.entries();
+			while ( entries.hasMoreElements() ) {
+				ZipEntry zipEntry = entries.nextElement();
+				String name = zipEntry.getName();
+				if ( entry != null && ! name.startsWith( entry ) ) continue; //filter it out
+				if ( !zipEntry.isDirectory() ) {
+					if ( name.equals( entry ) ) {
+						//exact match, might be a nested jar entry (ie from jar:file:..../foo.ear!/bar.jar)
+						/*
+						 * This algorithm assumes that the zipped file is only the URL root (including entry), not just any random entry
+						 */
+						InputStream is = null;
+						try {
+							is = new BufferedInputStream( jarFile.getInputStream( zipEntry ) );
+							JarInputStream jis = new JarInputStream( is );
+							ZipEntry subZipEntry = jis.getNextEntry();
+							while (subZipEntry != null) {
+								if ( ! subZipEntry.isDirectory() ) {
+									//FIXME copy sucks
+									byte[] entryBytes = JarVisitorFactory.getBytesFromInputStream( jis );
+									String subname = subZipEntry.getName();
+									if ( subname.startsWith( "/" ) ) subname = subname.substring( 1 );
+									addElement(
+											subname,
+											new ByteArrayInputStream(entryBytes),
+											new ByteArrayInputStream(entryBytes)
+									);
+								}
+								subZipEntry = jis.getNextEntry();
 							}
-							subZipEntry = jis.getNextEntry();
+						}
+						finally {
+							if ( is != null) is.close();
 						}
 					}
-					finally {
-						if ( is != null) is.close();
+					else {
+						//build relative name
+						if (entry != null) name = name.substring( entry.length() );
+						if ( name.startsWith( "/" ) ) name = name.substring( 1 );
+						addElement(
+								name,
+								new BufferedInputStream( jarFile.getInputStream( zipEntry ) ),
+								new BufferedInputStream( jarFile.getInputStream( zipEntry ) )
+						);
 					}
-				}
-				else {
-					//build relative name
-					if (entry != null) name = name.substring( entry.length() );
-					if ( name.startsWith( "/" ) ) name = name.substring( 1 );
-					addElement(
-							name,
-							new BufferedInputStream( jarFile.getInputStream( zipEntry ) ),
-							new BufferedInputStream( jarFile.getInputStream( zipEntry ) )
-					);
 				}
 			}
 		}
+		finally {
+			jarFile.close();
+		}
 	}
+
 }
