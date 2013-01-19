@@ -134,11 +134,6 @@ public class NativeScanner implements Scanner {
 	 * Other patterns will not be found
 	 */
 	public Set<NamedInputStream> getFilesInJar(URL jarToScan, Set<String> filePatterns) {
-		StringBuilder sb = new StringBuilder("URL: ").append( jarToScan )
-				.append( "\n" );
-		for (String pattern : filePatterns) {
-			sb.append( "  " ).append( pattern ).append( "\n" );
-		}
 		JarVisitor jarVisitor = getVisitor( jarToScan );
 
 		//state visitor available

@@ -23,7 +23,7 @@ package org.hibernate.jpa.packaging.internal;
 
 
 /**
- * Filter on pachage element
+ * Filter on package element
  *
  * @author Emmanuel Bernard
  * @see JavaElementFilter
