@@ -49,6 +49,7 @@ public class NativeScanner implements Scanner {
 	private static final int PACKAGE_FILTER_INDEX = 0;
 	private static final int CLASS_FILTER_INDEX = 1;
 	private static final int FILE_FILTER_INDEX = 2;
+	private static final Filter[] DEFAULT_FILTERS = createDefaultFilters();
 
 	/**
 	 * This implementation does not honor the list of annotations and return everything.
@@ -85,34 +86,8 @@ public class NativeScanner implements Scanner {
 	 */
 	private JarVisitor getVisitor(URL jar) {
 		StateJarVisitor stateJarVisitor = visitors.get( jar );
-
 		if ( stateJarVisitor == null ) {
-
-			Filter[] filters = new Filter[3];
-			filters[PACKAGE_FILTER_INDEX] = new PackageFilter( false, null ) {
-				public boolean accept(String javaElementName) {
-					return true;
-				}
-			};
-			filters[CLASS_FILTER_INDEX] = new ClassFilter(
-					false, new Class[] {
-							Entity.class,
-							MappedSuperclass.class,
-							Embeddable.class
-					}
-			) {
-				public boolean accept(String javaElementName) {
-					return true;
-				}
-			};
-			filters[FILE_FILTER_INDEX] = new FileFilter( true ) {
-				public boolean accept(String javaElementName) {
-					return javaElementName.endsWith( "hbm.xml" )
-							|| javaElementName.endsWith( META_INF_ORM_XML );
-				}
-			};
-
-			stateJarVisitor = new StateJarVisitor( JarVisitorFactory.getVisitor( jar, filters ) );
+			stateJarVisitor = new StateJarVisitor( JarVisitorFactory.getVisitor( jar, DEFAULT_FILTERS ) );
 			visitors.put( jar, stateJarVisitor );
 		}
 		return stateJarVisitor.visitor;
@@ -245,4 +220,32 @@ public class NativeScanner implements Scanner {
 		JarVisitor visitor;
 		boolean hasReadFiles = false;
 	}
+
+	private static Filter[] createDefaultFilters() {
+		Filter[] defaultFilterList = new Filter[3];
+		defaultFilterList[PACKAGE_FILTER_INDEX] = new PackageFilter( false, null ) {
+			public boolean accept(String javaElementName) {
+				return true;
+			}
+		};
+		defaultFilterList[CLASS_FILTER_INDEX] = new ClassFilter(
+				false, new Class[] {
+						Entity.class,
+						MappedSuperclass.class,
+						Embeddable.class
+				}
+		) {
+			public boolean accept(String javaElementName) {
+				return true;
+			}
+		};
+		defaultFilterList[FILE_FILTER_INDEX] = new FileFilter( true ) {
+			public boolean accept(String javaElementName) {
+				return javaElementName.endsWith( "hbm.xml" )
+						|| javaElementName.endsWith( META_INF_ORM_XML );
+			}
+		};
+		return defaultFilterList;
+	}
+
 }
