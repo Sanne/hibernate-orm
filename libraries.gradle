@@ -33,6 +33,7 @@ ext {
     bytemanVersion = '1.5.2'
     infinispanVersion = '5.2.0.Beta3'
     jnpVersion = '5.0.6.CR1'
+    shrinkwrapVersion = '1.0.1'
 
     libraries = [
             // Ant
@@ -82,8 +83,8 @@ ext {
             byteman_install: "org.jboss.byteman:byteman-install:${bytemanVersion}",
             byteman_bmunit:  "org.jboss.byteman:byteman-bmunit:${bytemanVersion}",
             jpa_modelgen:    'org.hibernate:hibernate-jpamodelgen:1.1.1.Final',
-            shrinkwrap_api:  'org.jboss.shrinkwrap:shrinkwrap-api:1.0.0-beta-6',
-            shrinkwrap:      'org.jboss.shrinkwrap:shrinkwrap-impl-base:1.0.0-beta-6',
+            shrinkwrap_api:  'org.jboss.shrinkwrap:shrinkwrap-api:${shrinkwrapVersion}',
+            shrinkwrap:      'org.jboss.shrinkwrap:shrinkwrap-impl-base:${shrinkwrapVersion}',
             validator:       'org.hibernate:hibernate-validator:4.2.0.Final',
             h2:              "com.h2database:h2:${h2Version}",
             jboss_jta:       "org.jboss.jbossts:jbossjta:4.16.4.Final",
