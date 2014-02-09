@@ -45,11 +45,6 @@ public abstract class AbstractLobType extends AbstractType implements Serializab
 	}
 
 	@Override
-	public Size[] dictatedSizes(Mapping mapping) throws MappingException {
-		return new Size[] { LEGACY_DICTATED_SIZE };
-	}
-
-	@Override
 	public Size[] defaultSizes(Mapping mapping) throws MappingException {
 		return new Size[] { LEGACY_DEFAULT_SIZE };
 	}

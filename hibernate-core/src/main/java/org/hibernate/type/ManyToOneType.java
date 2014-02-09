@@ -147,11 +147,6 @@ public class ManyToOneType extends EntityType {
 	}
 
 	@Override
-	public Size[] dictatedSizes(Mapping mapping) throws MappingException {
-		return getIdentifierOrUniqueKeyType( mapping ).dictatedSizes( mapping );
-	}
-
-	@Override
 	public Size[] defaultSizes(Mapping mapping) throws MappingException {
 		return getIdentifierOrUniqueKeyType( mapping ).defaultSizes( mapping );
 	}

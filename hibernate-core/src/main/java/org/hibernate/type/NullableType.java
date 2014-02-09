@@ -226,11 +226,6 @@ public abstract class NullableType extends AbstractType implements StringReprese
 	}
 
 	@Override
-	public Size[] dictatedSizes(Mapping mapping) throws MappingException {
-		return new Size[] { dictatedSize() };
-	}
-
-	@Override
 	public Size[] defaultSizes(Mapping mapping) throws MappingException {
 		return new Size[] { defaultSize() };
 	}

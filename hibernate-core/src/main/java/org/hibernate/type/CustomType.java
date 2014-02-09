@@ -97,11 +97,6 @@ public class CustomType
 	}
 
 	@Override
-	public Size[] dictatedSizes(Mapping mapping) throws MappingException {
-		return dictatedSizes;
-	}
-
-	@Override
 	public Size[] defaultSizes(Mapping mapping) throws MappingException {
 		return defaultSizes;
 	}
