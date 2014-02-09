@@ -52,8 +52,6 @@ import org.dom4j.Node;
 public abstract class NullableType extends AbstractType implements StringRepresentableType, XmlRepresentableType {
     private static final CoreMessageLogger LOG = Logger.getMessageLogger(CoreMessageLogger.class, NullableType.class.getName());
 
-	private final Size dictatedSize = new Size();
-
 	/**
 	 * A convenience form of {@link #sqlTypes(org.hibernate.engine.spi.Mapping)}, returning
 	 * just a single type value since these are explicitly dealing with single column
@@ -62,16 +60,6 @@ public abstract class NullableType extends AbstractType implements StringReprese
 	 * @return The {@link java.sql.Types} mapping value.
 	 */
 	public abstract int sqlType();
-
-	/**
-	 * A convenience form of {@link #dictatedSizes}, returning just a single size since we are explicitly dealing with
-	 * single column mappings here.
-	 *
-	 * @return The {@link java.sql.Types} mapping value.
-	 */
-	public Size dictatedSize() {
-		return dictatedSize;
-	}
 
 	/**
 	 * Get a column value from a result set, without worrying about the
