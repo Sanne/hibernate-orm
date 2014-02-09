@@ -40,7 +40,6 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.internal.util.StringHelper;
 import org.hibernate.internal.util.collections.ArrayHelper;
-import org.hibernate.metamodel.relational.Size;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 import org.hibernate.type.descriptor.java.MutabilityPlan;
@@ -56,9 +55,6 @@ import org.dom4j.Node;
  */
 public abstract class AbstractStandardBasicType<T>
 		implements BasicType, StringRepresentableType<T>, XmlRepresentableType<T>, ProcedureParameterExtractionAware<T> {
-
-	private static final Size DEFAULT_SIZE = new Size( 19, 2, 255, Size.LobMultiplier.NONE ); // to match legacy behavior
-	private final Size dictatedSize = new Size();
 
 	// Don't use final here.  Need to initialize after-the-fact
 	// by DynamicParameterizedTypes.
@@ -122,14 +118,6 @@ public abstract class AbstractStandardBasicType<T>
 	protected boolean registerUnderJavaType() {
 		return false;
 	}
-
-	protected static Size getDefaultSize() {
-		return DEFAULT_SIZE;
-	}
-
-	protected Size getDictatedSize() {
-		return dictatedSize;
-	}
 	
 	// final implementations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -160,11 +148,6 @@ public abstract class AbstractStandardBasicType<T>
 
 	public final int[] sqlTypes(Mapping mapping) throws MappingException {
 		return sqlTypes;
-	}
-
-	@Override
-	public Size[] defaultSizes(Mapping mapping) throws MappingException {
-		return new Size[] { getDefaultSize() };
 	}
 
 	public final boolean isAssociationType() {

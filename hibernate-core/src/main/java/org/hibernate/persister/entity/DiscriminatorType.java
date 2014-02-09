@@ -141,11 +141,6 @@ public class DiscriminatorType extends AbstractType {
 		return underlyingType.sqlTypes( mapping );
 	}
 
-	@Override
-	public Size[] defaultSizes(Mapping mapping) throws MappingException {
-		return underlyingType.defaultSizes( mapping );
-	}
-
 	public int getColumnSpan(Mapping mapping) throws MappingException {
 		return underlyingType.getColumnSpan( mapping );
 	}

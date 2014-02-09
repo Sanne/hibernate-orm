@@ -74,16 +74,6 @@ public abstract class NullableType extends AbstractType implements StringReprese
 	}
 
 	/**
-	 * A convenience form of {@link #defaultSizes}, returning just a single size since we are explicitly dealing with
-	 * single column mappings here.
-	 *
-	 * @return The {@link java.sql.Types} mapping value.
-	 */
-	public Size defaultSize() {
-		return LEGACY_DEFAULT_SIZE;
-	}
-
-	/**
 	 * Get a column value from a result set, without worrying about the
 	 * possibility of null values.  Called from {@link #nullSafeGet} after
 	 * nullness checks have been performed.
@@ -223,11 +213,6 @@ public abstract class NullableType extends AbstractType implements StringReprese
 
 	public final int[] sqlTypes(Mapping session) {
 		return new int[] { sqlType() };
-	}
-
-	@Override
-	public Size[] defaultSizes(Mapping mapping) throws MappingException {
-		return new Size[] { defaultSize() };
 	}
 
 	@Override

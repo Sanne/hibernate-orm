@@ -146,11 +146,6 @@ public class ManyToOneType extends EntityType {
 		return getIdentifierOrUniqueKeyType( mapping ).sqlTypes( mapping );
 	}
 
-	@Override
-	public Size[] defaultSizes(Mapping mapping) throws MappingException {
-		return getIdentifierOrUniqueKeyType( mapping ).defaultSizes( mapping );
-	}
-
 	public void nullSafeSet(
 			PreparedStatement st,
 			Object value,

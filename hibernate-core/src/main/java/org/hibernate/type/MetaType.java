@@ -69,11 +69,6 @@ public class MetaType extends AbstractType {
 		return baseType.sqlTypes(mapping);
 	}
 
-	@Override
-	public Size[] defaultSizes(Mapping mapping) throws MappingException {
-		return baseType.defaultSizes( mapping );
-	}
-
 	public int getColumnSpan(Mapping mapping) throws MappingException {
 		return baseType.getColumnSpan(mapping);
 	}

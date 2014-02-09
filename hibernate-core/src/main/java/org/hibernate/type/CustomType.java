@@ -96,11 +96,6 @@ public class CustomType
 		return types;
 	}
 
-	@Override
-	public Size[] defaultSizes(Mapping mapping) throws MappingException {
-		return defaultSizes;
-	}
-
 	public int getColumnSpan(Mapping session) {
 		return types.length;
 	}
