@@ -26,7 +26,6 @@ package org.hibernate.engine.spi;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -67,8 +66,8 @@ public class BatchFetchQueue {
 	 * A Map structure is used to segment the keys by entity type since loading can only be done for a particular entity
 	 * type at a time.
 	 */
-	private final Map <String,LinkedHashSet<EntityKey>> batchLoadableEntityKeys = new HashMap <String,LinkedHashSet<EntityKey>>(8);
-	
+	private final Map<String,NonRepeatingIterable<EntityKey>> batchLoadableEntityKeys = new HashMap<String,NonRepeatingIterable<EntityKey>>( 8 );
+
 	/**
 	 * Used to hold information about the collections that are currently eligible for batch-fetching.  Ultimately
 	 * used by {@link #getCollectionBatch} to build collection load batches.
@@ -144,12 +143,12 @@ public class BatchFetchQueue {
 	 */
 	public void addBatchLoadableEntityKey(EntityKey key) {
 		if ( key.isBatchLoadable() ) {
-			LinkedHashSet<EntityKey> set =  batchLoadableEntityKeys.get( key.getEntityName());
+			NonRepeatingIterable<EntityKey> set =  batchLoadableEntityKeys.get( key.getEntityName() );
 			if (set == null) {
-				set = new LinkedHashSet<EntityKey>(8);
+				set = new NonRepeatingIterable<EntityKey>();
 				batchLoadableEntityKeys.put( key.getEntityName(), set);
 			}
-			set.add(key);
+			set.add( key );
 		}
 	}
 	
@@ -161,9 +160,9 @@ public class BatchFetchQueue {
 	 */
 	public void removeBatchLoadableEntityKey(EntityKey key) {
 		if ( key.isBatchLoadable() ) {
-			LinkedHashSet<EntityKey> set =  batchLoadableEntityKeys.get( key.getEntityName());
+			NonRepeatingIterable<EntityKey> set =  batchLoadableEntityKeys.get( key.getEntityName());
 			if (set != null) {
-				set.remove(key);
+				set.remove( key );
 			}
 		}
 	}
@@ -191,7 +190,7 @@ public class BatchFetchQueue {
 
 		// TODO: this needn't exclude subclasses...
 
-		LinkedHashSet<EntityKey> set =  batchLoadableEntityKeys.get( persister.getEntityName() );
+		NonRepeatingIterable<EntityKey> set =  batchLoadableEntityKeys.get( persister.getEntityName() );
 		if ( set != null ) {
 			for ( EntityKey key : set ) {
 				if ( checkForEnd && i == end ) {
