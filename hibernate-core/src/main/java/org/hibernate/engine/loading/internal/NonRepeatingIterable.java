@@ -21,7 +21,7 @@
  * 51 Franklin Street, Fifth Floor
  * Boston, MA  02110-1301  USA
  */
-package org.hibernate.engine.spi;
+package org.hibernate.engine.loading.internal;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -29,8 +29,13 @@ import java.util.NoSuchElementException;
 
 
 /**
- * This structure is 
- * 
+ * This structure is similar to a LinkedHashSet: a de-duplicating structure
+ * which preserves iteration order.
+ * Compared to the LinkedHashSet, this one is very simple and does tradeoff
+ * random access for a lower memory consumption.
+ *
+ * Warning: not suited for large collections! Both addition and Removal are O(n).
+ *
  * @author Sanne Grinovero
  * @since 4.3
  */

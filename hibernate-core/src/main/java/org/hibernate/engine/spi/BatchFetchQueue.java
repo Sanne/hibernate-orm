@@ -33,10 +33,10 @@ import org.hibernate.EntityMode;
 import org.hibernate.cache.spi.CacheKey;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.internal.CacheHelper;
+import org.hibernate.engine.loading.internal.NonRepeatingIterable;
 import org.hibernate.internal.CoreLogging;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.entity.EntityPersister;
-
 import org.jboss.logging.Logger;
 
 /**

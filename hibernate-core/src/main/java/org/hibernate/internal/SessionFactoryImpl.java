@@ -141,6 +141,7 @@ import org.hibernate.persister.spi.PersisterFactory;
 import org.hibernate.procedure.ProcedureCallMemento;
 import org.hibernate.proxy.EntityNotFoundDelegate;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.internal.ConcurrentServiceBinding;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 import org.hibernate.service.spi.SessionFactoryServiceRegistryFactory;
@@ -189,7 +190,7 @@ public final class SessionFactoryImpl
 	private final String name;
 	private final String uuid;
 
-	private final transient Map<String,EntityPersister> entityPersisters;
+	private final transient ConcurrentServiceBinding<String,EntityPersister> entityPersisters;
 	private final transient Map<String,ClassMetadata> classMetadata;
 	private final transient Map<String,CollectionPersister> collectionPersisters;
 	private final transient Map<String,CollectionMetadata> collectionMetadata;
