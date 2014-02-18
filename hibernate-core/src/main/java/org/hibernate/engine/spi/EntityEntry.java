@@ -60,7 +60,6 @@ public final class EntityEntry implements Serializable {
 	private boolean isBeingReplicated;
 	private boolean loadedWithLazyPropertiesUnfetched; //NOTE: this is not updated when properties are fetched lazily!
 	private final transient Object rowId;
-	private final transient PersistenceContext persistenceContext;
 
 	public EntityEntry(
 			final Status status,
@@ -93,7 +92,6 @@ public final class EntityEntry implements Serializable {
 		this.entityMode = entityMode;
 		this.tenantId = tenantId;
 		this.entityName = persister == null ? null : persister.getEntityName();
-		this.persistenceContext = persistenceContext;
 	}
 
 	/**
@@ -131,7 +129,6 @@ public final class EntityEntry implements Serializable {
 		this.isBeingReplicated = isBeingReplicated;
 		this.loadedWithLazyPropertiesUnfetched = loadedWithLazyPropertiesUnfetched;
 		this.rowId = null; // this is equivalent to the old behavior...
-		this.persistenceContext = persistenceContext;
 	}
 
 	public LockMode getLockMode() {
@@ -216,12 +213,13 @@ public final class EntityEntry implements Serializable {
 	 * the database update.  Specifically we update the snapshot information and
 	 * escalate the lock mode
 	 *
+	 * @param the persistenceContext to which this entity is associated
 	 * @param entity The entity instance
 	 * @param updatedState The state calculated after the update (becomes the
 	 * new {@link #getLoadedState() loaded state}.
 	 * @param nextVersion The new version.
 	 */
-	public void postUpdate(Object entity, Object[] updatedState, Object nextVersion) {
+	public void postUpdate(final PersistenceContext persistenceContext, Object entity, Object[] updatedState, Object nextVersion) {
 		this.loadedState = updatedState;
 		setLockMode( LockMode.WRITE );
 
@@ -295,13 +293,13 @@ public final class EntityEntry implements Serializable {
 	 * @return {@code true} indicates that the entity could possibly be dirty and that dirty check
 	 * should happen; {@code false} indicates there is no way the entity can be dirty
 	 */
-	public boolean requiresDirtyCheck(Object entity) {
+	public boolean requiresDirtyCheck(final PersistenceContext persistenceContext, final Object entity) {
 		return isModifiableEntity()
-				&& ( ! isUnequivocallyNonDirty( entity ) );
+				&& ( ! isUnequivocallyNonDirty( persistenceContext, entity ) );
 	}
 
 	@SuppressWarnings( {"SimplifiableIfStatement"})
-	private boolean isUnequivocallyNonDirty(Object entity) {
+	private boolean isUnequivocallyNonDirty(final PersistenceContext persistenceContext, final Object entity) {
 
 		if(entity instanceof SelfDirtinessTracker)
 			return ((SelfDirtinessTracker) entity).$$_hibernate_hasDirtyAttributes();
@@ -356,7 +354,7 @@ public final class EntityEntry implements Serializable {
 		return status == Status.READ_ONLY;
 	}
 
-	public void setReadOnly(boolean readOnly, Object entity) {
+	public void setReadOnly(final PersistenceContext persistenceContext, final boolean readOnly, final Object entity) {
 		if ( readOnly == isReadOnly() ) {
 			// simply return since the status is not being changed
 			return;

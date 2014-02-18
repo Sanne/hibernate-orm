@@ -34,6 +34,7 @@ import org.hibernate.cache.spi.entry.CacheEntry;
 import org.hibernate.engine.internal.Versioning;
 import org.hibernate.engine.spi.CachedNaturalIdValueSource;
 import org.hibernate.engine.spi.EntityEntry;
+import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.Status;
@@ -150,7 +151,8 @@ public final class EntityUpdateAction extends EntityAction {
 			);
 		}
 
-		EntityEntry entry = getSession().getPersistenceContext().getEntry( instance );
+		final PersistenceContext persistenceContext = getSession().getPersistenceContext();
+		final EntityEntry entry = persistenceContext.getEntry( instance );
 		if ( entry == null ) {
 			throw new AssertionFailure( "possible nonthreadsafe access to session" );
 		}
@@ -176,7 +178,7 @@ public final class EntityUpdateAction extends EntityAction {
 			}
 			// have the entity entry doAfterTransactionCompletion post-update processing, passing it the
 			// update state and the new version (if one).
-			entry.postUpdate( instance, state, nextVersion );
+			entry.postUpdate( persistenceContext, instance, state, nextVersion );
 		}
 
 		if ( persister.hasCache() ) {

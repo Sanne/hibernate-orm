@@ -2493,7 +2493,8 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 			}
 
 			final boolean debugEnabled = LOG.isDebugEnabled();
-			for ( Serializable pk : getPersistenceContext().getNaturalIdHelper().getCachedPkResolutions( entityPersister ) ) {
+			final PersistenceContext persistenceContextLocal = getPersistenceContext();
+			for ( Serializable pk : persistenceContextLocal.getNaturalIdHelper().getCachedPkResolutions( entityPersister ) ) {
 				final EntityKey entityKey = generateEntityKey( pk, entityPersister );
 				final Object entity = getPersistenceContext().getEntity( entityKey );
 				final EntityEntry entry = getPersistenceContext().getEntry( entity );
@@ -2508,7 +2509,7 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 					continue;
 				}
 
-				if ( !entry.requiresDirtyCheck( entity ) ) {
+				if ( !entry.requiresDirtyCheck( persistenceContextLocal, entity ) ) {
 					continue;
 				}
 

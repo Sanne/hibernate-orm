@@ -40,6 +40,7 @@ import org.hibernate.engine.internal.Nullability;
 import org.hibernate.engine.internal.Versioning;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.EntityKey;
+import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.Status;
 import org.hibernate.event.spi.EventSource;
@@ -150,9 +151,10 @@ public class DefaultFlushEntityEventListener implements FlushEntityEventListener
 		final EventSource session = event.getSession();
 		final EntityPersister persister = entry.getPersister();
 		final Status status = entry.getStatus();
+		final PersistenceContext persistenceContext = session.getPersistenceContext();
 		final Type[] types = persister.getPropertyTypes();
 
-		final boolean mightBeDirty = entry.requiresDirtyCheck(entity);
+		final boolean mightBeDirty = entry.requiresDirtyCheck( persistenceContext, entity );
 
 		final Object[] values = getValues( entity, entry, mightBeDirty, session );
 

@@ -32,6 +32,7 @@ import org.hibernate.cache.spi.entry.CacheEntry;
 import org.hibernate.engine.internal.Versioning;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.EntityKey;
+import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.event.service.spi.EventListenerGroup;
@@ -87,7 +88,8 @@ public final class EntityInsertAction extends AbstractEntityInsertAction {
 			
 			persister.insert( id, getState(), instance, session );
 		
-			EntityEntry entry = session.getPersistenceContext().getEntry( instance );
+			final PersistenceContext persistenceContext = session.getPersistenceContext();
+			EntityEntry entry = persistenceContext.getEntry( instance );
 			if ( entry == null ) {
 				throw new AssertionFailure( "possible non-threadsafe access to session" );
 			}
@@ -99,7 +101,7 @@ public final class EntityInsertAction extends AbstractEntityInsertAction {
 				if ( persister.isVersionPropertyGenerated() ) {
 					version = Versioning.getVersion( getState(), persister );
 				}
-				entry.postUpdate(instance, getState(), version);
+				entry.postUpdate( persistenceContext, instance, getState(), version );
 			}
 
 			getSession().getPersistenceContext().registerInsertedKey( getPersister(), getId() );

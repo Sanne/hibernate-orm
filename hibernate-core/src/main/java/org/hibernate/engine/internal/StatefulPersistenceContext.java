@@ -1534,7 +1534,7 @@ public class StatefulPersistenceContext implements PersistenceContext {
 		if (entry == null) {
 			throw new TransientObjectException("Instance was not associated with this persistence context" );
 		}
-		entry.setReadOnly(readOnly, entity );
+		entry.setReadOnly( this, readOnly, entity );
 		hasNonReadOnlyEntities = hasNonReadOnlyEntities || ! readOnly;
 	}
 
