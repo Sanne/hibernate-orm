@@ -54,7 +54,6 @@ public final class EntityEntry implements Serializable {
 	private Object version;
 	private transient EntityPersister persister; // for convenience to save some lookups
 	private final String tenantId;
-	private final String entityName;
 	private transient EntityKey cachedEntityKey; // cached EntityKey (lazy-initialized)
 	private boolean isBeingReplicated;
 	private boolean loadedWithLazyPropertiesUnfetched; //NOTE: this is not updated when properties are fetched lazily!
@@ -89,7 +88,6 @@ public final class EntityEntry implements Serializable {
 		this.loadedWithLazyPropertiesUnfetched = lazyPropertiesAreUnfetched;
 		this.persister=persister;
 		this.tenantId = tenantId;
-		this.entityName = persister == null ? null : persister.getEntityName();
 	}
 
 	/**
@@ -111,7 +109,6 @@ public final class EntityEntry implements Serializable {
 			final boolean isBeingReplicated,
 			final boolean loadedWithLazyPropertiesUnfetched,
 			final PersistenceContext persistenceContext) {
-		this.entityName = entityName;
 		this.persister = ( factory == null ? null : factory.getEntityPersister( entityName ) );
 		this.id = id;
 		this.tenantId = tenantId;
@@ -193,7 +190,7 @@ public final class EntityEntry implements Serializable {
 	}
 
 	public String getEntityName() {
-		return entityName;
+		return persister.getEntityName();
 	}
 
 	public boolean isBeingReplicated() {
@@ -377,7 +374,7 @@ public final class EntityEntry implements Serializable {
 
 	public String toString() {
 		return "EntityEntry" + 
-				MessageHelper.infoString(entityName, id) + 
+				MessageHelper.infoString(getEntityName(), id) + 
 				'(' + status + ')';
 	}
 
@@ -394,7 +391,7 @@ public final class EntityEntry implements Serializable {
 	 * @throws IOException If a stream error occurs
 	 */
 	public void serialize(ObjectOutputStream oos) throws IOException {
-		oos.writeObject( entityName );
+		oos.writeObject( getEntityName() );
 		oos.writeObject( id );
 		oos.writeObject( tenantId );
 		oos.writeObject( status.name() );
