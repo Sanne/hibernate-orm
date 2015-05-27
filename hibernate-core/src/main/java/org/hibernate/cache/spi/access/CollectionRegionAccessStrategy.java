@@ -6,7 +6,12 @@
  */
 package org.hibernate.cache.spi.access;
 
+import java.io.Serializable;
+
+import org.hibernate.cache.spi.CollectionCacheKey;
 import org.hibernate.cache.spi.CollectionRegion;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.persister.collection.CollectionPersister;
 
 /**
  * Contract for managing transactional and concurrent access to cached collection
@@ -21,7 +26,9 @@ import org.hibernate.cache.spi.CollectionRegion;
  * @author Gavin King
  * @author Steve Ebersole
  */
-public interface CollectionRegionAccessStrategy extends RegionAccessStrategy {
+public interface CollectionRegionAccessStrategy extends RegionAccessStrategy<CollectionCacheKey> {
+
+	public CollectionCacheKey generateCacheKey(Serializable id, CollectionPersister persister, SessionFactoryImplementor factory, String tenantIdentifier);
 
 	/**
 	 * Get the wrapped collection cache region
