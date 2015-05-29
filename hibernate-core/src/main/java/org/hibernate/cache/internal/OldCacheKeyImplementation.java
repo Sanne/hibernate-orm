@@ -10,8 +10,10 @@ import java.io.Serializable;
 
 import org.hibernate.cache.spi.CollectionCacheKey;
 import org.hibernate.cache.spi.EntityCacheKey;
+import org.hibernate.engine.spi.EntityKey;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.util.compare.EqualsHelper;
+import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.type.Type;
 
 /**
@@ -102,4 +104,11 @@ final class OldCacheKeyImplementation implements EntityCacheKey, CollectionCache
 		// Used to be required for OSCache
 		return entityOrRoleName + '#' + key.toString();
 	}
+
+	@Override
+	public EntityKey toEntityKey(EntityPersister subclassPersister) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

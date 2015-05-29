@@ -603,7 +603,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 		}
 
 		CacheEntry entry = (CacheEntry) persister.getCacheEntryStructure().destructure( ce, factory );
-		Object entity = convertCacheEntryToEntity( entry, event.getEntityId(), persister, event );
+		Object entity = convertCacheEntryToEntity( entry, event.getEntityId(), persister, event, ck );
 		
 		if ( !persister.isInstance( entity ) ) {
 			throw new WrongClassException(
@@ -620,7 +620,8 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			CacheEntry entry,
 			Serializable entityId,
 			EntityPersister persister,
-			LoadEvent event) {
+			LoadEvent event,
+			EntityCacheKey ck) {
 
 		final EventSource session = event.getSession();
 		final SessionFactoryImplementor factory = session.getFactory();
@@ -669,7 +670,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 		}
 
 		// make it circular-reference safe
-		final EntityKey entityKey = session.generateEntityKey( entityId, subclassPersister );
+		final EntityKey entityKey = ck.toEntityKey( subclassPersister );
 		TwoPhaseLoad.addUninitializedCachedEntity(
 				entityKey,
 				entity,

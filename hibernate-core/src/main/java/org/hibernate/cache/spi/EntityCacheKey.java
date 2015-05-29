@@ -8,6 +8,9 @@ package org.hibernate.cache.spi;
 
 import java.io.Serializable;
 
+import org.hibernate.engine.spi.EntityKey;
+import org.hibernate.persister.entity.EntityPersister;
+
 /**
  * Allows multiple entity roles to be stored in the same cache region. Also allows for composite
  * keys which do not properly implement equals()/hashCode().
@@ -22,5 +25,7 @@ public interface EntityCacheKey extends CacheKey {
 	public String getEntityOrRoleName();
 
 	public String getTenantId();
+
+	public EntityKey toEntityKey(EntityPersister subclassPersister);
 
 }

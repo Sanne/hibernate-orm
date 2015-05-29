@@ -10,6 +10,8 @@ import java.io.Serializable;
 
 import org.hibernate.cache.spi.CollectionCacheKey;
 import org.hibernate.cache.spi.EntityCacheKey;
+import org.hibernate.engine.spi.EntityKey;
+import org.hibernate.persister.entity.EntityPersister;
 
 public class TestingKeyFactory {
 
@@ -72,6 +74,12 @@ public class TestingKeyFactory {
 			} else if (!id.equals(other.id))
 				return false;
 			return true;
+		}
+
+		@Override
+		public EntityKey toEntityKey(EntityPersister subclassPersister) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}
