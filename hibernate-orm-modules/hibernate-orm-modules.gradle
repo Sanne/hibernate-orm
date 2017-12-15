@@ -182,10 +182,14 @@ task installWildFly(type: Copy) {
     into wildFlyInstallDirBase
 }
 
-task patchWildFlytoJPA22(type: Copy, dependsOn: [installWildFly]) {
-    description = 'Patch the WildFly server to expose the JPA 2.2 API (instead of JPA 2.1)'
+task getWildFlyJPAPatch(type: Copy) {
+    description = 'Fetch the WildFly patch to upgrade to JPA 2.2'
     from configurations.wildflyJPA22Patch
     into "$buildDir/jpa22-wildfly-patch"
+}
+
+task patchWildFlytoJPA22(type: Exec, dependsOn: [installWildFly, getWildFlyJPAPatch]) {
+    description = 'Patch the WildFly server to expose the JPA 2.2 API (instead of JPA 2.1)'
     doLast {
         exec {
             executable "$wildFlyInstallDirBase/wildfly-$wildflyVersion/bin/jboss-cli.sh"
@@ -193,6 +197,8 @@ task patchWildFlytoJPA22(type: Copy, dependsOn: [installWildFly]) {
         }
     }
 }
+patchWildFlytoJPA22.mustRunAfter( installWildFly )
+patchWildFlytoJPA22.onlyIf{ ! file("$wildFlyInstallDirBase/wildfly-$wildflyVersion/modules/system/layers/base/.overlays").exists(  ) }
 
 task installHibernateModule( type:Copy, dependsOn: [createModulesZip, installWildFly]) {
     duplicatesStrategy DuplicatesStrategy.EXCLUDE
