@@ -135,6 +135,16 @@ dependencies {
 	}
 }
 
+configurations.all {
+	resolutionStrategy {
+		//Make sure we immediately spot dependency convergence problems
+		failOnVersionConflict()
+
+		//With this exceptions, which are easier to override:
+		force 'org.jboss.logging:jboss-logging:3.3.2.Final'
+	}
+}
+
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Compilation
