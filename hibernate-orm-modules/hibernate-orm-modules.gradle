@@ -85,6 +85,7 @@ provision {
 	dependsOn( createCoreFeaturePackZip )
 	dependsOn( ":hibernate-envers:jar")
 	dependsOn( ":hibernate-core:jar")
+	dependsOn( ":hibernate-jipijapa:jar")
 	configuration = file( 'wildfly-server-provisioning.xml' )
 	destinationDir = file( "$project.wildFlyInstallDir" )
 	//Replace the JPA API with version 2.2 in the provisioned WildFly server:
@@ -115,7 +116,7 @@ dependencies {
 	featurePack libraries.byteBuddy
 	featurePack project( ":hibernate-core" )
 	featurePack project( ":hibernate-envers" )
-	featurePack ":jipijapa-hibernate:${hibernateVersion}"
+	featurePack project( ":hibernate-jipijapa" )
 }
 
 publishing {

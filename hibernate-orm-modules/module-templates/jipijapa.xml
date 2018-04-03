@@ -11,7 +11,7 @@
     </properties>
 
     <resources>
-        <artifact name="${org.hibernate:jipijapa-hibernate}"/>
+        <artifact name="${org.hibernate:hibernate-jipijapa}"/>
     </resources>
 
     <dependencies>
