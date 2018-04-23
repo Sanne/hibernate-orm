@@ -354,13 +354,6 @@ public class ClassLoaderServiceImpl implements ClassLoaderService {
 
 	@Override
 	public URL locateResource(String name) {
-		// first we try name as a URL
-		try {
-			return new URL( name );
-		}
-		catch (Exception ignore) {
-		}
-
 		try {
 			final URL url = getAggregatedClassLoader().getResource( name );
 			if ( url != null ) {
@@ -383,6 +376,12 @@ public class ClassLoaderServiceImpl implements ClassLoaderService {
 			}
 		}
 
+		// first we try name as a URL
+		try {
+			return new URL( name );
+		}
+		catch (Exception ignore) {
+		}
 		return null;
 	}
 
