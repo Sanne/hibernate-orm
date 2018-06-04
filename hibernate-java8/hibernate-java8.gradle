@@ -12,6 +12,10 @@ dependencies {
 
 jar {
     manifest = null
+    manifest {
+        attributes("Testing-key-1": "V1",
+                   "Testing-key-2": "V2")
+    }
 }
 
 sourcesJar {
