@@ -77,7 +77,7 @@ public class Oracle10gDialect extends Oracle9iDialect {
 
 	@Override
 	public int registerResultSetOutParameter(CallableStatement statement, String name) throws SQLException {
-		statement.registerOutParameter( name, OracleTypesHelper.INSTANCE.getOracleCursorTypeSqlType() );
+		statement.registerOutParameter( name, OracleTypesHelper.getOracleCursorTypeSqlType() );
 		return 1;
 	}
 

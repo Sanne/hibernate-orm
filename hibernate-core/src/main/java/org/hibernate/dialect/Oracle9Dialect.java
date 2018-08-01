@@ -317,7 +317,7 @@ public class Oracle9Dialect extends Dialect {
 	@Override
 	public int registerResultSetOutParameter(java.sql.CallableStatement statement, int col) throws SQLException {
 		//	register the type of the out param - an Oracle specific type
-		statement.registerOutParameter( col, OracleTypesHelper.INSTANCE.getOracleCursorTypeSqlType() );
+		statement.registerOutParameter( col, OracleTypesHelper.getOracleCursorTypeSqlType() );
 		col++;
 		return col;
 	}
