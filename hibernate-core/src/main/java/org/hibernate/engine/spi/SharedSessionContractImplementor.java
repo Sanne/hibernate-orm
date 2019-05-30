@@ -151,6 +151,12 @@ public interface SharedSessionContractImplementor
 	void checkOpen(boolean markForRollbackIfClosed);
 
 	/**
+	 * Prepare for the execution of a {@link org.hibernate.query.Query} or
+	 * {@link org.hibernate.procedure.ProcedureCall}
+	 */
+	void prepareForQueryExecution(boolean requiresTxn);
+
+	/**
 	 * Marks current transaction (if one) for rollback only
 	 */
 	void markForRollbackOnly();
@@ -386,6 +392,7 @@ public interface SharedSessionContractImplementor
 	int executeNativeUpdate(NativeSQLQuerySpecification specification, QueryParameters queryParameters)
 			throws HibernateException;
 
+	boolean isDefaultReadOnly();
 
 	CacheMode getCacheMode();
 
