@@ -628,11 +628,11 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 	}
 
 	protected HQLQueryPlan getQueryPlan(String query, boolean shallow) throws HibernateException {
-		return getFactory().getQueryPlanCache().getHQLQueryPlan( query, shallow, getLoadQueryInfluencers().getEnabledFilters() );
+		return getFactory().getQueryInterpretationCache().getHQLQueryPlan( query, shallow, getLoadQueryInfluencers().getEnabledFilters() );
 	}
 
 	protected NativeSQLQueryPlan getNativeQueryPlan(NativeSQLQuerySpecification spec) throws HibernateException {
-		return getFactory().getQueryPlanCache().getNativeSQLQueryPlan( spec );
+		return getFactory().getQueryInterpretationCache().getNativeSQLQueryPlan( spec );
 	}
 
 	@Override
@@ -662,7 +662,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 	}
 
 	private NativeQueryImplementor createNativeQuery(NamedNativeQueryMemento queryDefinition, boolean isOrdinalParameterZeroBased) {
-		final ParameterMetadata parameterMetadata = factory.getQueryPlanCache().getSQLParameterMetadata(
+		final ParameterMetadata parameterMetadata = factory.getQueryInterpretationCache().getSQLParameterMetadata(
 				queryDefinition.getQueryString(),
 				isOrdinalParameterZeroBased
 		);
@@ -755,7 +755,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 	@SuppressWarnings({"unchecked", "WeakerAccess", "StatementWithEmptyBody"})
 	protected void resultClassChecking(Class resultClass, Query hqlQuery) {
 		// make sure the query is a select -> HHH-7192
-		final HQLQueryPlan queryPlan = getFactory().getQueryPlanCache().getHQLQueryPlan(
+		final HQLQueryPlan queryPlan = getFactory().getQueryInterpretationCache().getHQLQueryPlan(
 				hqlQuery.getQueryString(),
 				false,
 				getLoadQueryInfluencers().getEnabledFilters()
@@ -851,7 +851,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 		final NativeQueryImpl query = new NativeQueryImpl(
 				queryDefinition,
 				this,
-				factory.getQueryPlanCache().getSQLParameterMetadata( queryDefinition.getQueryString(), false )
+				factory.getQueryInterpretationCache().getSQLParameterMetadata( queryDefinition.getQueryString(), false )
 		);
 		if (Tuple.class.equals(resultType)) {
 			query.setResultTransformer(new NativeQueryTupleTransformer());
@@ -1004,7 +1004,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 					queryString,
 					false,
 					this,
-					getFactory().getQueryPlanCache().getSQLParameterMetadata( queryString, isOrdinalParameterZeroBased )
+					getFactory().getQueryInterpretationCache().getSQLParameterMetadata( queryString, isOrdinalParameterZeroBased )
 			);
 			query.setComment( "dynamic native SQL query" );
 			return query;
