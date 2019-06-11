@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
 import org.hibernate.ScrollableResults;
-import org.hibernate.engine.spi.PersistenceContext;
-import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.hql.internal.HolderInstantiator;
 import org.hibernate.loader.Loader;
@@ -190,28 +188,22 @@ public class ScrollableResultsImpl extends AbstractScrollableResults implements 
 			return;
 		}
 
-		final PersistenceContext persistenceContext = getSession().getPersistenceContextInternal();
-		persistenceContext.beforeLoad();
-		try {
-			final Object result = getLoader().loadSingleRow(
-					getResultSet(),
-					getSession(),
-					getQueryParameters(),
-					true
-			);
-			if ( result != null && result.getClass().isArray() ) {
-				currentRow = (Object[]) result;
-			}
-			else {
-				currentRow = new Object[] {result};
-			}
+		final Object result = getLoader().loadSingleRow(
+				getResultSet(),
+				getSession(),
+				getQueryParameters(),
+				true
+		);
+		if ( result != null && result.getClass().isArray() ) {
+			currentRow = (Object[]) result;
+		}
+		else {
+			currentRow = new Object[] {result};
+		}
 
 			if ( getHolderInstantiator() != null ) {
 				currentRow = new Object[] { getHolderInstantiator().instantiate( currentRow ) };
 			}
-		}
-		finally {
-			persistenceContext.afterLoad();
 		}
 
 		afterScrollOperation();
