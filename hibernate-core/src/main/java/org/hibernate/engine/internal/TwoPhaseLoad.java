@@ -38,6 +38,7 @@ import org.hibernate.pretty.MessageHelper;
 import org.hibernate.property.access.internal.PropertyAccessStrategyBackRefImpl;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.stat.internal.StatsHelper;
+import org.hibernate.stat.spi.StatisticsImplementor;
 import org.hibernate.type.Type;
 import org.hibernate.type.TypeHelper;
 
@@ -173,12 +174,14 @@ public final class TwoPhaseLoad {
 			}
 		}
 
+		final SessionFactoryImplementor factory = session.getFactory();
+		final StatisticsImplementor statistics = factory.getStatistics();
+
 		//Must occur after resolving identifiers!
 		if ( session.isEventSource() ) {
 			preLoadEvent.setEntity( entity ).setState( hydratedState ).setId( id ).setPersister( persister );
 
-			final EventListenerGroup<PreLoadEventListener> listenerGroup = session
-					.getFactory()
+			final EventListenerGroup<PreLoadEventListener> listenerGroup = factory
 					.getServiceRegistry()
 					.getService( EventListenerRegistry.class )
 					.getEventListenerGroup( EventType.PRE_LOAD );
@@ -189,7 +192,6 @@ public final class TwoPhaseLoad {
 
 		persister.setPropertyValues( entity, hydratedState );
 
-		final SessionFactoryImplementor factory = session.getFactory();
 		if ( persister.canWriteToCache() && session.getCacheMode().isPutEnabled() ) {
 
 			if ( debugEnabled ) {
@@ -231,8 +233,8 @@ public final class TwoPhaseLoad {
 							useMinimalPuts( session, entityEntry )
 					);
 
-					if ( put && factory.getStatistics().isStatisticsEnabled() ) {
-						factory.getStatistics().entityCachePut(
+					if ( put && statistics.isStatisticsEnabled() ) {
+						statistics.entityCachePut(
 								StatsHelper.INSTANCE.getRootEntityRole( persister ),
 								cache.getRegion().getName()
 						);
@@ -293,8 +295,8 @@ public final class TwoPhaseLoad {
 			);
 		}
 
-		if ( factory.getStatistics().isStatisticsEnabled() ) {
-			factory.getStatistics().loadEntity( persister.getEntityName() );
+		if ( statistics.isStatisticsEnabled() ) {
+			statistics.loadEntity( persister.getEntityName() );
 		}
 	}
 
