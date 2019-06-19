@@ -17,12 +17,18 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.spi.PersistentAttributeInterceptable;
 import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.hibernate.stat.Statistics;
-
+import org.hibernate.testing.AfterClassOnce;
+import org.hibernate.testing.BeforeClassOnce;
 import org.hibernate.testing.TestForIssue;
 import org.hibernate.testing.bytecode.enhancement.BytecodeEnhancerRunner;
 import org.hibernate.testing.bytecode.enhancement.EnhancementOptions;
+import org.hibernate.testing.byteman.BytemanHelper;
 import org.hibernate.testing.junit4.BaseNonConfigCoreFunctionalTestCase;
+import org.jboss.byteman.contrib.bmunit.BMUnit;
+import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
+import org.jboss.byteman.contrib.bmunit.BMUnitConfigState;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,12 +45,26 @@ import static org.junit.Assert.assertEquals;
 @TestForIssue(jiraKey = "HHH-11147")
 @RunWith(BytecodeEnhancerRunner.class)
 @EnhancementOptions( lazyLoading = true )
+@BMUnitConfig(debug = false, bmunitVerbose = false, verbose = true, enforce = true)
 public class LazyGroupWithInheritanceAllowProxyTest extends BaseNonConfigCoreFunctionalTestCase {
+
+	private static final String GLOBAL_BYTEMAN_RULE = "\n" +
+		"RULE count invocations of org.hibernate.type.CollectionType#getCollection\n" +
+		"CLASS org.hibernate.type.CollectionType\n" +
+		"METHOD getCollection\n" +
+		"HELPER org.hibernate.testing.byteman.BytemanHelper\n" +
+		"AT ENTRY\n" +
+		"IF true\n" +
+		"DO countInvocation()\n" +
+		"ENDRULE";
+
 	@Test
 	public void baseline() {
+		assertResolveInvocationsCount( 0 );
 		inTransaction(
 				session -> {
 					final List<Order> orders = session.createQuery( "select o from Order o", Order.class ).list();
+					Assert.assertEquals( 2, orders.size() );
 					for ( Order order : orders ) {
 						if ( order.getCustomer().getOid() == null ) {
 							System.out.println( "Got Order#customer: " + order.getCustomer().getOid() );
@@ -54,6 +74,12 @@ public class LazyGroupWithInheritanceAllowProxyTest extends BaseNonConfigCoreFun
 
 				}
 		);
+		assertResolveInvocationsCount( 4 );
+	}
+
+	private static void assertResolveInvocationsCount(final int expected) {
+		final int andResetInvocationCount = BytemanHelper.getAndResetInvocationCount();
+		Assert.assertEquals( expected, andResetInvocationCount );
 	}
 
 	@Test
@@ -292,6 +318,19 @@ public class LazyGroupWithInheritanceAllowProxyTest extends BaseNonConfigCoreFun
 		sources.addAnnotatedClass( Order.class );
 		sources.addAnnotatedClass( OrderSupplemental.class );
 		sources.addAnnotatedClass( OrderSupplemental2.class );
+	}
+
+	@BeforeClassOnce
+	public static void setupByteman() throws Exception {
+		final BMUnitConfig bytemanConfig = LazyGroupWithInheritanceAllowProxyTest.class.getAnnotation(BMUnitConfig.class);
+		BMUnitConfigState.pushConfigurationState( bytemanConfig, LazyGroupWithInheritanceAllowProxyTest.class );
+		BMUnit.loadScriptText( LazyGroupWithInheritanceAllowProxyTest.class, null, GLOBAL_BYTEMAN_RULE );
+	}
+
+	@AfterClassOnce
+	public static void cleanupByteman() throws Exception {
+		BMUnit.unloadScriptText( LazyGroupWithInheritanceAllowProxyTest.class, null );
+		BMUnitConfigState.popConfigurationState( LazyGroupWithInheritanceAllowProxyTest.class );
 	}
 
 }
