@@ -148,12 +148,10 @@ public final class TwoPhaseLoad {
 			);
 		}
 
-		String entityName = persister.getEntityName();
 		String[] propertyNames = persister.getPropertyNames();
 		final Type[] types = persister.getPropertyTypes();
 		for ( int i = 0; i < hydratedState.length; i++ ) {
 			final Object value = hydratedState[i];
-			Boolean overridingEager = getOverridingEager( session, entityName, propertyNames[i], types[i] );
 			if ( value == LazyPropertyInitializer.UNFETCHED_PROPERTY ) {
 				// IMPLEMENTATION NOTE: This is a lazy property on a bytecode-enhanced entity.
 				// hydratedState[i] needs to remain LazyPropertyInitializer.UNFETCHED_PROPERTY so that
@@ -164,11 +162,13 @@ public final class TwoPhaseLoad {
 					// HHH-10989: We need to resolve the collection so that a CollectionReference is added to StatefulPersistentContext.
 					// As mentioned above, hydratedState[i] needs to remain LazyPropertyInitializer.UNFETCHED_PROPERTY
 					// so do not assign the resolved, unitialized PersistentCollection back to hydratedState[i].
+					Boolean overridingEager = getOverridingEager( session, persister, propertyNames[i], types[i] );
 					types[i].resolve( value, session, entity, overridingEager );
 				}
 			}
 			else if ( value != PropertyAccessStrategyBackRefImpl.UNKNOWN ) {
 				// we know value != LazyPropertyInitializer.UNFETCHED_PROPERTY
+				Boolean overridingEager = getOverridingEager( session, persister, propertyNames[i], types[i] );
 				hydratedState[i] = types[i].resolve( value, session, entity, overridingEager );
 			}
 		}
@@ -302,17 +302,18 @@ public final class TwoPhaseLoad {
 	 * Check if eager of the association is overriden by anything.
 	 *
 	 * @param session session
-	 * @param entityName entity name
+	 * @param persister the EntityPersister for the current entity
 	 * @param associationName association name
 	 *
 	 * @return null if there is no overriding, true if it is overridden to eager and false if it is overridden to lazy
 	 */
 	private static Boolean getOverridingEager(
 			SharedSessionContractImplementor session,
-			String entityName,
+			EntityPersister persister,
 			String associationName,
 			Type type) {
 		if ( type.isAssociationType() || type.isCollectionType() ) {
+			final String entityName = persister.getEntityName();
 			Boolean overridingEager = isEagerFetchProfile( session, entityName + "." + associationName );
 
 			if ( LOG.isDebugEnabled() ) {
