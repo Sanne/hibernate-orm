@@ -85,13 +85,17 @@ public final class CollectionKey implements Serializable {
 		if ( this == other ) {
 			return true;
 		}
-		if ( other == null || getClass() != other.getClass() ) {
+		if ( other == null ) {
 			return false;
 		}
-
-		final CollectionKey that = (CollectionKey) other;
-		return that.role.equals( role )
-				&& keyType.isEqual( that.key, key, factory );
+		try {
+			final CollectionKey that = (CollectionKey) other;
+			return that.role.equals(role)
+				&& keyType.isEqual(that.key, key, factory);
+		}
+		catch ( ClassCastException cce ) {
+			return false;
+		}
 	}
 
 	@Override
