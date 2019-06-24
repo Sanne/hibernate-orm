@@ -407,7 +407,7 @@ public abstract class Loader {
 				session,
 				queryParameters.isReadOnly( session )
 		);
-		session.getPersistenceContext().initializeNonLazyCollections();
+		session.getPersistenceContextInternal().initializeNonLazyCollections();
 		return result;
 	}
 
@@ -467,7 +467,7 @@ public abstract class Loader {
 				session,
 				queryParameters.isReadOnly( session )
 		);
-		session.getPersistenceContext().initializeNonLazyCollections();
+		session.getPersistenceContextInternal().initializeNonLazyCollections();
 		return result;
 	}
 
@@ -751,7 +751,7 @@ public abstract class Loader {
 			// now get an existing proxy for each row element (if there is one)
 			for ( int i = 0; i < entitySpan; i++ ) {
 				Object entity = row[i];
-				Object proxy = session.getPersistenceContext().proxyFor( persisters[i], keys[i], entity );
+				Object proxy = session.getPersistenceContextInternal().proxyFor( persisters[i], keys[i], entity );
 				if ( entity != proxy ) {
 					// force the proxy to resolve itself
 					( (HibernateProxy) proxy ).getHibernateLazyInitializer().setImplementation( entity );
@@ -1062,6 +1062,7 @@ public abstract class Loader {
 			final Loadable[] loadables = getEntityPersisters();
 			final String[] aliases = getAliases();
 			final String subselectQueryString = SubselectFetch.createSubselectFetchQueryFragment( queryParameters );
+			final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
 			for ( Object key : keys ) {
 				final EntityKey[] rowKeys = (EntityKey[]) key;
 				for ( int i = 0; i < rowKeys.length; i++ ) {
@@ -1077,7 +1078,7 @@ public abstract class Loader {
 								namedParameterLocMap
 						);
 
-						session.getPersistenceContext()
+						persistenceContext
 								.getBatchFetchQueue()
 								.addSubselect( rowKeys[i], subselectFetch );
 					}
@@ -1176,11 +1177,12 @@ public abstract class Loader {
 		// endCollectionLoad to ensure the collection is in the
 		// persistence context.
 		if ( hydratedObjects != null ) {
+			final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
 			for ( Object hydratedObject : hydratedObjects ) {
 				TwoPhaseLoad.postLoad( hydratedObject, session, post );
 				if ( afterLoadActions != null ) {
 					for ( AfterLoadAction afterLoadAction : afterLoadActions ) {
-						final EntityEntry entityEntry = session.getPersistenceContext().getEntry( hydratedObject );
+						final EntityEntry entityEntry = persistenceContext.getEntry( hydratedObject );
 						if ( entityEntry == null ) {
 							// big problem
 							throw new HibernateException(
@@ -1199,7 +1201,7 @@ public abstract class Loader {
 			final SharedSessionContractImplementor session,
 			final CollectionPersister collectionPersister) {
 		//this is a query and we are loading multiple instances of the same collection role
-		session.getPersistenceContext()
+		session.getPersistenceContextInternal()
 				.getLoadContexts()
 				.getCollectionLoadContext( (ResultSet) resultSetId )
 				.endLoadingCollections( collectionPersister );
@@ -1277,6 +1279,7 @@ public abstract class Loader {
 		if ( owners != null ) {
 
 			EntityType[] ownerAssociationTypes = getOwnerAssociationTypes();
+			final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
 			for ( int i = 0; i < keys.length; i++ ) {
 
 				int owner = owners[i];
@@ -1284,7 +1287,6 @@ public abstract class Loader {
 					EntityKey ownerKey = keys[owner];
 					if ( keys[i] == null && ownerKey != null ) {
 
-						final PersistenceContext persistenceContext = session.getPersistenceContext();
 
 						/*final boolean isPrimaryKey;
 						final boolean isSpecialOneToOne;
@@ -1341,7 +1343,7 @@ public abstract class Loader {
 			final SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 
-		final PersistenceContext persistenceContext = session.getPersistenceContext();
+		final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
 
 		final Serializable collectionRowKey = (Serializable) persister.readKey(
 				rs,
@@ -1418,6 +1420,7 @@ public abstract class Loader {
 			// for each of the passed-in keys, to account for the possibility
 			// that the collection is empty and has no rows in the result set
 			CollectionPersister[] collectionPersisters = getCollectionPersisters();
+			final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
 			for ( CollectionPersister collectionPersister : collectionPersisters ) {
 				for ( Serializable key : keys ) {
 					//handle empty collections
@@ -1428,7 +1431,7 @@ public abstract class Loader {
 						);
 					}
 
-					session.getPersistenceContext()
+					persistenceContext
 							.getLoadContexts()
 							.getCollectionLoadContext( (ResultSet) resultSetId )
 							.getLoadingCollection( collectionPersister, key );
@@ -1496,7 +1499,7 @@ public abstract class Loader {
 			final ResultSet rs,
 			final SharedSessionContractImplementor session) throws HibernateException, SQLException {
 
-		Object version = session.getPersistenceContext().getEntry( entity ).getVersion();
+		Object version = session.getPersistenceContextInternal().getEntry( entity ).getVersion();
 
 		if ( version != null ) {
 			// null version means the object is in the process of being loaded somewhere else in the ResultSet
@@ -1645,7 +1648,7 @@ public abstract class Loader {
 		}
 
 		if ( LockMode.NONE != requestedLockMode && upgradeLocks() ) {
-			final EntityEntry entry = session.getPersistenceContext().getEntry( object );
+			final EntityEntry entry = session.getPersistenceContextInternal().getEntry( object );
 			if ( entry.getLockMode().lessThan( requestedLockMode ) ) {
 				//we only check the version when _upgrading_ lock modes
 				if ( persister.isVersioned() ) {
@@ -1844,7 +1847,7 @@ public abstract class Loader {
 						persister.getEntityMode(),
 						session.getFactory()
 				);
-				session.getPersistenceContext().addEntity( euk, object );
+				session.getPersistenceContextInternal().addEntity( euk, object );
 			}
 		}
 
@@ -2671,7 +2674,7 @@ public abstract class Loader {
 									.getEntityMetamodel()
 									.hasImmutableNaturalId();
 
-			final PersistenceContext persistenceContext = session.getPersistenceContext();
+			final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
 			boolean defaultReadOnlyOrig = persistenceContext.isDefaultReadOnly();
 			if ( queryParameters.isReadOnlyInitialized() ) {
 				// The read-only/modifiable mode for the query was explicitly set.

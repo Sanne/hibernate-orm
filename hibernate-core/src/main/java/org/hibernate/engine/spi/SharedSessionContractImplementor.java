@@ -88,7 +88,13 @@ public interface SharedSessionContractImplementor
 	SessionEventListenerManager getEventListenerManager();
 
 	/**
-	 * Get the persistence context for this session
+	 * Get the persistence context for this session.
+	 * See also {@link #getPersistenceContextInternal()} for
+	 * an alternative.
+	 *
+	 * This method is not extremely fast: if you need to access
+	 * the PersistenceContext multiple times, prefer keeping
+	 * a reference to it over invoking this method multiple times.
 	 */
 	PersistenceContext getPersistenceContext();
 
@@ -489,4 +495,18 @@ public interface SharedSessionContractImplementor
 			) :
 			sessionJdbcBatchSize;
 	}
+
+	/**
+	 * This is similar to {@link #getPersistenceContext()}, with
+	 * two main differences:
+	 * a) this version performs better as
+	 * it allows for inlining and probably better prediction
+	 * b) see SessionImpl{@link #getPersistenceContext()} : it
+	 * does some checks on the current state of the Session.
+	 *
+	 * Choose wisely: performance is important, correctness comes first.
+	 *
+	 * @return the PersistenceContext associated to this session.
+	 */
+	PersistenceContext getPersistenceContextInternal();
 }

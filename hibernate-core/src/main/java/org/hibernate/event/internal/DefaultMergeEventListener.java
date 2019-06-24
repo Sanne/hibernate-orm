@@ -24,6 +24,7 @@ import org.hibernate.engine.spi.CascadingAction;
 import org.hibernate.engine.spi.CascadingActions;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.EntityKey;
+import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.engine.spi.PersistentAttributeInterceptable;
 import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.hibernate.engine.spi.SelfDirtinessTracker;
@@ -160,14 +161,15 @@ public class DefaultMergeEventListener extends AbstractSaveEventListener impleme
 
 				// Check the persistence context for an entry relating to this
 				// entity to be merged...
-				EntityEntry entry = source.getPersistenceContext().getEntry( entity );
+				final PersistenceContext persistenceContext = source.getPersistenceContextInternal();
+				EntityEntry entry = persistenceContext.getEntry( entity );
 				if ( entry == null ) {
 					EntityPersister persister = source.getEntityPersister( event.getEntityName(), entity );
 					Serializable id = persister.getIdentifier( entity, source );
 					if ( id != null ) {
 						final EntityKey key = source.generateEntityKey( id, persister );
-						final Object managedEntity = source.getPersistenceContext().getEntity( key );
-						entry = source.getPersistenceContext().getEntry( managedEntity );
+						final Object managedEntity = persistenceContext.getEntity( key );
+						entry = persistenceContext.getEntry( managedEntity );
 						if ( entry != null ) {
 							// we have specialized case of a detached entity from the
 							// perspective of the merge operation.  Specifically, we
@@ -375,7 +377,7 @@ public class DefaultMergeEventListener extends AbstractSaveEventListener impleme
 			EntityPersister persister,
 			EventSource source) {
 		if ( incoming instanceof HibernateProxy ) {
-			return source.getPersistenceContext().unproxy( managed );
+			return source.getPersistenceContextInternal().unproxy( managed );
 		}
 
 		if ( incoming instanceof PersistentAttributeInterceptable
@@ -443,13 +445,14 @@ public class DefaultMergeEventListener extends AbstractSaveEventListener impleme
 	}
 
 	private boolean existsInDatabase(Object entity, EventSource source, EntityPersister persister) {
-		EntityEntry entry = source.getPersistenceContext().getEntry( entity );
+		final PersistenceContext persistenceContext = source.getPersistenceContextInternal();
+		EntityEntry entry = persistenceContext.getEntry( entity );
 		if ( entry == null ) {
 			Serializable id = persister.getIdentifier( entity, source );
 			if ( id != null ) {
 				final EntityKey key = source.generateEntityKey( id, persister );
-				final Object managedEntity = source.getPersistenceContext().getEntity( key );
-				entry = source.getPersistenceContext().getEntry( managedEntity );
+				final Object managedEntity = persistenceContext.getEntity( key );
+				entry = persistenceContext.getEntry( managedEntity );
 			}
 		}
 
@@ -527,7 +530,8 @@ public class DefaultMergeEventListener extends AbstractSaveEventListener impleme
 			final Object entity,
 			final Map copyCache
 	) {
-		source.getPersistenceContext().incrementCascadeLevel();
+		final PersistenceContext persistenceContext = source.getPersistenceContextInternal();
+		persistenceContext.incrementCascadeLevel();
 		try {
 			Cascade.cascade(
 					getCascadeAction(),
@@ -539,7 +543,7 @@ public class DefaultMergeEventListener extends AbstractSaveEventListener impleme
 			);
 		}
 		finally {
-			source.getPersistenceContext().decrementCascadeLevel();
+			persistenceContext.decrementCascadeLevel();
 		}
 	}
 

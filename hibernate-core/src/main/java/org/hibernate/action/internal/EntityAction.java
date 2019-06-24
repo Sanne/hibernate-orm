@@ -100,7 +100,7 @@ public abstract class EntityAction
 	 */
 	public final Serializable getId() {
 		if ( id instanceof DelayedPostInsertIdentifier ) {
-			final Serializable eeId = session.getPersistenceContext().getEntry( instance ).getId();
+			final Serializable eeId = session.getPersistenceContextInternal().getEntry( instance ).getId();
 			return eeId instanceof DelayedPostInsertIdentifier ? null : eeId;
 		}
 		return id;

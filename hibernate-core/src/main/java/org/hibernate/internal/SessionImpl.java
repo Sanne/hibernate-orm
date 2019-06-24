@@ -2363,6 +2363,11 @@ public final class SessionImpl
 	}
 
 	@Override
+	public PersistenceContext getPersistenceContextInternal() {
+		return persistenceContext;
+	}
+
+	@Override
 	public SessionStatistics getStatistics() {
 		checkTransactionSynchStatus();
 		return new SessionStatisticsImpl( this );
@@ -3099,12 +3104,13 @@ public final class SessionImpl
 				return;
 			}
 
+			final PersistenceContext persistenceContext = getPersistenceContextInternal();
 			final boolean debugEnabled = log.isDebugEnabled();
-			for ( Serializable pk : getPersistenceContext().getNaturalIdHelper()
+			for ( Serializable pk : persistenceContext.getNaturalIdHelper()
 					.getCachedPkResolutions( entityPersister ) ) {
 				final EntityKey entityKey = generateEntityKey( pk, entityPersister );
-				final Object entity = getPersistenceContext().getEntity( entityKey );
-				final EntityEntry entry = getPersistenceContext().getEntry( entity );
+				final Object entity = persistenceContext.getEntity( entityKey );
+				final EntityEntry entry = persistenceContext.getEntry( entity );
 
 				if ( entry == null ) {
 					if ( debugEnabled ) {
@@ -3125,7 +3131,7 @@ public final class SessionImpl
 					continue;
 				}
 
-				getPersistenceContext().getNaturalIdHelper().handleSynchronization(
+				persistenceContext.getNaturalIdHelper().handleSynchronization(
 						entityPersister,
 						pk,
 						entity

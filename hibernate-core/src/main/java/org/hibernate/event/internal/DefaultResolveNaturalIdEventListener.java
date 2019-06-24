@@ -11,7 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.hibernate.HibernateException;
 import org.hibernate.cache.spi.access.NaturalIdDataAccess;
+import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.ResolveNaturalIdEvent;
 import org.hibernate.event.spi.ResolveNaturalIdEventListener;
 import org.hibernate.internal.CoreLogging;
@@ -94,7 +96,7 @@ public class DefaultResolveNaturalIdEventListener
 	 * @return The entity from the cache, or null.
 	 */
 	protected Serializable resolveFromCache(final ResolveNaturalIdEvent event) {
-		return event.getSession().getPersistenceContext().getNaturalIdHelper().findCachedNaturalIdResolution(
+		return event.getSession().getPersistenceContextInternal().getNaturalIdHelper().findCachedNaturalIdResolution(
 				event.getEntityPersister(),
 				event.getOrderedNaturalIdValues()
 		);
@@ -109,7 +111,8 @@ public class DefaultResolveNaturalIdEventListener
 	 * @return The object loaded from the datasource, or null if not found.
 	 */
 	protected Serializable loadFromDatasource(final ResolveNaturalIdEvent event) {
-		final SessionFactoryImplementor factory = event.getSession().getFactory();
+		final EventSource session = event.getSession();
+		final SessionFactoryImplementor factory = session.getFactory();
 		final boolean stats = factory.getStatistics().isStatisticsEnabled();
 		long startTime = 0;
 		if ( stats ) {
@@ -119,7 +122,7 @@ public class DefaultResolveNaturalIdEventListener
 		final Serializable pk = event.getEntityPersister().loadEntityIdByNaturalId(
 				event.getOrderedNaturalIdValues(),
 				event.getLockOptions(),
-				event.getSession()
+				session
 		);
 
 		if ( stats ) {
@@ -133,7 +136,8 @@ public class DefaultResolveNaturalIdEventListener
 
 		//PK can be null if the entity doesn't exist
 		if (pk != null) {
-			event.getSession().getPersistenceContext().getNaturalIdHelper().cacheNaturalIdCrossReferenceFromLoad(
+			final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
+			persistenceContext.getNaturalIdHelper().cacheNaturalIdCrossReferenceFromLoad(
 					event.getEntityPersister(),
 					pk,
 					event.getOrderedNaturalIdValues()
