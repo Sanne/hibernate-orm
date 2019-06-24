@@ -84,7 +84,6 @@ public class StatefulPersistenceContext implements PersistenceContext {
 			StatefulPersistenceContext.class.getName()
 	);
 
-	private static final boolean TRACE_ENABLED = LOG.isTraceEnabled();
 	private static final int INIT_COLL_SIZE = 8;
 
 	private SharedSessionContractImplementor session;
@@ -939,9 +938,7 @@ public class StatefulPersistenceContext implements PersistenceContext {
 	@Override
 	public void initializeNonLazyCollections() throws HibernateException {
 		if ( loadCounter == 0 ) {
-			if ( TRACE_ENABLED ) {
-				LOG.trace( "Initializing non-lazy collections" );
-			}
+			LOG.trace( "Initializing non-lazy collections" );
 
 			//do this work only at the very highest level of the load
 			//don't let this method be called recursively

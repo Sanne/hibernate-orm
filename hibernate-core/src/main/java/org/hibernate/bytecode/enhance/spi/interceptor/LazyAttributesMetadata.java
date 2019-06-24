@@ -36,8 +36,9 @@ public class LazyAttributesMetadata implements Serializable {
 			boolean isEnhanced,
 			boolean allowEnhancementAsProxy,
 			Function<String,Boolean> hasSubclassChecker) {
-		final Map<String, LazyAttributeDescriptor> lazyAttributeDescriptorMap = new LinkedHashMap<>();
-		final Map<String, Set<String>> fetchGroupToAttributesMap = new HashMap<>();
+		//Tune these maps towards fast read access, rather than size. These are long term anyway so it's a good use of memory.
+		final Map<String, LazyAttributeDescriptor> lazyAttributeDescriptorMap = new LinkedHashMap<>( 16, 0.5f );
+		final Map<String, Set<String>> fetchGroupToAttributesMap = new HashMap<>( 16, 0.5f );
 
 		int i = -1;
 		int x = 0;

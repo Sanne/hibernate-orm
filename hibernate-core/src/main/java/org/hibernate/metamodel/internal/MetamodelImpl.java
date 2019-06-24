@@ -84,15 +84,23 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 
 	private final SessionFactoryImplementor sessionFactory;
 
+	/**
+	 * Performance Note:
+	 * it is important to set a lower-than-usual loadFactor, as access times are very important, while memory
+	 * is less-so important as these objects are a "long term investment" and unique for the whole Hibernate ORM instance.
+	 * The initial capacity is harder to guess, but also far less important to get right; just putting some numbers
+	 * which should be reasonable.
+	 */
 	private final Map<String,String> imports = new ConcurrentHashMap<>();
-	private final Map<String,EntityPersister> entityPersisterMap = new ConcurrentHashMap<>();
-	private final Map<Class,String> entityProxyInterfaceMap = new ConcurrentHashMap<>();
-	private final Map<String,CollectionPersister> collectionPersisterMap = new ConcurrentHashMap<>();
-	private final Map<String,Set<String>> collectionRolesByEntityParticipant = new ConcurrentHashMap<>();
-	private final ConcurrentMap<EntityNameResolver,Object> entityNameResolvers = new ConcurrentHashMap<>();
+
+	private final Map<String,EntityPersister> entityPersisterMap = new ConcurrentHashMap<>( 40, 0.4f );
+	private final Map<Class,String> entityProxyInterfaceMap = new ConcurrentHashMap<>( 30, 0.4f );
+	private final Map<String,CollectionPersister> collectionPersisterMap = new ConcurrentHashMap<>( 40, 0.4f );
+	private final Map<String,Set<String>> collectionRolesByEntityParticipant = new ConcurrentHashMap<>( 10, 0.4f );
+	private final ConcurrentMap<EntityNameResolver,Object> entityNameResolvers = new ConcurrentHashMap<>( 40, 0.4f );
 
 
-	private final Map<Class<?>, EntityTypeImpl<?>> jpaEntityTypeMap = new ConcurrentHashMap<>();
+	private final Map<Class<?>, EntityTypeImpl<?>> jpaEntityTypeMap = new ConcurrentHashMap<>( 30, 0.4f );
 	/**
 	 * There can be multiple instances of an Embeddable type, each one being relative to its parent entity.
 	 */
@@ -105,15 +113,15 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 	 * A better approach would be if the parent class and attribute name would be included as well
 	 * when trying to locate the embeddable type.
 	 */
-	private final Map<Class<?>, EmbeddableTypeImpl<?>> jpaEmbeddableTypeMap = new ConcurrentHashMap<>();
-	private final Map<Class<?>, MappedSuperclassType<?>> jpaMappedSuperclassTypeMap = new ConcurrentHashMap<>();
-	private final Map<String, EntityTypeImpl<?>> jpaEntityTypesByEntityName = new ConcurrentHashMap<>();
+	private final Map<Class<?>, EmbeddableTypeImpl<?>> jpaEmbeddableTypeMap = new ConcurrentHashMap<>( 30, 0.4f );
+	private final Map<Class<?>, MappedSuperclassType<?>> jpaMappedSuperclassTypeMap = new ConcurrentHashMap<>( 30, 0.4f );
+	private final Map<String, EntityTypeImpl<?>> jpaEntityTypesByEntityName = new ConcurrentHashMap<>( 30, 0.4f );
 
-	private final transient Map<String,EntityGraph> entityGraphMap = new ConcurrentHashMap<>();
+	private final transient Map<String,EntityGraph> entityGraphMap = new ConcurrentHashMap<>( 30, 0.4f );
 
 	private final TypeConfiguration typeConfiguration;
 
-	private final Map<String, String[]> implementorsCache = new ConcurrentHashMap<>();
+	private final Map<String, String[]> implementorsCache = new ConcurrentHashMap<>( 30, 0.4f );
 
 	public MetamodelImpl(SessionFactoryImplementor sessionFactory, TypeConfiguration typeConfiguration) {
 		this.sessionFactory = sessionFactory;
