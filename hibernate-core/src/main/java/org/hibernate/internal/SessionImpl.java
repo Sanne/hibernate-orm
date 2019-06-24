@@ -1153,7 +1153,7 @@ public final class SessionImpl
 		loadEvent = null;
 		event = recycleEventInstance( event, id, entityName );
 		event.setShouldUnwrapProxy( unwrapProxy );
-		fireLoad( event, type );
+		fireLoadNoChecks( event, type );
 		Object result = event.getResult();
 		if ( !nullable ) {
 			UnresolvableObjectException.throwIfNull( result, id, entityName );}
@@ -1270,10 +1270,14 @@ public final class SessionImpl
 	private void fireLoad(LoadEvent event, LoadType loadType) {
 		checkOpenOrWaitingForAutoClose();
 		checkTransactionSynchStatus();
+		fireLoadNoChecks( event, loadType );
+		delayedAfterCompletion();
+	}
+
+	private void fireLoadNoChecks(LoadEvent event, LoadType loadType) {
 		for ( LoadEventListener listener : listeners( EventType.LOAD ) ) {
 			listener.onLoad( event, loadType );
 		}
-		delayedAfterCompletion();
 	}
 
 	private void fireResolveNaturalId(ResolveNaturalIdEvent event) {
