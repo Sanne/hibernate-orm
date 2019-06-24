@@ -92,12 +92,13 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 	}
 
 	protected EntityPersister getPersister( final LoadEvent event ) {
-		if ( event.getInstanceToLoad() != null ) {
+		final Object instanceToLoad = event.getInstanceToLoad();
+		if ( instanceToLoad != null ) {
 			//the load() which takes an entity does not pass an entityName
-			event.setEntityClassName( event.getInstanceToLoad().getClass().getName() );
+			event.setEntityClassName( instanceToLoad.getClass().getName() );
 			return event.getSession().getEntityPersister(
 					null,
-					event.getInstanceToLoad()
+				instanceToLoad
 			);
 		}
 		else {
