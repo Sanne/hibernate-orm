@@ -540,14 +540,16 @@ public abstract class AbstractEntityTuplizer implements EntityTuplizer {
 		final LazyAttributesMetadata lazyAttributesMetadata = enhancementMetadata.getLazyAttributesMetadata();
 
 		final int span = entityMetamodel.getPropertySpan();
+		final String[] propertyNames = entityMetamodel.getPropertyNames();
 		final Object[] result = new Object[span];
 
 		for ( int j = 0; j < span; j++ ) {
+			final String propertyName = propertyNames[j];
 			// if the attribute is not lazy (bytecode sense), we can just use the value from the instance
 			// if the attribute is lazy but has been initialized we can just use the value from the instance
 			// todo : there should be a third case here when we merge transient instances
-			if ( ! lazyAttributesMetadata.isLazyAttribute( entityMetamodel.getPropertyNames()[j] )
-					|| enhancementMetadata.isAttributeLoaded( entity, entityMetamodel.getPropertyNames()[j] ) ) {
+			if ( ! lazyAttributesMetadata.isLazyAttribute( propertyName )
+					|| enhancementMetadata.isAttributeLoaded( entity, propertyName) ) {
 				result[j] = getters[j].get( entity );
 			}
 			else {
