@@ -80,8 +80,11 @@ class EventListenerGroupImpl<T> implements EventListenerGroup<T> {
 		duplicationStrategies.add( strategy );
 	}
 
-	public Iterable<T> listeners() {
-		return listeners == null ? Collections.emptyList() : listeners;
+	/**
+	 * Implementation note: should be final for performance reasons.
+	 */
+	public final Iterable<T> listeners() {
+		return listeners == null ? Collections.EMPTY_LIST : listeners;
 	}
 
 	@Override
