@@ -15,6 +15,7 @@ import org.hibernate.SessionException;
 import org.hibernate.TransientObjectException;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.engine.spi.EntityKey;
+import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.CoreLogging;
@@ -369,8 +370,9 @@ public abstract class AbstractLazyInitializer implements LazyInitializer {
 			this.readOnly = readOnly;
 			if ( initialized ) {
 				EntityKey key = generateEntityKeyOrNull( getIdentifier(), session, getEntityName() );
-				if ( key != null && session.getPersistenceContext().containsEntity( key ) ) {
-					session.getPersistenceContext().setReadOnly( target, readOnly );
+				final PersistenceContext persistenceContext = session.getPersistenceContext();
+				if ( key != null && persistenceContext.containsEntity( key ) ) {
+					persistenceContext.setReadOnly( target, readOnly );
 				}
 			}
 		}

@@ -45,6 +45,7 @@ import org.hibernate.pretty.MessageHelper;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.stat.internal.StatsHelper;
+import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.type.EmbeddedComponentType;
 import org.hibernate.type.EntityType;
 import org.hibernate.type.Type;
@@ -201,18 +202,19 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			final EntityKey keyToLoad,
 			final LoadEventListener.LoadType options) {
 
+		final EventSource session = event.getSession();
 		if ( event.getInstanceToLoad() != null ) {
-			if ( event.getSession().getPersistenceContext().getEntry( event.getInstanceToLoad() ) != null ) {
+			if ( session.getPersistenceContextInternal().getEntry( event.getInstanceToLoad() ) != null ) {
 				throw new PersistentObjectException(
 						"attempted to load into an instance that was already associated with the session: " +
 								MessageHelper.infoString(
 										persister,
 										event.getEntityId(),
-										event.getSession().getFactory()
+										session.getFactory()
 								)
 				);
 			}
-			persister.setIdentifier( event.getInstanceToLoad(), event.getEntityId(), event.getSession() );
+			persister.setIdentifier( event.getInstanceToLoad(), event.getEntityId(), session);
 		}
 
 		final Object entity = doLoad( event, persister, keyToLoad, options );
@@ -220,7 +222,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 		boolean isOptionalInstance = event.getInstanceToLoad() != null;
 
 		if ( entity == null && ( !options.isAllowNulls() || isOptionalInstance ) ) {
-			event.getSession()
+			session
 					.getFactory()
 					.getEntityNotFoundDelegate()
 					.handleEntityNotFound( event.getEntityClassName(), event.getEntityId() );
@@ -256,21 +258,22 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			);
 		}
 
-		final PersistenceContext persistenceContext = event.getSession().getPersistenceContext();
+		final PersistenceContext persistenceContext = event.getSession().getPersistenceContextInternal();
 
 		final boolean allowBytecodeProxy = event.getSession()
 				.getFactory()
 				.getSessionFactoryOptions()
 				.isEnhancementAsProxyEnabled();
 
-		final boolean entityHasHibernateProxyFactory = persister.getEntityMetamodel()
+		final EntityMetamodel entityMetamodel = persister.getEntityMetamodel();
+		final boolean entityHasHibernateProxyFactory = entityMetamodel
 				.getTuplizer()
 				.getProxyFactory() != null;
 
 		// Check for the case where we can use the entity itself as a proxy
 		if ( options.isAllowProxyCreation()
 				&& allowBytecodeProxy
-				&& persister.getEntityMetamodel().getBytecodeEnhancementMetadata().isEnhancedForLazyLoading() ) {
+				&& entityMetamodel.getBytecodeEnhancementMetadata().isEnhancedForLazyLoading() ) {
 			// if there is already a managed entity instance associated with the PC, return it
 			final Object managed = persistenceContext.getEntity( keyToLoad );
 			if ( managed != null ) {
@@ -303,7 +306,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 				}
 
 				// specialized handling for entities with subclasses with a HibernateProxy factory
-				if ( persister.getEntityMetamodel().hasSubclasses() ) {
+				if ( entityMetamodel.hasSubclasses() ) {
 					// entities with subclasses that define a ProxyFactory can create
 					// a HibernateProxy so long as NO_PROXY was not specified.
 					if ( event.getShouldUnwrapProxy() != null && event.getShouldUnwrapProxy() ) {
@@ -333,7 +336,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 					true
 			);
 
-			persister.getEntityMetamodel()
+			entityMetamodel
 					.getBytecodeEnhancementMetadata()
 					.injectEnhancedEntityAsProxyInterceptor( entity, keyToLoad, event.getSession() );
 
@@ -498,7 +501,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			}
 		}
 
-		return event.getSession().getPersistenceContext().proxyFor( persister, keyToLoad, entity );
+		return event.getSession().getPersistenceContextInternal().proxyFor( persister, keyToLoad, entity );
 	}
 
 
@@ -521,10 +524,11 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			final EntityKey keyToLoad,
 			final LoadEventListener.LoadType options) {
 
+		final EventSource session = event.getSession();
 		if ( traceEnabled ) {
 			LOG.tracev(
 					"Attempting to resolve: {0}",
-					MessageHelper.infoString( persister, event.getEntityId(), event.getSession().getFactory() )
+					MessageHelper.infoString( persister, event.getEntityId(), session.getFactory() )
 			);
 		}
 
@@ -543,7 +547,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			if ( traceEnabled ) {
 				LOG.tracev(
 						"Resolved object in session cache: {0}",
-						MessageHelper.infoString( persister, event.getEntityId(), event.getSession().getFactory() )
+						MessageHelper.infoString( persister, event.getEntityId(), session.getFactory() )
 				);
 			}
 			return entity;
@@ -554,7 +558,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			if ( traceEnabled ) {
 				LOG.tracev(
 						"Resolved object in second-level cache: {0}",
-						MessageHelper.infoString( persister, event.getEntityId(), event.getSession().getFactory() )
+						MessageHelper.infoString( persister, event.getEntityId(), session.getFactory() )
 				);
 			}
 		}
@@ -562,17 +566,18 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			if ( traceEnabled ) {
 				LOG.tracev(
 						"Object not resolved in any cache: {0}",
-						MessageHelper.infoString( persister, event.getEntityId(), event.getSession().getFactory() )
+						MessageHelper.infoString( persister, event.getEntityId(), session.getFactory() )
 				);
 			}
 			entity = loadFromDatasource( event, persister );
 		}
 
 		if ( entity != null && persister.hasNaturalIdentifier() ) {
-			event.getSession().getPersistenceContext().getNaturalIdHelper().cacheNaturalIdCrossReferenceFromLoad(
+			final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
+			persistenceContext.getNaturalIdHelper().cacheNaturalIdCrossReferenceFromLoad(
 					persister,
 					event.getEntityId(),
-					event.getSession().getPersistenceContext().getNaturalIdHelper().extractNaturalIdValues(
+					persistenceContext.getNaturalIdHelper().extractNaturalIdValues(
 							entity,
 							persister
 					)
@@ -634,12 +639,12 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 			final EntityKey keyToLoad,
 			final LoadEventListener.LoadType options) throws HibernateException {
 
-		SessionImplementor session = event.getSession();
+		EventSource session = event.getSession();
 		Object old = session.getEntityUsingInterceptor( keyToLoad );
 
 		if ( old != null ) {
 			// this object was already loaded
-			EntityEntry oldEntry = session.getPersistenceContext().getEntry( old );
+			EntityEntry oldEntry = session.getPersistenceContextInternal().getEntry( old );
 			if ( options.isCheckDeleted() ) {
 				Status status = oldEntry.getStatus();
 				if ( status == Status.DELETED || status == Status.GONE ) {
@@ -647,14 +652,14 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 				}
 			}
 			if ( options.isAllowNulls() ) {
-				final EntityPersister persister = event.getSession()
+				final EntityPersister persister = session
 						.getFactory()
 						.getEntityPersister( keyToLoad.getEntityName() );
 				if ( !persister.isInstance( old ) ) {
 					return INCONSISTENT_RTN_CLASS_MARKER;
 				}
 			}
-			upgradeLock( old, oldEntry, event.getLockOptions(), event.getSession() );
+			upgradeLock( old, oldEntry, event.getLockOptions(), session );
 		}
 
 		return old;
@@ -779,7 +784,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 												EntityKey entityKey) {
 
 		// make it circular-reference safe
-		final StatefulPersistenceContext statefulPersistenceContext = (StatefulPersistenceContext) session.getPersistenceContext();
+		final StatefulPersistenceContext statefulPersistenceContext = (StatefulPersistenceContext) session.getPersistenceContextInternal();
 
 		if ( (entity instanceof ManagedEntity) ) {
 			statefulPersistenceContext.addReferenceEntry(
@@ -837,7 +842,7 @@ public class DefaultLoadEventListener extends AbstractLockUpgradeEventListener i
 				session
 		);
 
-		final PersistenceContext persistenceContext = session.getPersistenceContext();
+		final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
 		final Object[] values;
 		final Object version;
 		final boolean isReadOnly;

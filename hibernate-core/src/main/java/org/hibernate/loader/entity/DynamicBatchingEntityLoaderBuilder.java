@@ -91,16 +91,17 @@ public class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuil
 		final List<Serializable> idsInBatch = new ArrayList<>();
 		final List<Integer> elementPositionsLoadedByBatch = new ArrayList<>();
 
-		for ( int i = 0; i < ids.length; i++ ) {
+		final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
+		for (int i = 0; i < ids.length; i++ ) {
 			final Serializable id = ids[i];
 			final EntityKey entityKey = new EntityKey( id, persister );
 
 			if ( loadOptions.isSessionCheckingEnabled() ) {
 				// look for it in the Session first
-				final Object managedEntity = session.getPersistenceContext().getEntity( entityKey );
+				final Object managedEntity = persistenceContext.getEntity( entityKey );
 				if ( managedEntity != null ) {
 					if ( !loadOptions.isReturnOfDeletedEntitiesEnabled() ) {
-						final EntityEntry entry = session.getPersistenceContext().getEntry( managedEntity );
+						final EntityEntry entry = persistenceContext.getEntry( managedEntity );
 						if ( entry.getStatus() == Status.DELETED || entry.getStatus() == Status.GONE ) {
 							// put a null in the result
 							result.add( i, null );
@@ -135,10 +136,10 @@ public class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuil
 			// the element value at this position in the result List should be
 			// the EntityKey for that entity; reuse it!
 			final EntityKey entityKey = (EntityKey) result.get( position );
-			Object entity = session.getPersistenceContext().getEntity( entityKey );
+			Object entity = persistenceContext.getEntity( entityKey );
 			if ( entity != null && !loadOptions.isReturnOfDeletedEntitiesEnabled() ) {
 				// make sure it is not DELETED
-				final EntityEntry entry = session.getPersistenceContext().getEntry( entity );
+				final EntityEntry entry = persistenceContext.getEntry( entity );
 				if ( entry.getStatus() == Status.DELETED || entry.getStatus() == Status.GONE ) {
 					// the entity is locally deleted, and the options ask that we not return such entities...
 					entity = null;
@@ -192,10 +193,11 @@ public class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuil
 			final List<Serializable> nonManagedIds = new ArrayList<Serializable>();
 			for ( Serializable id : ids ) {
 				final EntityKey entityKey = new EntityKey( id, persister );
-				final Object managedEntity = session.getPersistenceContext().getEntity( entityKey );
+				final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
+				final Object managedEntity = persistenceContext.getEntity( entityKey );
 				if ( managedEntity != null ) {
 					if ( !loadOptions.isReturnOfDeletedEntitiesEnabled() ) {
-						final EntityEntry entry = session.getPersistenceContext().getEntry( managedEntity );
+						final EntityEntry entry = persistenceContext.getEntry( managedEntity );
 						if ( entry.getStatus() == Status.DELETED || entry.getStatus() == Status.GONE ) {
 							continue;
 						}
@@ -339,7 +341,7 @@ public class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuil
 				Object optionalObject,
 				SharedSessionContractImplementor session,
 				LockOptions lockOptions) {
-			final Serializable[] batch = session.getPersistenceContext()
+			final Serializable[] batch = session.getPersistenceContextInternal()
 					.getBatchFetchQueue()
 					.getEntityBatch( persister(), id, maxBatchSize, persister().getEntityMode() );
 
@@ -452,7 +454,7 @@ public class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuil
 			);
 
 			try {
-				final PersistenceContext persistenceContext = session.getPersistenceContext();
+				final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
 				boolean defaultReadOnlyOrig = persistenceContext.isDefaultReadOnly();
 				if ( queryParameters.isReadOnlyInitialized() ) {
 					// The read-only/modifiable mode for the query was explicitly set.

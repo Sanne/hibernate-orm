@@ -489,4 +489,6 @@ public interface SharedSessionContractImplementor
 			) :
 			sessionJdbcBatchSize;
 	}
+
+	PersistenceContext getPersistenceContextInternal();
 }
