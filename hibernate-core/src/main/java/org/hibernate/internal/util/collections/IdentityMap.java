@@ -19,10 +19,10 @@ import java.util.Set;
  * rather than <tt>equals()</tt>.
  */
 public final class IdentityMap<K,V> implements Map<K,V> {
+
 	private final Map<IdentityKey<K>,V> map;
 	@SuppressWarnings( {"unchecked"})
-	private transient Entry<IdentityKey<K>,V>[] entryArray = new Entry[0];
-	private transient boolean dirty;
+	private transient Entry<IdentityKey<K>,V>[] entryArray = null;
 
 	/**
 	 * Return a new instance of this class, with iteration
@@ -42,7 +42,6 @@ public final class IdentityMap<K,V> implements Map<K,V> {
 	 */
 	private IdentityMap(Map<IdentityKey<K>,V> underlyingMap) {
 		map = underlyingMap;
-		dirty = true;
 	}
 
 	/**
@@ -79,25 +78,25 @@ public final class IdentityMap<K,V> implements Map<K,V> {
 
 	@Override
 	public boolean containsValue(Object val) {
-		return map.containsValue(val);
+		return map.containsValue( val );
 	}
 
 	@Override
 	@SuppressWarnings( {"unchecked"})
 	public V get(Object key) {
-		return map.get( new IdentityKey(key) );
+		return map.get( new IdentityKey( key ) );
 	}
 
 	@Override
 	public V put(K key, V value) {
-		dirty = true;
+		this.entryArray = null;
 		return map.put( new IdentityKey<K>( key ), value );
 	}
 
 	@Override
 	@SuppressWarnings( {"unchecked"})
 	public V remove(Object key) {
-		dirty = true;
+		this.entryArray = null;
 		return map.remove( new IdentityKey( key ) );
 	}
 
@@ -110,7 +109,6 @@ public final class IdentityMap<K,V> implements Map<K,V> {
 
 	@Override
 	public void clear() {
-		dirty = true;
 		entryArray = null;
 		map.clear();
 	}
@@ -137,15 +135,14 @@ public final class IdentityMap<K,V> implements Map<K,V> {
 
 	@SuppressWarnings( {"unchecked"})
 	public Map.Entry[] entryArray() {
-		if (dirty) {
+		if ( entryArray == null ) {
 			entryArray = new Map.Entry[ map.size() ];
-			Iterator itr = map.entrySet().iterator();
-			int i=0;
+			final Iterator<Entry<IdentityKey<K>, V>> itr = map.entrySet().iterator();
+			int i = 0;
 			while ( itr.hasNext() ) {
-				Map.Entry me = (Map.Entry) itr.next();
-				entryArray[i++] = new IdentityMapEntry( ( (IdentityKey) me.getKey() ).key, me.getValue() );
+				final Entry<IdentityKey<K>, V> me = itr.next();
+				entryArray[i++] = new IdentityMapEntry( me.getKey().key, me.getValue() );
 			}
-			dirty = false;
 		}
 		return entryArray;
 	}
@@ -175,9 +172,10 @@ public final class IdentityMap<K,V> implements Map<K,V> {
 		}
 
 	}
-		public static final class IdentityMapEntry<K,V> implements java.util.Map.Entry<K,V> {
+
+	public static final class IdentityMapEntry<K,V> implements java.util.Map.Entry<K,V> {
 		private final K key;
-		private V value;
+		private final V value;
 
 		IdentityMapEntry(final K key, final V value) {
 			this.key=key;
@@ -193,9 +191,7 @@ public final class IdentityMap<K,V> implements Map<K,V> {
 		}
 
 		public V setValue(final V value) {
-			V result = this.value;
-			this.value = value;
-			return result;
+			throw new UnsupportedOperationException();
 		}
 	}
 
