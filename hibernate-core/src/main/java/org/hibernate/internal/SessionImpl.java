@@ -74,7 +74,6 @@ import org.hibernate.engine.internal.StatefulPersistenceContext;
 import org.hibernate.engine.jdbc.LobCreator;
 import org.hibernate.engine.jdbc.NonContextualLobCreator;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
-import org.hibernate.engine.query.spi.HQLQueryPlan;
 import org.hibernate.engine.query.spi.NativeSQLQueryPlan;
 import org.hibernate.engine.query.spi.sql.NativeSQLQuerySpecification;
 import org.hibernate.engine.spi.ActionQueue;
@@ -83,6 +82,7 @@ import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.EntityKey;
 import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.PersistenceContext;
+import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -136,8 +136,6 @@ import org.hibernate.jpa.internal.util.ConfigurationHelper;
 import org.hibernate.jpa.internal.util.FlushModeTypeHelper;
 import org.hibernate.jpa.internal.util.LockModeTypeHelper;
 import org.hibernate.jpa.internal.util.LockOptionsHelper;
-import org.hibernate.jpa.spi.CriteriaQueryTupleTransformer;
-import org.hibernate.jpa.spi.HibernateEntityManagerImplementor;
 import org.hibernate.loader.custom.CustomLoader;
 import org.hibernate.loader.custom.CustomQuery;
 import org.hibernate.metamodel.spi.MetamodelImplementor;
@@ -148,7 +146,6 @@ import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.procedure.spi.NamedCallableQueryMemento;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
-import org.hibernate.query.ImmutableEntityUpdateQueryHandlingMode;
 import org.hibernate.query.Query;
 import org.hibernate.query.UnknownSqlResultSetMappingException;
 import org.hibernate.query.spi.QueryImplementor;
@@ -159,9 +156,6 @@ import org.hibernate.query.sqm.tree.delete.SqmDeleteStatement;
 import org.hibernate.query.sqm.tree.update.SqmUpdateStatement;
 import org.hibernate.resource.transaction.TransactionRequiredForJoinException;
 import org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorImpl;
-import org.hibernate.resource.transaction.backend.jta.internal.synchronization.AfterCompletionAction;
-import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ExceptionMapper;
-import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ManagedFlushChecker;
 import org.hibernate.resource.transaction.spi.TransactionCoordinator;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.stat.SessionStatistics;
@@ -192,7 +186,7 @@ import static org.hibernate.cfg.AvailableSettings.JPA_SHARED_CACHE_STORE_MODE;
  */
 public final class SessionImpl
 		extends AbstractSessionImpl
-		implements EventSource, SessionImplementor, HibernateEntityManagerImplementor {
+		implements SessionImplementor, EventSource {
 	private static final EntityManagerMessageLogger log = HEMLogging.messageLogger( SessionImpl.class );
 
 	// Defaults to null which means the properties are the default - as defined in FastSessionServices#defaultSessionProperties
@@ -998,17 +992,7 @@ public final class SessionImpl
 			Serializable id,
 			boolean eager,
 			boolean nullable) throws HibernateException {
-		return internalLoad( entityName, id, eager, nullable, null );
 
-	}
-
-	@Override
-	public final Object internalLoad(
-			String entityName,
-			Serializable id,
-			boolean eager,
-			boolean nullable,
-			Boolean unwrapProxy) {
 		final EffectiveEntityGraph effectiveEntityGraph = getLoadQueryInfluencers().getEffectiveEntityGraph();
 		final GraphSemantic semantic = effectiveEntityGraph.getSemantic();
 		final RootGraphImplementor<?> graph = effectiveEntityGraph.getGraph();
@@ -1034,18 +1018,15 @@ public final class SessionImpl
 
 			LoadEvent event = loadEvent;
 			loadEvent = null;
-
 			event = recycleEventInstance( event, id, entityName );
 			event.setShouldUnwrapProxy( unwrapProxy );
 
 			fireLoadNoChecks( event, type );
 
 			Object result = event.getResult();
-
 			if ( !nullable ) {
 				UnresolvableObjectException.throwIfNull( result, id, entityName );
 			}
-
 			if ( loadEvent == null ) {
 				event.setEntityClassName( null );
 				event.setEntityId( null );
@@ -1383,101 +1364,6 @@ public final class SessionImpl
 		checkOpenOrWaitingForAutoClose();
 		doFlush();
 	}
-
-	@Override
-	public int executeUpdate(String query, QueryParameters queryParameters) throws HibernateException {
-		checkOpenOrWaitingForAutoClose();
-		pulseTransactionCoordinator();
-		queryParameters.validateParameters();
-		HQLQueryPlan plan = getQueryPlan( query, false );
-		autoFlushIfRequired( plan.getQuerySpaces() );
-
-		verifyImmutableEntityUpdate( plan );
-
-		boolean success = false;
-		int result = 0;
-		try {
-			result = plan.performExecuteUpdate( queryParameters, this );
-			success = true;
-		}
-		finally {
-			afterOperation( success );
-			delayedAfterCompletion();
-		}
-		return result;
-	}
-
-	private void verifyImmutableEntityUpdate(HQLQueryPlan plan) {
-		if ( plan.isUpdate() ) {
-			List<String> primaryFromClauseTables = new ArrayList<>();
-			for ( QueryTranslator queryTranslator : plan.getTranslators() ) {
-				primaryFromClauseTables.addAll( queryTranslator.getPrimaryFromClauseTables() );
-			}
-			for ( EntityPersister entityPersister : getSessionFactory().getMetamodel().entityPersisters().values() ) {
-				if ( !entityPersister.isMutable() ) {
-					List<Serializable> entityQuerySpaces = new ArrayList<>(
-							Arrays.asList( entityPersister.getQuerySpaces() )
-					);
-					boolean matching = false;
-					for ( Serializable entityQuerySpace : entityQuerySpaces ) {
-						if ( primaryFromClauseTables.contains( entityQuerySpace ) ) {
-							matching = true;
-							break;
-						}
-					}
-
-					if ( matching ) {
-						ImmutableEntityUpdateQueryHandlingMode immutableEntityUpdateQueryHandlingMode = getSessionFactory()
-								.getSessionFactoryOptions()
-								.getImmutableEntityUpdateQueryHandlingMode();
-
-						String querySpaces = Arrays.toString( entityQuerySpaces.toArray() );
-
-						switch ( immutableEntityUpdateQueryHandlingMode ) {
-							case WARNING:
-								log.immutableEntityUpdateQuery( plan.getSourceQuery(), querySpaces );
-								break;
-							case EXCEPTION:
-								throw new HibernateException(
-										"The query: [" + plan.getSourceQuery() + "] attempts to update an immutable entity: " + querySpaces
-								);
-							default:
-								throw new UnsupportedOperationException(
-										"The " + immutableEntityUpdateQueryHandlingMode + " is not supported!"
-								);
-
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@Override
-	public int executeNativeUpdate(
-			NativeSQLQuerySpecification nativeQuerySpecification,
-			QueryParameters queryParameters) throws HibernateException {
-		checkOpenOrWaitingForAutoClose();
-		pulseTransactionCoordinator();
-		queryParameters.validateParameters();
-		NativeSQLQueryPlan plan = getNativeQueryPlan( nativeQuerySpecification );
-
-
-		autoFlushIfRequired( plan.getCustomQuery().getQuerySpaces() );
-
-		boolean success = false;
-		int result = 0;
-		try {
-			result = plan.performExecuteUpdate( queryParameters, this );
-			success = true;
-		}
-		finally {
-			afterOperation( success );
-			delayedAfterCompletion();
-		}
-		return result;
-	}
-
 
 	@Override
 	public Object instantiate(String entityName, Serializable id) throws HibernateException {

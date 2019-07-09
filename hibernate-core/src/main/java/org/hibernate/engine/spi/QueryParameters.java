@@ -7,23 +7,17 @@
 package org.hibernate.engine.spi;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.QueryException;
 import org.hibernate.ScrollMode;
-import org.hibernate.engine.query.spi.HQLQueryPlan;
-
 import org.hibernate.internal.CoreLogging;
-import org.hibernate.internal.FilterImpl;
 import org.hibernate.internal.util.EntityPrinter;
 import org.hibernate.internal.util.collections.ArrayHelper;
+import org.hibernate.query.spi.QueryOptions;
 import org.hibernate.query.spi.QueryParameterBindings;
 import org.hibernate.transform.ResultTransformer;
 import org.hibernate.type.ComponentType;
@@ -64,8 +58,6 @@ public final class QueryParameters {
 	private String processedSQL;
 	private Type[] processedPositionalParameterTypes;
 	private Object[] processedPositionalParameterValues;
-
-	private HQLQueryPlan queryPlan;
 
 	public QueryParameters() {
 		this( ArrayHelper.EMPTY_TYPE_ARRAY, ArrayHelper.EMPTY_OBJECT_ARRAY );
@@ -226,13 +218,7 @@ public final class QueryParameters {
 	public QueryParameters(
 			QueryParameterBindings queryParameterBindings,
 			LockOptions lockOptions,
-			RowSelection selection,
-			final boolean isReadOnlyInitialized,
-			boolean readOnly,
-			boolean cacheable,
-			String cacheRegion,
-			String comment,
-			List<String> dbHints,
+			QueryOptions queryOptions,
 			final Serializable[] collectionKeys,
 			final Object optionalObject,
 			final String optionalEntityName,
@@ -243,13 +229,18 @@ public final class QueryParameters {
 				null,
 				null,
 				lockOptions,
-				selection,
-				isReadOnlyInitialized,
-				readOnly,
-				cacheable,
-				cacheRegion,
-				comment,
-				dbHints,
+				new RowSelection(
+						queryOptions.getFirstRow(),
+						queryOptions.getMaxRows(),
+						queryOptions.getTimeout(),
+						queryOptions.getFetchSize()
+				),
+				queryOptions.isReadOnly() != null,
+				queryOptions.isReadOnly(),
+				queryOptions.isResultCachingEnabled(),
+				queryOptions.getResultCacheRegionName(),
+				queryOptions.getComment(),
+				queryOptions.getDatabaseHints(),
 				collectionKeys,
 				optionalObject,
 				optionalEntityName,
@@ -649,14 +640,6 @@ public final class QueryParameters {
 		copy.processedPositionalParameterValues = this.processedPositionalParameterValues;
 		copy.passDistinctThrough = this.passDistinctThrough;
 		return copy;
-	}
-
-	public HQLQueryPlan getQueryPlan() {
-		return queryPlan;
-	}
-
-	public void setQueryPlan(HQLQueryPlan queryPlan) {
-		this.queryPlan = queryPlan;
 	}
 
 	public void bindDynamicParameter(Type paramType, Object paramValue) {
