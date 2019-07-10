@@ -55,6 +55,7 @@ import org.hibernate.LockOptions;
 import org.hibernate.MappingException;
 import org.hibernate.MultiIdentifierLoadAccess;
 import org.hibernate.NaturalIdLoadAccess;
+import org.hibernate.NotYetImplementedFor6Exception;
 import org.hibernate.ObjectDeletedException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.ReplicationMode;
@@ -146,6 +147,7 @@ import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.procedure.spi.NamedCallableQueryMemento;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
+import org.hibernate.query.ImmutableEntityUpdateQueryHandlingMode;
 import org.hibernate.query.Query;
 import org.hibernate.query.UnknownSqlResultSetMappingException;
 import org.hibernate.query.spi.QueryImplementor;
@@ -156,6 +158,9 @@ import org.hibernate.query.sqm.tree.delete.SqmDeleteStatement;
 import org.hibernate.query.sqm.tree.update.SqmUpdateStatement;
 import org.hibernate.resource.transaction.TransactionRequiredForJoinException;
 import org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorImpl;
+import org.hibernate.resource.transaction.backend.jta.internal.synchronization.AfterCompletionAction;
+import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ExceptionMapper;
+import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ManagedFlushChecker;
 import org.hibernate.resource.transaction.spi.TransactionCoordinator;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.stat.SessionStatistics;
@@ -1598,53 +1603,57 @@ public final class SessionImpl
 
 	@Override
 	public ScrollableResultsImplementor scrollCustomQuery(CustomQuery customQuery, QueryParameters queryParameters) {
-		checkOpenOrWaitingForAutoClose();
-//		checkTransactionSynchStatus();
+		throw new NotYetImplementedFor6Exception( getClass() );
 
-		if ( log.isTraceEnabled() ) {
-			log.tracev( "Scroll SQL query: {0}", customQuery.getSQL() );
-		}
-
-		CustomLoader loader = getFactory().getQueryInterpretationCache().getNativeQueryInterpreter().createCustomLoader( customQuery, getFactory() );
-
-		autoFlushIfRequired( loader.getQuerySpaces() );
-
-		dontFlushFromFind++; //stops flush being called multiple times if this method is recursively called
-		try {
-			return loader.scroll( queryParameters, this );
-		}
-		finally {
-			delayedAfterCompletion();
-			dontFlushFromFind--;
-		}
+//		checkOpenOrWaitingForAutoClose();
+////		checkTransactionSynchStatus();
+//
+//		if ( log.isTraceEnabled() ) {
+//			log.tracev( "Scroll SQL query: {0}", customQuery.getSQL() );
+//		}
+//
+//		CustomLoader loader = getFactory().getQueryPlanCache().getNativeQueryInterpreter().createCustomLoader( customQuery, getFactory() );
+//
+//		autoFlushIfRequired( loader.getQuerySpaces() );
+//
+//		dontFlushFromFind++; //stops flush being called multiple times if this method is recursively called
+//		try {
+//			return loader.scroll( queryParameters, this );
+//		}
+//		finally {
+//			delayedAfterCompletion();
+//			dontFlushFromFind--;
+//		}
 	}
 
 	// basically just an adapted copy of find(CriteriaImpl)
 	@Override
 	public List listCustomQuery(CustomQuery customQuery, QueryParameters queryParameters) {
-		checkOpenOrWaitingForAutoClose();
-//		checkTransactionSynchStatus();
+		throw new NotYetImplementedFor6Exception( getClass() );
 
-		if ( log.isTraceEnabled() ) {
-			log.tracev( "SQL query: {0}", customQuery.getSQL() );
-		}
-
-		CustomLoader loader = getFactory().getQueryInterpretationCache().getNativeQueryInterpreter().createCustomLoader( customQuery, getFactory() );
-
-		autoFlushIfRequired( loader.getQuerySpaces() );
-
-		dontFlushFromFind++;
-		boolean success = false;
-		try {
-			List results = loader.list( this, queryParameters );
-			success = true;
-			return results;
-		}
-		finally {
-			dontFlushFromFind--;
-			delayedAfterCompletion();
-			afterOperation( success );
-		}
+//		checkOpenOrWaitingForAutoClose();
+////		checkTransactionSynchStatus();
+//
+//		if ( log.isTraceEnabled() ) {
+//			log.tracev( "SQL query: {0}", customQuery.getSQL() );
+//		}
+//
+//		CustomLoader loader = getFactory().getQueryPlanCache().getNativeQueryInterpreter().createCustomLoader( customQuery, getFactory() );
+//
+//		autoFlushIfRequired( loader.getQuerySpaces() );
+//
+//		dontFlushFromFind++;
+//		boolean success = false;
+//		try {
+//			List results = loader.list( this, queryParameters );
+//			success = true;
+//			return results;
+//		}
+//		finally {
+//			dontFlushFromFind--;
+//			delayedAfterCompletion();
+//			afterOperation( success );
+//		}
 	}
 
 	@Override
@@ -2769,18 +2778,18 @@ public final class SessionImpl
 	// HibernateEntityManagerImplementor impl
 
 
-	@Override
-	public LockOptions getLockRequest(LockModeType lockModeType, Map<String, Object> properties) {
-		LockOptions lockOptions = new LockOptions();
-		if ( this.lockOptions != null ) { //otherwise the default LockOptions constructor is the same as DEFAULT_LOCK_OPTIONS
-			LockOptions.copy( this.lockOptions, lockOptions );
-		}
-		lockOptions.setLockMode( LockModeTypeHelper.getLockMode( lockModeType ) );
-		if ( properties != null ) {
-			LockOptionsHelper.applyPropertiesToLockOptions( properties, () -> lockOptions );
-		}
-		return lockOptions;
-	}
+//	@Override
+//	public LockOptions getLockRequest(LockModeType lockModeType, Map<String, Object> properties) {
+//		LockOptions lockOptions = new LockOptions();
+//		if ( this.lockOptions != null ) { //otherwise the default LockOptions constructor is the same as DEFAULT_LOCK_OPTIONS
+//			LockOptions.copy( this.lockOptions, lockOptions );
+//		}
+//		lockOptions.setLockMode( LockModeTypeHelper.getLockMode( lockModeType ) );
+//		if ( properties != null ) {
+//			LockOptionsHelper.applyPropertiesToLockOptions( properties, () -> lockOptions );
+//		}
+//		return lockOptions;
+//	}
 
 
 
@@ -2992,6 +3001,16 @@ public final class SessionImpl
 		finally {
 			setCacheMode( previousCacheMode );
 		}
+	}
+
+	private LockOptions buildLockOptions(LockModeType lockModeType, Map<String, Object> properties) {
+		final LockOptions lockOptions = new LockOptions();
+		LockOptions.copy( this.lockOptions, this.lockOptions );
+		this.lockOptions.setLockMode( LockModeTypeHelper.getLockMode( lockModeType ) );
+		if ( properties != null ) {
+			setLockOptions( properties, this.lockOptions );
+		}
+		return lockOptions;
 	}
 
 	@Override

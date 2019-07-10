@@ -15,6 +15,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.MappingException;
+import org.hibernate.NotYetImplementedFor6Exception;
 import org.hibernate.bytecode.enhance.spi.interceptor.EnhancementAsProxyLazinessInterceptor;
 import org.hibernate.bytecode.spi.BytecodeEnhancementMetadata;
 import org.hibernate.bytecode.spi.NotInstrumentedException;
@@ -134,7 +135,9 @@ public interface EntityPersister extends EntityDefinition, Loadable {
 	 * has multiple tables.  Returns {@code null} to indicate that the entity
 	 * does not define multiple tables
 	 */
-	SqmMutationStrategy getSqmMultiTableMutationStrategy();
+	default SqmMutationStrategy getSqmMultiTableMutationStrategy(){
+		throw new NotYetImplementedFor6Exception( getClass() );
+	}
 
 	/**
 	 * Retrieve the underlying entity metamodel instance...
