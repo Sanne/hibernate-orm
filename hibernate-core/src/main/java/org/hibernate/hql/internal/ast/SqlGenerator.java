@@ -44,7 +44,7 @@ import antlr.collections.AST;
 public class SqlGenerator extends SqlGeneratorBase implements ErrorReporter {
 	private static final CoreMessageLogger LOG = CoreLogging.messageLogger( SqlGenerator.class );
 
-	public static boolean REGRESSION_STYLE_CROSS_JOINS;
+	private static final boolean REGRESSION_STYLE_CROSS_JOINS = false;
 
 	/**
 	 * all append invocations on the buf should go through this Output instance variable.

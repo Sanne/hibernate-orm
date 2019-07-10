@@ -8,6 +8,7 @@ package org.hibernate.test.hql;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -99,7 +100,7 @@ public class HQLTest extends QueryTranslatorTestCase {
 				throw new QueryException( "illegal syntax near collection: " + propertyName );
 			}
 		};
-		SqlGenerator.REGRESSION_STYLE_CROSS_JOINS = true;
+		setRegressionStyleCrossJoins( true );
 	}
 
 	@Override
@@ -107,8 +108,20 @@ public class HQLTest extends QueryTranslatorTestCase {
 		SelectClause.VERSION2_SQL = false;
 		DotNode.regressionStyleJoinSuppression = false;
 		DotNode.ILLEGAL_COLL_DEREF_EXCP_BUILDER = DotNode.DEF_ILLEGAL_COLL_DEREF_EXCP_BUILDER;
-		SqlGenerator.REGRESSION_STYLE_CROSS_JOINS = false;
+		setRegressionStyleCrossJoins( false );
 		super.cleanupTest();
+	}
+
+	private static void setRegressionStyleCrossJoins(boolean enabled) {
+		final Field regression_style_cross_joins;
+		try {
+			regression_style_cross_joins = SqlGenerator.class.getDeclaredField( "REGRESSION_STYLE_CROSS_JOINS" );
+			regression_style_cross_joins.setAccessible( true );
+			regression_style_cross_joins.set( null, enabled );
+		}
+		catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new RuntimeException( e );
+		}
 	}
 
 	@Test

@@ -6,6 +6,8 @@
  */
 package org.hibernate.test.cache;
 
+import java.lang.reflect.Field;
+
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.cache.internal.CollectionCacheInvalidator;
@@ -31,6 +33,7 @@ import static org.junit.Assert.fail;
  */
 @TestForIssue(jiraKey = "HHH-4910")
 public class CollectionCacheEvictionTest extends BaseCoreFunctionalTestCase {
+
 	@Override
 	protected Class<?>[] getAnnotatedClasses() {
 		return new Class[] { User.class, Company.class };
@@ -38,12 +41,12 @@ public class CollectionCacheEvictionTest extends BaseCoreFunctionalTestCase {
 
 	@Before
 	public void before() {
-		CollectionCacheInvalidator.PROPAGATE_EXCEPTION = true;
+		CollectionCacheTestingHelper.enableExceptionPropagation( true );
 	}
 
 	@After
 	public void after() {
-		CollectionCacheInvalidator.PROPAGATE_EXCEPTION = false;
+		CollectionCacheTestingHelper.enableExceptionPropagation( false );
 	}
 
 	@Override

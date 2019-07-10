@@ -31,12 +31,12 @@ public class LockModeTest extends BaseCoreFunctionalTestCase {
 
 	@Before
 	public void before() {
-		CollectionCacheInvalidator.PROPAGATE_EXCEPTION = true;
+		CollectionCacheTestingHelper.enableExceptionPropagation( true );
 	}
 
 	@After
 	public void after() {
-		CollectionCacheInvalidator.PROPAGATE_EXCEPTION = false;
+		CollectionCacheTestingHelper.enableExceptionPropagation( false );
 	}
 
 	@Override

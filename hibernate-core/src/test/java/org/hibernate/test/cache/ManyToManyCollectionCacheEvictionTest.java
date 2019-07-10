@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
  * @author Janario Oliveira
  */
 public class ManyToManyCollectionCacheEvictionTest extends BaseCoreFunctionalTestCase {
+
 	@Override
 	protected Class<?>[] getAnnotatedClasses() {
 		return new Class[] {Customer.class, Application.class};
@@ -34,12 +35,12 @@ public class ManyToManyCollectionCacheEvictionTest extends BaseCoreFunctionalTes
 
 	@Before
 	public void before() {
-		CollectionCacheInvalidator.PROPAGATE_EXCEPTION = true;
+		CollectionCacheTestingHelper.enableExceptionPropagation( true );
 	}
 
 	@After
 	public void after() {
-		CollectionCacheInvalidator.PROPAGATE_EXCEPTION = false;
+		CollectionCacheTestingHelper.enableExceptionPropagation( false );
 	}
 
 	@Override

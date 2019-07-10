@@ -51,9 +51,9 @@ public class CollectionCacheInvalidator
 	private static final Logger LOG = Logger.getLogger( CollectionCacheInvalidator.class.getName() );
 
 	/**
-	 * Exposed for use in testing
+	 * For use in testing
 	 */
-	public static boolean PROPAGATE_EXCEPTION = false;
+	private static final boolean PROPAGATE_EXCEPTION = false;
 
 	@Override
 	public void integrate(Metadata metadata, SessionFactoryImplementor sessionFactory,
