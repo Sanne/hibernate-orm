@@ -26,6 +26,7 @@ import org.hibernate.AssertionFailure;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
+import org.hibernate.NotYetImplementedFor6Exception;
 import org.hibernate.QueryException;
 import org.hibernate.ScrollMode;
 import org.hibernate.Session;
@@ -38,7 +39,6 @@ import org.hibernate.cache.spi.QueryResultsCache;
 import org.hibernate.cache.spi.access.EntityDataAccess;
 import org.hibernate.cache.spi.entry.CacheEntry;
 import org.hibernate.cache.spi.entry.ReferenceCacheEntryImpl;
-import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.pagination.LimitHandler;
 import org.hibernate.dialect.pagination.LimitHelper;
@@ -1232,11 +1232,13 @@ public abstract class Loader {
 			final Object resultSetId,
 			final SharedSessionContractImplementor session,
 			final CollectionPersister collectionPersister) {
-		//this is a query and we are loading multiple instances of the same collection role
-		session.getPersistenceContext()
-				.getLoadContexts()
-				.getCollectionLoadContext( (ResultSet) resultSetId )
-				.endLoadingCollections( collectionPersister );
+		throw new NotYetImplementedFor6Exception( getClass() );
+
+//		//this is a query and we are loading multiple instances of the same collection role
+//		session.getPersistenceContext()
+//				.getLoadContexts()
+//				.getCollectionLoadContext( (ResultSet) resultSetId )
+//				.endLoadingCollections( collectionPersister );
 	}
 
 	/**
@@ -1405,13 +1407,14 @@ public abstract class Loader {
 				}
 			}
 
-			PersistentCollection rowCollection = persistenceContext.getLoadContexts()
-					.getCollectionLoadContext( rs )
-					.getLoadingCollection( persister, collectionRowKey );
-
-			if ( rowCollection != null ) {
-				rowCollection.readFrom( rs, persister, descriptor, owner );
-			}
+			throw new NotYetImplementedFor6Exception( getClass() );
+//			PersistentCollection rowCollection = persistenceContext.getLoadContexts()
+//					.getCollectionLoadContext( rs )
+//					.getLoadingCollection( persister, collectionRowKey );
+//
+//			if ( rowCollection != null ) {
+//				rowCollection.readFrom( rs, persister, descriptor, owner );
+//			}
 
 		}
 		else if ( optionalKey != null ) {
@@ -1426,9 +1429,10 @@ public abstract class Loader {
 				);
 			}
 
-			persistenceContext.getLoadContexts()
-					.getCollectionLoadContext( rs )
-					.getLoadingCollection( persister, optionalKey ); // handle empty collection
+			throw new NotYetImplementedFor6Exception( getClass() );
+//			persistenceContext.getLoadContexts()
+//					.getCollectionLoadContext( rs )
+//					.getLoadingCollection( persister, optionalKey ); // handle empty collection
 
 		}
 
@@ -1461,10 +1465,11 @@ public abstract class Loader {
 						);
 					}
 
-					session.getPersistenceContext()
-							.getLoadContexts()
-							.getCollectionLoadContext( (ResultSet) resultSetId )
-							.getLoadingCollection( collectionPersister, key );
+					throw new NotYetImplementedFor6Exception( getClass() );
+//					session.getPersistenceContext()
+//							.getLoadContexts()
+//							.getCollectionLoadContext( (ResultSet) resultSetId )
+//							.getLoadingCollection( collectionPersister, key );
 				}
 			}
 		}
