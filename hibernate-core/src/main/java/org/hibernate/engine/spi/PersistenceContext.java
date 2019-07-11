@@ -407,7 +407,7 @@ public interface PersistenceContext {
 	CollectionEntry addInitializedCollection(
 			CollectionPersister persister,
 			PersistentCollection collection,
-			Object id);
+			Serializable id);
 
 	/**
 	 * Get the collection instance associated with the <tt>CollectionKey</tt>
