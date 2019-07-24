@@ -754,7 +754,6 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 	protected void applyQuerySettingsAndHints(Query query) {
 	}
 
-
 	@Override
 	public NativeQueryImplementor getNamedNativeQuery(String queryName) {
 		final NamedNativeQueryMemento namedNativeDescriptor = getFactory().getQueryEngine()
@@ -763,6 +762,19 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 
 		if ( namedNativeDescriptor != null ) {
 			return namedNativeDescriptor.toQuery( this );
+		}
+
+		throw exceptionConverter.convert( new IllegalArgumentException( "No query defined for that name [" + queryName + "]" ) );
+	}
+
+	@Override
+	public NativeQueryImplementor getNamedNativeQuery(String queryName, String resultSetMapping) {
+		final NamedNativeQueryMemento namedNativeDescriptor = getFactory().getQueryEngine()
+				.getNamedQueryRepository()
+				.getNativeQueryMemento( queryName );
+
+		if ( namedNativeDescriptor != null ) {
+			return namedNativeDescriptor.toQuery( this, resultSetMapping );
 		}
 
 		throw exceptionConverter.convert( new IllegalArgumentException( "No query defined for that name [" + queryName + "]" ) );
