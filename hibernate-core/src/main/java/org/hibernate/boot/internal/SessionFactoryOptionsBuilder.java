@@ -60,7 +60,7 @@ import org.hibernate.proxy.EntityNotFoundDelegate;
 import org.hibernate.query.ImmutableEntityUpdateQueryHandlingMode;
 import org.hibernate.query.criteria.LiteralHandlingMode;
 import org.hibernate.query.hql.SemanticQueryProducer;
-import org.hibernate.query.sqm.mutation.spi.SqmMutationStrategy;
+import org.hibernate.query.sqm.mutation.spi.SqmMultiTableMutationStrategy;
 import org.hibernate.query.sqm.produce.function.SqmFunctionRegistry;
 import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
 import org.hibernate.resource.jdbc.spi.StatementInspector;
@@ -211,7 +211,8 @@ public class SessionFactoryOptionsBuilder implements SessionFactoryOptions {
 
 	// Queries
 	private SemanticQueryProducer semanticQueryProducer;
-	private SqmMutationStrategy sqmMutationStrategy;
+	private SqmMultiTableMutationStrategy sqmMultiTableMutationStrategy;
+	private SqmFunctionRegistry sqmFunctionRegistry;
 	private Boolean useOfJdbcNamedParametersEnabled;
 	private Map querySubstitutions;
 	private boolean namedQueryStartupCheckingEnabled;
@@ -381,7 +382,7 @@ public class SessionFactoryOptionsBuilder implements SessionFactoryOptions {
 				)
 		);
 
-		this.sqmMutationStrategy = resolveSqmMutationStrategy(
+		this.sqmMultiTableMutationStrategy = resolveSqmMutationStrategy(
 				sqmMutationStrategyImplName,
 				serviceRegistry,
 				strategySelector
@@ -562,7 +563,7 @@ public class SessionFactoryOptionsBuilder implements SessionFactoryOptions {
 		}
 	}
 
-	private SqmMutationStrategy resolveSqmMutationStrategy(
+	private SqmMultiTableMutationStrategy resolveSqmMutationStrategy(
 			String strategyName,
 			StandardServiceRegistry serviceRegistry,
 			StrategySelector strategySelector) {
@@ -572,13 +573,13 @@ public class SessionFactoryOptionsBuilder implements SessionFactoryOptions {
 
 		//noinspection Convert2Lambda
 		return strategySelector.resolveDefaultableStrategy(
-				SqmMutationStrategy.class,
+				SqmMultiTableMutationStrategy.class,
 				strategyName,
-				new Callable<SqmMutationStrategy>() {
+				new Callable<SqmMultiTableMutationStrategy>() {
 					@Override
-					public SqmMutationStrategy call() throws Exception {
+					public SqmMultiTableMutationStrategy call() throws Exception {
 						final ClassLoaderService classLoaderService = serviceRegistry.getService( ClassLoaderService.class );
-						return (SqmMutationStrategy) classLoaderService.classForName( strategyName ).newInstance();
+						return (SqmMultiTableMutationStrategy) classLoaderService.classForName( strategyName ).newInstance();
 					}
 				}
 		);
@@ -833,8 +834,8 @@ public class SessionFactoryOptionsBuilder implements SessionFactoryOptions {
 	}
 
 	@Override
-	public SqmMutationStrategy getSqmMutationStrategy() {
-		return sqmMutationStrategy;
+	public SqmMultiTableMutationStrategy getSqmMultiTableMutationStrategy() {
+		return sqmMultiTableMutationStrategy;
 	}
 
 	@Override
@@ -844,7 +845,7 @@ public class SessionFactoryOptionsBuilder implements SessionFactoryOptions {
 
 	@Override
 	public SqmFunctionRegistry getSqmFunctionRegistry() {
-		throw new NotYetImplementedFor6Exception( getClass() );
+		return this.sqmFunctionRegistry;
 	}
 
 	@Override
@@ -1200,6 +1201,10 @@ public class SessionFactoryOptionsBuilder implements SessionFactoryOptions {
 
 	public void applyStatelessInterceptorSupplier(Supplier<? extends Interceptor> statelessInterceptorSupplier) {
 		this.statelessInterceptorSupplier = statelessInterceptorSupplier;
+	}
+
+	public void applySqmFunctionRegistry(SqmFunctionRegistry sqmFunctionRegistry) {
+		this.sqmFunctionRegistry = sqmFunctionRegistry;
 	}
 
 	public void applyStatementInspector(StatementInspector statementInspector) {
