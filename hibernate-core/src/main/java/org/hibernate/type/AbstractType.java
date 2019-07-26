@@ -131,12 +131,12 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public boolean isEqual(Object x, Object y, SessionFactoryImplementor factory) {
-		return isEqual(x, y );
+		return isEqual( x, y );
 	}
 
 	@Override
 	public int getHashCode(Object x, SessionFactoryImplementor factory) {
-		return getHashCode(x );
+		return getHashCode( x );
 	}
 
 	@Override
@@ -156,12 +156,12 @@ public abstract class AbstractType implements Type {
 		boolean include;
 		if ( isAssociationType() ) {
 			AssociationType atype = (AssociationType) this;
-			include = atype.getForeignKeyDirection()==foreignKeyDirection;
+			include = atype.getForeignKeyDirection() == foreignKeyDirection;
 		}
 		else {
-			include = ForeignKeyDirection.FROM_PARENT ==foreignKeyDirection;
+			include = ForeignKeyDirection.FROM_PARENT == foreignKeyDirection;
 		}
-		return include ? replace(original, target, session, owner, copyCache) : target;
+		return include ? replace( original, target, session, owner, copyCache ) : target;
 	}
 
 	@Override
