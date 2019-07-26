@@ -104,7 +104,8 @@ public class CollectionLoadContext {
 		final LoadingCollectionEntry loadingCollectionEntry = loadContexts.locateLoadingCollectionEntry( collectionKey );
 		if ( loadingCollectionEntry == null ) {
 			// look for existing collection as part of the persistence context
-			PersistentCollection collection = loadContexts.getPersistenceContext().getCollection( collectionKey );
+			final PersistenceContext persistenceContext = loadContexts.getPersistenceContext();
+			PersistentCollection collection = persistenceContext.getCollection( collectionKey );
 			if ( collection != null ) {
 				if ( collection.wasInitialized() ) {
 					LOG.trace( "Collection already initialized; ignoring" );
@@ -114,9 +115,9 @@ public class CollectionLoadContext {
 				LOG.trace( "Collection not yet initialized; initializing" );
 			}
 			else {
-				final Object owner = loadContexts.getPersistenceContext().getCollectionOwner( key, persister );
+				final Object owner = persistenceContext.getCollectionOwner( key, persister );
 				final boolean newlySavedEntity = owner != null
-						&& loadContexts.getPersistenceContext().getEntry( owner ).getStatus() != Status.LOADING;
+						&& persistenceContext.getEntry( owner ).getStatus() != Status.LOADING;
 				if ( newlySavedEntity ) {
 					// important, to account for newly saved entities in query
 					// todo : some kind of check for new status...
@@ -126,7 +127,7 @@ public class CollectionLoadContext {
 				// create one
 				LOG.tracev( "Instantiating new collection [key={0}, rs={1}]", key, resultSet );
 				collection = persister.getCollectionType().instantiate(
-						loadContexts.getPersistenceContext().getSession(), persister, key );
+						persistenceContext.getSession(), persister, key );
 			}
 			collection.beforeInitialize( persister, -1 );
 			collection.beginRead();
