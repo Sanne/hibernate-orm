@@ -15,6 +15,7 @@ import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.event.spi.EventSource;
 import org.hibernate.internal.CoreLogging;
 import org.hibernate.internal.CoreMessageLogger;
+import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.pretty.MessageHelper;
 import org.hibernate.type.CollectionType;
 
@@ -26,19 +27,20 @@ import org.hibernate.type.CollectionType;
  * @author Gavin King
  */
 public class EvictVisitor extends AbstractVisitor {
+
 	private static final CoreMessageLogger LOG = CoreLogging.messageLogger( EvictVisitor.class );
-	
-	private Object owner;
+
+	private final Object owner;
 
 	EvictVisitor(EventSource session, Object owner) {
-		super(session);
+		super( session );
 		this.owner = owner;
 	}
 
 	@Override
 	Object processCollection(Object collection, CollectionType type) throws HibernateException {
-		if (collection != null) {
-			evictCollection(collection, type);
+		if ( collection != null ) {
+			evictCollection( collection, type );
 		}
 
 		return null;
@@ -48,7 +50,7 @@ public class EvictVisitor extends AbstractVisitor {
 		final PersistentCollection collection;
 		final EventSource session = getSession();
 		if ( type.hasHolder() ) {
-			collection = session.getPersistenceContextInternal().removeCollectionHolder(value);
+			collection = session.getPersistenceContextInternal().removeCollectionHolder( value );
 		}
 		else if ( value instanceof PersistentCollection ) {
 			collection = (PersistentCollection) value;
@@ -60,29 +62,31 @@ public class EvictVisitor extends AbstractVisitor {
 			return; //EARLY EXIT!
 		}
 
-		if ( collection != null && collection.unsetSession(session) ) {
-			evictCollection(collection);
+		if ( collection != null && collection.unsetSession( session ) ) {
+			evictCollection( collection );
 		}
 	}
 
 	private void evictCollection(PersistentCollection collection) {
 		final PersistenceContext persistenceContext = getSession().getPersistenceContextInternal();
-		CollectionEntry ce = (CollectionEntry) persistenceContext.getCollectionEntries().remove(collection);
+		CollectionEntry ce = (CollectionEntry) persistenceContext.getCollectionEntries().remove( collection );
+		final CollectionPersister loadedPersister = ce.getLoadedPersister();
 		if ( LOG.isDebugEnabled() ) {
 			LOG.debugf(
 					"Evicting collection: %s",
-					MessageHelper.collectionInfoString( ce.getLoadedPersister(),
+					MessageHelper.collectionInfoString(
+							loadedPersister,
 							collection,
 							ce.getLoadedKey(),
 							getSession() ) );
 		}
-		if (ce.getLoadedPersister() != null && ce.getLoadedPersister().getBatchSize() > 1) {
-			persistenceContext.getBatchFetchQueue().removeBatchLoadableCollection(ce);
+		if ( loadedPersister != null && loadedPersister.getBatchSize() > 1 ) {
+			persistenceContext.getBatchFetchQueue().removeBatchLoadableCollection( ce );
 		}
-		if ( ce.getLoadedPersister() != null && ce.getLoadedKey() != null ) {
+		if ( loadedPersister != null && ce.getLoadedKey() != null ) {
 			//TODO: is this 100% correct?
 			persistenceContext.getCollectionsByKey().remove(
-					new CollectionKey( ce.getLoadedPersister(), ce.getLoadedKey() )
+					new CollectionKey( loadedPersister, ce.getLoadedKey() )
 			);
 		}
 	}
