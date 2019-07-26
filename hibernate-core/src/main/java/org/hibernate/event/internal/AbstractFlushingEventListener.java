@@ -390,13 +390,13 @@ public abstract class AbstractFlushingEventListener implements JpaBootstrapSensi
 		for ( Map.Entry<PersistentCollection, CollectionEntry> me : IdentityMap.concurrentEntries( persistenceContext.getCollectionEntries() ) ) {
 			CollectionEntry collectionEntry = me.getValue();
 			PersistentCollection persistentCollection = me.getKey();
-			collectionEntry.postFlush(persistentCollection);
+			collectionEntry.postFlush( persistentCollection );
 			if ( collectionEntry.getLoadedPersister() == null ) {
 				//if the collection is dereferenced, unset its session reference and remove from the session cache
 				//iter.remove(); //does not work, since the entrySet is not backed by the set
 				persistentCollection.unsetSession( session );
 				persistenceContext.getCollectionEntries()
-						.remove(persistentCollection);
+						.remove( persistentCollection );
 			}
 			else {
 				//otherwise recreate the mapping between the collection and its key
@@ -404,7 +404,7 @@ public abstract class AbstractFlushingEventListener implements JpaBootstrapSensi
 						collectionEntry.getLoadedPersister(),
 						collectionEntry.getLoadedKey()
 				);
-				persistenceContext.getCollectionsByKey().put(collectionKey, persistentCollection);
+				persistenceContext.getCollectionsByKey().put( collectionKey, persistentCollection );
 			}
 		}
 

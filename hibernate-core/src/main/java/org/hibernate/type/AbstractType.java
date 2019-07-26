@@ -23,6 +23,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
  * @author Gavin King
  */
 public abstract class AbstractType implements Type {
+
 	protected static final Size LEGACY_DICTATED_SIZE = new Size();
 	protected static final Size LEGACY_DEFAULT_SIZE = new Size( 19, 2, 255, Size.LobMultiplier.NONE ); // to match legacy behavior
 
@@ -48,7 +49,7 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public int compare(Object x, Object y) {
-		return ( (Comparable) x ).compareTo(y);
+		return ( (Comparable) x ).compareTo( y );
 	}
 
 	@Override
@@ -88,7 +89,7 @@ public abstract class AbstractType implements Type {
 	throws HibernateException, SQLException {
 		// TODO: this is very suboptimal for some subclasses (namely components),
 		// since it does not take advantage of two-phase-load
-		return nullSafeGet(rs, names, session, owner);
+		return nullSafeGet( rs, names, session, owner );
 	}
 
 	@Override
@@ -111,12 +112,12 @@ public abstract class AbstractType implements Type {
 	@Override
 	public boolean isModified(Object old, Object current, boolean[] checkable, SharedSessionContractImplementor session)
 	throws HibernateException {
-		return isDirty(old, current, session);
+		return isDirty( old, current, session );
 	}
 
 	@Override
 	public boolean isSame(Object x, Object y) throws HibernateException {
-		return isEqual(x, y );
+		return isEqual( x, y );
 	}
 
 	@Override

@@ -41,10 +41,10 @@ public class SessionStatisticsImpl implements SessionStatistics {
 	
 	public String toString() {
 		return new StringBuilder()
-			.append("SessionStatistics[")
-			.append("entity count=").append( getEntityCount() )
-			.append(",collection count=").append( getCollectionCount() )
-			.append(']')
+			.append( "SessionStatistics[" )
+			.append( "entity count=" ).append( getEntityCount() )
+			.append( ",collection count=" ).append( getCollectionCount() )
+			.append( ']' )
 			.toString();
 	}
 
