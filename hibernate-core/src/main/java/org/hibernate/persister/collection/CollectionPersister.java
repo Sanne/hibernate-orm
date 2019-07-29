@@ -320,4 +320,9 @@ public interface CollectionPersister extends CollectionDefinition {
 	 * @return the name of the property this collection is mapped by
 	 */
 	String getMappedByProperty();
+
+	int collectionKeyHashcode(Serializable key);
+
+	boolean collectionKeyEquals(Serializable keyA, Serializable keyB);
+
 }

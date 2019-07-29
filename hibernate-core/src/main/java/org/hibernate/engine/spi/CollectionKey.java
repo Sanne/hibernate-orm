@@ -20,21 +20,18 @@ import org.hibernate.type.Type;
  * Uniquely identifies a collection instance in a particular session.
  *
  * @author Gavin King
+ * @author Sanne Grinovero
  */
 public final class CollectionKey implements Serializable {
-	private final String role;
+
+	private final CollectionPersister persister;
 	private final Serializable key;
-	private final Type keyType;
-	private final SessionFactoryImplementor factory;
 	private final int hashCode;
 
 	public CollectionKey(CollectionPersister persister, Serializable key) {
-		this(
-				persister.getRole(),
-				key,
-				persister.getKeyType(),
-				persister.getFactory()
-		);
+		this.persister = persister;
+		this.key = key;
+		this.hashCode = persister.collectionKeyHashcode( key );
 	}
 
 	/**
@@ -43,31 +40,11 @@ public final class CollectionKey implements Serializable {
 	 */
 	@Deprecated
 	public CollectionKey(CollectionPersister persister, Serializable key, EntityMode em) {
-		this( persister.getRole(), key, persister.getKeyType(), persister.getFactory() );
-	}
-
-	private CollectionKey(
-			String role,
-			Serializable key,
-			Type keyType,
-			SessionFactoryImplementor factory) {
-		this.role = role;
-		this.key = key;
-		this.keyType = keyType;
-		this.factory = factory;
-		//cache the hash-code
-		this.hashCode = generateHashCode();
-	}
-
-	private int generateHashCode() {
-		int result = 17;
-		result = 37 * result + role.hashCode();
-		result = 37 * result + keyType.getHashCode( key, factory );
-		return result;
+		this( persister, key );
 	}
 
 	public String getRole() {
-		return role;
+		return persister.getRole();
 	}
 
 	public Serializable getKey() {
@@ -77,7 +54,7 @@ public final class CollectionKey implements Serializable {
 	@Override
 	public String toString() {
 		return "CollectionKey"
-				+ MessageHelper.collectionInfoString( factory.getCollectionPersister( role ), key, factory );
+				+ MessageHelper.collectionInfoString( persister, key, persister.getFactory() );
 	}
 
 	@Override
@@ -85,20 +62,18 @@ public final class CollectionKey implements Serializable {
 		if ( this == other ) {
 			return true;
 		}
-		if ( other == null || getClass() != other.getClass() ) {
+		if ( other == null || CollectionKey.class != other.getClass() ) {
 			return false;
 		}
 
 		final CollectionKey that = (CollectionKey) other;
-		return that.role.equals( role )
-				&& keyType.isEqual( that.key, key, factory );
+		return that.persister.equals( this.persister ) && this.persister.collectionKeyEquals( this.key, that.key );
 	}
 
 	@Override
 	public int hashCode() {
 		return hashCode;
 	}
-
 
 	/**
 	 * Custom serialization routine used during serialization of a
@@ -109,9 +84,8 @@ public final class CollectionKey implements Serializable {
 	 * @throws java.io.IOException
 	 */
 	public void serialize(ObjectOutputStream oos) throws IOException {
-		oos.writeObject( role );
+		oos.writeObject( persister.getRole() );
 		oos.writeObject( key );
-		oos.writeObject( keyType );
 	}
 
 	/**
@@ -132,8 +106,9 @@ public final class CollectionKey implements Serializable {
 		return new CollectionKey(
 				(String) ois.readObject(),
 				(Serializable) ois.readObject(),
-				(Type) ois.readObject(),
-				(session == null ? null : session.getFactory())
+				(session == null ? null
+				(session == null ? null
+				(session == null ? null		: session.getFactory())
 		);
 	}
 }
