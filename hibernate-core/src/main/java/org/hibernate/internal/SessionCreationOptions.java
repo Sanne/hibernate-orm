@@ -48,17 +48,6 @@ public interface SessionCreationOptions {
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	// deprecations
 
-	/**
-	 * Access to the SessionOwner, which defines the contract for things that can wrap a Session
-	 *
-	 * @return Always returns null.
-	 *
-	 * @deprecated (since 5,2) SessionOwner is no longer pertinent due to the
-	 * hibernate-entitymanager -> hibernate-core consolidation
-	 */
-	@Deprecated
-	SessionOwner getSessionOwner();
-
 	ExceptionMapper getExceptionMapper();
 
 	AfterCompletionAction getAfterCompletionAction();

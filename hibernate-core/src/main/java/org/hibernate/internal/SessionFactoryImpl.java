@@ -1199,11 +1199,6 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 		// SessionCreationOptions
 
 		@Override
-		public SessionOwner getSessionOwner() {
-			return null;
-		}
-
-		@Override
 		public ExceptionMapper getExceptionMapper() {
 			return sessionOwnerBehavior == SessionOwnerBehavior.LEGACY_JPA
 					? ExceptionMapperLegacyJpaImpl.INSTANCE
@@ -1293,12 +1288,6 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 			}
 
 			return session;
-		}
-
-		@Override
-		@SuppressWarnings("unchecked")
-		public T owner(SessionOwner sessionOwner) {
-			throw new UnsupportedOperationException( "SessionOwner was long deprecated and this method should no longer be invoked" );
 		}
 
 		@Override
@@ -1493,11 +1482,6 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 		@Override
 		public TimeZone getJdbcTimeZone() {
 			return sessionFactory.getSessionFactoryOptions().getJdbcTimeZone();
-		}
-
-		@Override
-		public SessionOwner getSessionOwner() {
-			return null;
 		}
 
 		@Override
