@@ -116,6 +116,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 
 	private transient SessionFactoryImpl factory;
 	private final String tenantIdentifier;
+	protected transient FastSessionServices fastSessionServices;
 	private UUID sessionIdentifier;
 
 	private transient JdbcConnectionAccess jdbcConnectionAccess;
@@ -152,8 +153,12 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 
 	private CriteriaCompiler criteriaCompiler;
 
-	public AbstractSharedSessionContract(SessionFactoryImpl factory, SessionCreationOptions options) {
+	public AbstractSharedSessionContract(
+			SessionFactoryImpl factory,
+			SessionCreationOptions options,
+			FastSessionServices fastSessionServices) {
 		this.factory = factory;
+		this.fastSessionServices = fastSessionServices;
 		this.cacheTransactionSync = factory.getCache().getRegionFactory().createTransactionContext( this );
 		this.disallowOutOfTransactionUpdateOperations = !factory.getSessionFactoryOptions().isAllowOutOfTransactionUpdateOperations();
 
@@ -1226,6 +1231,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 		//		-- see above
 
 		factory = SessionFactoryImpl.deserialize( ois );
+		fastSessionServices = factory.getFastSessionServices();
 		jdbcSessionContext = new JdbcSessionContextImpl( this, (StatementInspector) ois.readObject() );
 		jdbcCoordinator = JdbcCoordinatorImpl.deserialize( ois, this );
 

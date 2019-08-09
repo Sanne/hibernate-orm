@@ -72,8 +72,8 @@ public class StatelessSessionImpl extends AbstractSharedSessionContract implemen
 	private final boolean connectionProvided;
 	private final boolean allowBytecodeProxy;
 
-	StatelessSessionImpl(SessionFactoryImpl factory, SessionCreationOptions options) {
-		super( factory, options );
+	StatelessSessionImpl(SessionFactoryImpl factory, SessionCreationOptions options, FastSessionServices fastSessionServices) {
+		super( factory, options, fastSessionServices );
 		connectionProvided = options.getConnection() != null;
 		allowBytecodeProxy = getFactory().getSessionFactoryOptions().isEnhancementAsProxyEnabled();
 	}

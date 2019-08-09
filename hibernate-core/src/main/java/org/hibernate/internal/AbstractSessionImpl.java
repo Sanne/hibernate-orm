@@ -25,8 +25,11 @@ public abstract class AbstractSessionImpl
 		implements Serializable, SharedSessionContractImplementor, JdbcSessionOwner, SessionImplementor, EventSource,
 		Options, WrapperOptions {
 
-	protected AbstractSessionImpl(SessionFactoryImpl factory, SessionCreationOptions options) {
-		super( factory, options );
+	protected AbstractSessionImpl(
+			SessionFactoryImpl factory,
+			SessionCreationOptions options,
+			FastSessionServices fastSessionServices) {
+		super( factory, options, fastSessionServices );
 	}
 
 }
