@@ -905,7 +905,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 
 	@SuppressWarnings({"WeakerAccess", "unchecked"})
 	protected <T> NativeQueryImplementor createNativeQuery(NamedSQLQueryDefinition queryDefinition, Class<T> resultType) {
-		if ( resultType != null && !Tuple.class.equals(resultType)) {
+		if ( resultType != null && !Tuple.class.equals( resultType ) ) {
 			resultClassChecking( resultType, queryDefinition );
 		}
 
@@ -914,8 +914,8 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 				this,
 				factory.getQueryPlanCache().getSQLParameterMetadata( queryDefinition.getQueryString(), false )
 		);
-		if (Tuple.class.equals(resultType)) {
-			query.setResultTransformer(new NativeQueryTupleTransformer());
+		if ( Tuple.class.equals( resultType ) ) {
+			query.setResultTransformer( new NativeQueryTupleTransformer() );
 		}
 		query.setHibernateFlushMode( queryDefinition.getFlushMode() );
 		query.setComment( queryDefinition.getComment() != null ? queryDefinition.getComment() : queryDefinition.getName() );
