@@ -213,7 +213,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 		else {
 			this.isTransactionCoordinatorShared = false;
 			this.autoJoinTransactions = options.shouldAutoJoinTransactions();
-			this.jdbcCoordinator = new JdbcCoordinatorImpl( options.getConnection(), this );
+			this.jdbcCoordinator = new JdbcCoordinatorImpl( options.getConnection(), this, fastSessionServices.jdbcServices );
 			this.transactionCoordinator = fastSessionServices.transactionCoordinatorBuilder.buildTransactionCoordinator( jdbcCoordinator, this );
 		}
 	}
