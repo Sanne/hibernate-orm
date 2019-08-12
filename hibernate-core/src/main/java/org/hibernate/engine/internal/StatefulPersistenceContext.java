@@ -96,7 +96,6 @@ public class StatefulPersistenceContext implements PersistenceContext {
 	private Map<EntityUniqueKey, Object> entitiesByUniqueKey;
 
 	private EntityEntryContext entityEntryContext;
-//	private Map<Object,EntityEntry> entityEntries;
 
 	// Entity proxies, by EntityKey
 	private ConcurrentMap<EntityKey, Object> proxiesByKey;
@@ -166,7 +165,6 @@ public class StatefulPersistenceContext implements PersistenceContext {
 		entitySnapshotsByKey = new HashMap<>( INIT_COLL_SIZE );
 
 		entityEntryContext = new EntityEntryContext( this );
-//		entityEntries = IdentityMap.instantiateSequenced( INIT_COLL_SIZE );
 		collectionEntries = IdentityMap.instantiateSequenced( INIT_COLL_SIZE );
 		parentsByChild = new IdentityHashMap<>( INIT_COLL_SIZE );
 
@@ -244,7 +242,6 @@ public class StatefulPersistenceContext implements PersistenceContext {
 		entitiesByKey.clear();
 		entitiesByUniqueKey.clear();
 		entityEntryContext.clear();
-//		entityEntries.clear();
 		parentsByChild.clear();
 		entitySnapshotsByKey.clear();
 		collectionsByKey.clear();
@@ -295,11 +292,8 @@ public class StatefulPersistenceContext implements PersistenceContext {
 	@Override
 	public void afterTransactionCompletion() {
 		cleanUpInsertedKeysAfterTransaction();
+		// Downgrade locks
 		entityEntryContext.downgradeLocks();
-//		// Downgrade locks
-//		for ( EntityEntry o : entityEntries.values() ) {
-//			o.setLockMode( LockMode.NONE );
-//		}
 	}
 
 	/**
