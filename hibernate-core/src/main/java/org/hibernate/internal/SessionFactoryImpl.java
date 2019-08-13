@@ -1156,6 +1156,8 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 		private TimeZone jdbcTimeZone;
 		private boolean queryParametersValidationEnabled;
 
+		// Lazy: defaults are stored in fastSessionServices.defaultSessionEventListeners.
+		// Only initialize of the builder is overriding the default.
 		private List<SessionEventListener> listeners;
 
 		//todo : expose setting
@@ -1178,9 +1180,7 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 				tenantIdentifier = currentTenantIdentifierResolver.resolveCurrentTenantIdentifier();
 			}
 			this.jdbcTimeZone = sessionFactoryOptions.getJdbcTimeZone();
-
-			listeners = sessionFactoryOptions.getBaselineSessionEventsListenerBuilder().buildBaselineList();
-			queryParametersValidationEnabled = sessionFactoryOptions.isQueryParametersValidationEnabled();
+			this.queryParametersValidationEnabled = sessionFactoryOptions.isQueryParametersValidationEnabled();
 		}
 
 
@@ -1274,10 +1274,11 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 		@Override
 		public Session openSession() {
 			log.tracef( "Opening Hibernate Session.  tenant=%s", tenantIdentifier );
+			final FastSessionServices fastSessionServices = sessionFactory.getFastSessionServices();
 			final SessionImpl session = new SessionImpl( sessionFactory, this );
 
 			final SessionEventListenerManager eventListenerManager = session.getEventListenerManager();
-			for ( SessionEventListener listener : listeners ) {
+			for ( SessionEventListener listener : listeners == null ? fastSessionServices.defaultSessionEventListeners : listeners ) {
 				eventListenerManager.addListener( listener );
 			}
 
@@ -1377,6 +1378,11 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 		@Override
 		@SuppressWarnings("unchecked")
 		public T eventListeners(SessionEventListener... listeners) {
+			if ( this.listeners == null ) {
+				final List<SessionEventListener> defaultListeners = sessionFactory.fastSessionServices.defaultSessionEventListeners;
+				this.listeners = new ArrayList<SessionEventListener>( listeners.length + defaultListeners.size() );
+				this.listeners.addAll( defaultListeners );
+			}
 			Collections.addAll( this.listeners, listeners );
 			return (T) this;
 		}
@@ -1384,6 +1390,10 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 		@Override
 		@SuppressWarnings("unchecked")
 		public T clearEventListeners() {
+			if ( listeners == null ) {
+				//Needs to initialize explicitly to an empty list so to avoid using the default listeners.
+				this.listeners = new ArrayList<SessionEventListener>( 3 );
+			}
 			listeners.clear();
 			return (T) this;
 		}
