@@ -232,8 +232,6 @@ public final class SessionImpl
 		this.autoClose = options.shouldAutoClose();
 		this.queryParametersValidationEnabled = options.isQueryParametersValidationEnabled();
 
-		this.discardOnClose = factory.getSessionFactoryOptions().isReleaseResourcesOnCloseEnabled();
-
 		if ( options instanceof SharedSessionCreationOptions ) {
 			final SharedSessionCreationOptions sharedOptions = (SharedSessionCreationOptions) options;
 			final ActionQueue.TransactionCompletionProcesses transactionCompletionProcesses = sharedOptions.getTransactionCompletionProcesses();
@@ -345,7 +343,7 @@ public final class SessionImpl
 			// Original hibernate-entitymanager EM#close behavior
 			checkSessionFactoryOpen();
 			checkOpenOrWaitingForAutoClose();
-			if ( discardOnClose || !isTransactionInProgress( false ) ) {
+			if ( fastSessionServices.discardOnClose || !isTransactionInProgress( false ) ) {
 				super.close();
 			}
 			else {
