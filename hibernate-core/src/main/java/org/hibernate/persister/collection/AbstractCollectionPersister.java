@@ -1216,6 +1216,7 @@ public abstract class AbstractCollectionPersister
 				boolean callable = isDeleteAllCallable();
 				boolean useBatch = expectation.canBeBatched();
 				String sql = getSQLDeleteString();
+				final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 				if ( useBatch ) {
 					if ( removeBatchKey == null ) {
 						removeBatchKey = new BasicBatchKey(
@@ -1223,14 +1224,12 @@ public abstract class AbstractCollectionPersister
 								expectation
 								);
 					}
-					st = session
-							.getJdbcCoordinator()
+					st = jdbcCoordinator
 							.getBatch( removeBatchKey )
 							.getBatchStatement( sql, callable );
 				}
 				else {
-					st = session
-							.getJdbcCoordinator()
+					st = jdbcCoordinator
 							.getStatementPreparer()
 							.prepareStatement( sql, callable );
 				}
@@ -1240,25 +1239,24 @@ public abstract class AbstractCollectionPersister
 
 					writeKey( st, id, offset, session );
 					if ( useBatch ) {
-						session
-								.getJdbcCoordinator()
+						jdbcCoordinator
 								.getBatch( removeBatchKey )
 								.addToBatch();
 					}
 					else {
-						expectation.verifyOutcome( session.getJdbcCoordinator().getResultSetReturn().executeUpdate( st ), st, -1 );
+						expectation.verifyOutcome( jdbcCoordinator.getResultSetReturn().executeUpdate( st ), st, -1 );
 					}
 				}
 				catch ( SQLException sqle ) {
 					if ( useBatch ) {
-						session.getJdbcCoordinator().abortBatch();
+						jdbcCoordinator.abortBatch();
 					}
 					throw sqle;
 				}
 				finally {
 					if ( !useBatch ) {
-						session.getJdbcCoordinator().getResourceRegistry().release( st );
-						session.getJdbcCoordinator().afterStatementExecution();
+						jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+						jdbcCoordinator.afterStatementExecution();
 					}
 				}
 
@@ -1963,12 +1961,7 @@ public abstract class AbstractCollectionPersister
 			try {
 				getKeyType().nullSafeSet( st, key, 1, session );
 				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( st );
-				try {
-					return rs.next() ? rs.getInt( 1 ) - baseIndex : 0;
-				}
-				finally {
-					jdbcCoordinator.getResourceRegistry().release( rs, st );
-				}
+				return rs.next() ? rs.getInt( 1 ) - baseIndex : 0;
 			}
 			finally {
 				jdbcCoordinator.getResourceRegistry().release( st );
@@ -2005,12 +1998,7 @@ public abstract class AbstractCollectionPersister
 				getKeyType().nullSafeSet( st, key, 1, session );
 				indexOrElementType.nullSafeSet( st, indexOrElement, keyColumnNames.length + 1, session );
 				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( st );
-				try {
-					return rs.next();
-				}
-				finally {
-					jdbcCoordinator.getResourceRegistry().release( rs, st );
-				}
+				return rs.next();
 			}
 			catch ( TransientObjectException e ) {
 				return false;
@@ -2041,16 +2029,11 @@ public abstract class AbstractCollectionPersister
 				getKeyType().nullSafeSet( st, key, 1, session );
 				getIndexType().nullSafeSet( st, incrementIndexByBase( index ), keyColumnNames.length + 1, session );
 				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( st );
-				try {
-					if ( rs.next() ) {
-						return getElementType().nullSafeGet( rs, elementColumnAliases, session, owner );
-					}
-					else {
-						return null;
-					}
+				if ( rs.next() ) {
+					return getElementType().nullSafeGet( rs, elementColumnAliases, session, owner );
 				}
-				finally {
-					jdbcCoordinator.getResourceRegistry().release( rs, st );
+				else {
+					return null;
 				}
 			}
 			finally {

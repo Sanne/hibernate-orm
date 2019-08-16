@@ -1201,62 +1201,54 @@ public abstract class AbstractEntityPersister
 			PreparedStatement ps = null;
 			try {
 				ResultSet rs = null;
-				try {
-					if ( lazySelect != null ) {
-						// null sql means that the only lazy properties
-						// are shared PK one-to-one associations which are
-						// handled differently in the Type#nullSafeGet code...
-						ps = session.getJdbcCoordinator()
-								.getStatementPreparer()
-								.prepareStatement( lazySelect );
-						getIdentifierType().nullSafeSet( ps, id, 1, session );
-						rs = session.getJdbcCoordinator().getResultSetReturn().extract( ps );
-						rs.next();
-					}
-					for ( LazyAttributeDescriptor fetchGroupAttributeDescriptor : fetchGroupAttributeDescriptors ) {
-						final boolean previousInitialized = initializedLazyAttributeNames.contains( fetchGroupAttributeDescriptor.getName() );
-
-						if ( previousInitialized ) {
-							// todo : one thing we should consider here is potentially un-marking an attribute as dirty based on the selected value
-							// 		we know the current value - getPropertyValue( entity, fetchGroupAttributeDescriptor.getAttributeIndex() );
-							// 		we know the selected value (see selectedValue below)
-							//		we can use the attribute Type to tell us if they are the same
-							//
-							//		assuming entity is a SelfDirtinessTracker we can also know if the attribute is
-							//			currently considered dirty, and if really not dirty we would do the un-marking
-							//
-							//		of course that would mean a new method on SelfDirtinessTracker to allow un-marking
-
-							// its already been initialized (e.g. by a write) so we don't want to overwrite
-							continue;
-						}
-
-
-						final Object selectedValue = fetchGroupAttributeDescriptor.getType().nullSafeGet(
-								rs,
-								lazyPropertyColumnAliases[fetchGroupAttributeDescriptor.getLazyIndex()],
-								session,
-								entity
-						);
-
-						final boolean set = initializeLazyProperty(
-								fieldName,
-								entity,
-								session,
-								entry,
-								fetchGroupAttributeDescriptor.getLazyIndex(),
-								selectedValue
-						);
-						if ( set ) {
-							result = selectedValue;
-							interceptor.attributeInitialized( fetchGroupAttributeDescriptor.getName() );
-						}
-
-					}
+				if ( lazySelect != null ) {
+					// null sql means that the only lazy properties
+					// are shared PK one-to-one associations which are
+					// handled differently in the Type#nullSafeGet code...
+					ps = session.getJdbcCoordinator()
+							.getStatementPreparer()
+							.prepareStatement( lazySelect );
+					getIdentifierType().nullSafeSet( ps, id, 1, session );
+					rs = session.getJdbcCoordinator().getResultSetReturn().extract( ps );
+					rs.next();
 				}
-				finally {
-					if ( rs != null ) {
-						session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( rs, ps );
+				for ( LazyAttributeDescriptor fetchGroupAttributeDescriptor : fetchGroupAttributeDescriptors ) {
+					final boolean previousInitialized = initializedLazyAttributeNames.contains( fetchGroupAttributeDescriptor.getName() );
+
+					if ( previousInitialized ) {
+						// todo : one thing we should consider here is potentially un-marking an attribute as dirty based on the selected value
+						// 		we know the current value - getPropertyValue( entity, fetchGroupAttributeDescriptor.getAttributeIndex() );
+						// 		we know the selected value (see selectedValue below)
+						//		we can use the attribute Type to tell us if they are the same
+						//
+						//		assuming entity is a SelfDirtinessTracker we can also know if the attribute is
+						//			currently considered dirty, and if really not dirty we would do the un-marking
+						//
+						//		of course that would mean a new method on SelfDirtinessTracker to allow un-marking
+
+						// its already been initialized (e.g. by a write) so we don't want to overwrite
+						continue;
+					}
+
+
+					final Object selectedValue = fetchGroupAttributeDescriptor.getType().nullSafeGet(
+							rs,
+							lazyPropertyColumnAliases[fetchGroupAttributeDescriptor.getLazyIndex()],
+							session,
+							entity
+					);
+
+					final boolean set = initializeLazyProperty(
+							fieldName,
+							entity,
+							session,
+							entry,
+							fetchGroupAttributeDescriptor.getLazyIndex(),
+							selectedValue
+					);
+					if ( set ) {
+						result = selectedValue;
+						interceptor.attributeInitialized( fetchGroupAttributeDescriptor.getName() );
 					}
 				}
 			}
@@ -1507,42 +1499,37 @@ public abstract class AbstractEntityPersister
 		}
 
 		try {
-			PreparedStatement ps = session
-					.getJdbcCoordinator()
+			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
+			PreparedStatement ps = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( getSQLSnapshotSelectString() );
 			try {
 				getIdentifierType().nullSafeSet( ps, id, 1, session );
 				//if ( isVersioned() ) getVersionType().nullSafeSet( ps, version, getIdentifierColumnSpan()+1, session );
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( ps );
-				try {
-					//if there is no resulting row, return null
-					if ( !rs.next() ) {
-						return null;
-					}
-					//otherwise return the "hydrated" state (ie. associations are not resolved)
-					Type[] types = getPropertyTypes();
-					Object[] values = new Object[types.length];
-					boolean[] includeProperty = getPropertyUpdateability();
-					for ( int i = 0; i < types.length; i++ ) {
-						if ( includeProperty[i] ) {
-							values[i] = types[i].hydrate(
-									rs,
-									getPropertyAliases( "", i ),
-									session,
-									null
-							); //null owner ok??
-						}
-					}
-					return values;
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( ps );
+				//if there is no resulting row, return null
+				if ( !rs.next() ) {
+					return null;
 				}
-				finally {
-					session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( rs, ps );
+				//otherwise return the "hydrated" state (ie. associations are not resolved)
+				Type[] types = getPropertyTypes();
+				Object[] values = new Object[types.length];
+				boolean[] includeProperty = getPropertyUpdateability();
+				for ( int i = 0; i < types.length; i++ ) {
+					if ( includeProperty[i] ) {
+						values[i] = types[i].hydrate(
+								rs,
+								getPropertyAliases( "", i ),
+								session,
+								null
+						); //null owner ok??
+					}
 				}
+				return values;
 			}
 			finally {
-				session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( ps );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( ps );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException e) {
@@ -1574,28 +1561,23 @@ public abstract class AbstractEntityPersister
 		}
 		Type propertyType = getSubclassPropertyType( propertyIndex );
 
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
-			PreparedStatement ps = session
-					.getJdbcCoordinator()
+			PreparedStatement ps = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( generateIdByUniqueKeySelectString( uniquePropertyName ) );
 			try {
 				propertyType.nullSafeSet( ps, key, 1, session );
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( ps );
-				try {
-					//if there is no resulting row, return null
-					if ( !rs.next() ) {
-						return null;
-					}
-					return (Serializable) getIdentifierType().nullSafeGet( rs, getIdentifierAliases(), session, null );
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( ps );
+				//if there is no resulting row, return null
+				if ( !rs.next() ) {
+					return null;
 				}
-				finally {
-					session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( rs, ps );
-				}
+				return (Serializable) getIdentifierType().nullSafeGet( rs, getIdentifierAliases(), session, null );
 			}
 			finally {
-				session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( ps );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( ps );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException e) {
@@ -1838,23 +1820,23 @@ public abstract class AbstractEntityPersister
 		// todo : cache this sql...
 		String versionIncrementString = generateVersionIncrementUpdateString();
 		PreparedStatement st;
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
-			st = session
-					.getJdbcCoordinator()
+			st = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( versionIncrementString, false );
 			try {
 				getVersionType().nullSafeSet( st, nextVersion, 1, session );
 				getIdentifierType().nullSafeSet( st, id, 2, session );
 				getVersionType().nullSafeSet( st, currentVersion, 2 + getIdentifierColumnSpan(), session );
-				int rows = session.getJdbcCoordinator().getResultSetReturn().executeUpdate( st );
+				int rows = jdbcCoordinator.getResultSetReturn().executeUpdate( st );
 				if ( rows != 1 ) {
 					throw new StaleObjectStateException( getEntityName(), id );
 				}
 			}
 			finally {
-				session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( st );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException sqle) {
@@ -1891,29 +1873,24 @@ public abstract class AbstractEntityPersister
 		}
 
 		try {
-			PreparedStatement st = session
-					.getJdbcCoordinator()
+			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
+			PreparedStatement st = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( getVersionSelectString() );
 			try {
 				getIdentifierType().nullSafeSet( st, id, 1, session );
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( st );
-				try {
-					if ( !rs.next() ) {
-						return null;
-					}
-					if ( !isVersioned() ) {
-						return this;
-					}
-					return getVersionType().nullSafeGet( rs, getVersionColumnName(), session, null );
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( st );
+				if ( !rs.next() ) {
+					return null;
 				}
-				finally {
-					session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( rs, st );
+				if ( !isVersioned() ) {
+					return this;
 				}
+				return getVersionType().nullSafeGet( rs, getVersionColumnName(), session, null );
 			}
 			finally {
-				session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( st );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException e) {
@@ -2983,18 +2960,18 @@ public abstract class AbstractEntityPersister
 		PreparedStatement sequentialSelect = null;
 		ResultSet sequentialResultSet = null;
 		boolean sequentialSelectEmpty = false;
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
 
 			if ( hasDeferred ) {
 				final String sql = rootPersister.getSequentialSelect( getEntityName() );
 				if ( sql != null ) {
 					//TODO: I am not so sure about the exception handling in this bit!
-					sequentialSelect = session
-							.getJdbcCoordinator()
+					sequentialSelect = jdbcCoordinator
 							.getStatementPreparer()
 							.prepareStatement( sql );
 					rootPersister.getIdentifierType().nullSafeSet( sequentialSelect, id, 1, session );
-					sequentialResultSet = session.getJdbcCoordinator().getResultSetReturn().extract( sequentialSelect );
+					sequentialResultSet = jdbcCoordinator.getResultSetReturn().extract( sequentialSelect );
 					if ( !sequentialResultSet.next() ) {
 						// TODO: Deal with the "optional" attribute in the <join> mapping;
 						// this code assumes that optional defaults to "true" because it
@@ -3052,17 +3029,13 @@ public abstract class AbstractEntityPersister
 				}
 			}
 
-			if ( sequentialResultSet != null ) {
-				session.getJdbcCoordinator().getResourceRegistry().release( sequentialResultSet, sequentialSelect );
-			}
-
 			return values;
 
 		}
 		finally {
 			if ( sequentialSelect != null ) {
-				session.getJdbcCoordinator().getResourceRegistry().release( sequentialSelect );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getResourceRegistry().release( sequentialSelect );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 	}
@@ -3179,18 +3152,17 @@ public abstract class AbstractEntityPersister
 		}
 		final boolean callable = isInsertCallable( j );
 
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
 			// Render the SQL query
 			final PreparedStatement insert;
 			if ( useBatch ) {
-				insert = session
-						.getJdbcCoordinator()
+				insert = jdbcCoordinator
 						.getBatch( inserBatchKey )
 						.getBatchStatement( sql, callable );
 			}
 			else {
-				insert = session
-						.getJdbcCoordinator()
+				insert = jdbcCoordinator
 						.getStatementPreparer()
 						.prepareStatement( sql, callable );
 			}
@@ -3205,11 +3177,11 @@ public abstract class AbstractEntityPersister
 				dehydrate( id, fields, null, notNull, propertyColumnInsertable, j, insert, session, index, false );
 
 				if ( useBatch ) {
-					session.getJdbcCoordinator().getBatch( inserBatchKey ).addToBatch();
+					jdbcCoordinator.getBatch( inserBatchKey ).addToBatch();
 				}
 				else {
 					expectation.verifyOutcome(
-							session.getJdbcCoordinator()
+							jdbcCoordinator
 									.getResultSetReturn()
 									.executeUpdate( insert ), insert, -1
 					);
@@ -3217,14 +3189,14 @@ public abstract class AbstractEntityPersister
 			}
 			catch (SQLException | JDBCException e) {
 				if ( useBatch ) {
-					session.getJdbcCoordinator().abortBatch();
+					jdbcCoordinator.abortBatch();
 				}
 				throw e;
 			}
 			finally {
 				if ( !useBatch ) {
-					session.getJdbcCoordinator().getResourceRegistry().release( insert );
-					session.getJdbcCoordinator().afterStatementExecution();
+					jdbcCoordinator.getResourceRegistry().release( insert );
+					jdbcCoordinator.afterStatementExecution();
 				}
 			}
 		}
@@ -3470,19 +3442,18 @@ public abstract class AbstractEntityPersister
 			return; //EARLY EXIT!
 		}
 
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
 			//Render the SQL query
 			PreparedStatement delete;
 			int index = 1;
 			if ( useBatch ) {
-				delete = session
-						.getJdbcCoordinator()
+				delete = jdbcCoordinator
 						.getBatch( deleteBatchKey )
 						.getBatchStatement( sql, callable );
 			}
 			else {
-				delete = session
-						.getJdbcCoordinator()
+				delete = jdbcCoordinator
 						.getStatementPreparer()
 						.prepareStatement( sql, callable );
 			}
@@ -3516,11 +3487,11 @@ public abstract class AbstractEntityPersister
 				}
 
 				if ( useBatch ) {
-					session.getJdbcCoordinator().getBatch( deleteBatchKey ).addToBatch();
+					jdbcCoordinator.getBatch( deleteBatchKey ).addToBatch();
 				}
 				else {
 					check(
-							session.getJdbcCoordinator().getResultSetReturn().executeUpdate( delete ),
+							jdbcCoordinator.getResultSetReturn().executeUpdate( delete ),
 							id,
 							j,
 							expectation,
@@ -3531,14 +3502,14 @@ public abstract class AbstractEntityPersister
 			}
 			catch (SQLException sqle) {
 				if ( useBatch ) {
-					session.getJdbcCoordinator().abortBatch();
+					jdbcCoordinator.abortBatch();
 				}
 				throw sqle;
 			}
 			finally {
 				if ( !useBatch ) {
-					session.getJdbcCoordinator().getResourceRegistry().release( delete );
-					session.getJdbcCoordinator().afterStatementExecution();
+					jdbcCoordinator.getResourceRegistry().release( delete );
+					jdbcCoordinator.afterStatementExecution();
 				}
 			}
 
@@ -5147,37 +5118,36 @@ public abstract class AbstractEntityPersister
 			String selectionSQL,
 			GenerationTiming matchTiming) {
 		// force immediate execution of the insert batch (if one)
-		session.getJdbcCoordinator().executeBatch();
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
+		jdbcCoordinator.executeBatch();
 
 		try {
-			PreparedStatement ps = session
-					.getJdbcCoordinator()
+			PreparedStatement ps = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( selectionSQL );
 			try {
 				getIdentifierType().nullSafeSet( ps, id, 1, session );
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( ps );
-				try {
-					if ( !rs.next() ) {
-						throw new HibernateException(
-								"Unable to locate row for retrieval of generated properties: " +
-										MessageHelper.infoString( this, id, getFactory() )
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( ps );
+				if ( !rs.next() ) {
+					throw new HibernateException(
+							"Unable to locate row for retrieval of generated properties: " +
+									MessageHelper.infoString( this, id, getFactory() )
+					);
+				}
+				int propertyIndex = -1;
+				for ( NonIdentifierAttribute attribute : entityMetamodel.getProperties() ) {
+					propertyIndex++;
+					if ( isValueGenerationRequired( attribute, matchTiming ) ) {
+						final Object hydratedState = attribute.getType().hydrate(
+								rs, getPropertyAliases(
+										"",
+										propertyIndex
+								), session, entity
 						);
+						state[propertyIndex] = attribute.getType().resolve( hydratedState, session, entity );
+						setPropertyValue( entity, propertyIndex, state[propertyIndex] );
 					}
-					int propertyIndex = -1;
-					for ( NonIdentifierAttribute attribute : entityMetamodel.getProperties() ) {
-						propertyIndex++;
-						if ( isValueGenerationRequired( attribute, matchTiming ) ) {
-							final Object hydratedState = attribute.getType().hydrate(
-									rs, getPropertyAliases(
-											"",
-											propertyIndex
-									), session, entity
-							);
-							state[propertyIndex] = attribute.getType().resolve( hydratedState, session, entity );
-							setPropertyValue( entity, propertyIndex, state[propertyIndex] );
-						}
-					}
+				}
 
 //					for ( int i = 0; i < getPropertySpan(); i++ ) {
 //						if ( includeds[i] != ValueInclusion.NONE ) {
@@ -5186,16 +5156,10 @@ public abstract class AbstractEntityPersister
 //							setPropertyValue( entity, i, state[i] );
 //						}
 //					}
-				}
-				finally {
-					if ( rs != null ) {
-						session.getJdbcCoordinator().getResourceRegistry().release( rs, ps );
-					}
-				}
 			}
 			finally {
-				session.getJdbcCoordinator().getResourceRegistry().release( ps );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getResourceRegistry().release( ps );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException e) {
@@ -5315,29 +5279,24 @@ public abstract class AbstractEntityPersister
 			try {
 				getIdentifierType().nullSafeSet( ps, id, 1, session );
 				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( ps );
-				try {
-					//if there is no resulting row, return null
-					if ( !rs.next() ) {
-						return null;
-					}
-					final EntityKey key = session.generateEntityKey( id, this );
-					Object owner = session.getPersistenceContextInternal().getEntity( key );
-					for ( int i = 0; i < naturalIdPropertyCount; i++ ) {
-						snapshot[i] = extractionTypes[i].hydrate(
-								rs, getPropertyAliases(
-										"",
-										naturalIdPropertyIndexes[i]
-								), session, null
-						);
-						if ( extractionTypes[i].isEntityType() ) {
-							snapshot[i] = extractionTypes[i].resolve( snapshot[i], session, owner );
-						}
-					}
-					return snapshot;
+				//if there is no resulting row, return null
+				if ( !rs.next() ) {
+					return null;
 				}
-				finally {
-					jdbcCoordinator.getResourceRegistry().release( rs, ps );
+				final EntityKey key = session.generateEntityKey( id, this );
+				Object owner = session.getPersistenceContextInternal().getEntity( key );
+				for ( int i = 0; i < naturalIdPropertyCount; i++ ) {
+					snapshot[i] = extractionTypes[i].hydrate(
+							rs, getPropertyAliases(
+									"",
+									naturalIdPropertyIndexes[i]
+							), session, null
+					);
+					if ( extractionTypes[i].isEntityType() ) {
+						snapshot[i] = extractionTypes[i].resolve( snapshot[i], session, owner );
+					}
 				}
+				return snapshot;
 			}
 			finally {
 				jdbcCoordinator.getResourceRegistry().release( ps );
@@ -5369,9 +5328,9 @@ public abstract class AbstractEntityPersister
 		final boolean[] valueNullness = determineValueNullness( naturalIdValues );
 		final String sqlEntityIdByNaturalIdString = determinePkByNaturalIdQuery( valueNullness );
 
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
-			PreparedStatement ps = session
-					.getJdbcCoordinator()
+			PreparedStatement ps = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( sqlEntityIdByNaturalIdString );
 			try {
@@ -5385,23 +5344,18 @@ public abstract class AbstractEntityPersister
 						positions += type.getColumnSpan( session.getFactory() );
 					}
 				}
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( ps );
-				try {
-					// if there is no resulting row, return null
-					if ( !rs.next() ) {
-						return null;
-					}
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( ps );
+				// if there is no resulting row, return null
+				if ( !rs.next() ) {
+					return null;
+				}
 
-					final Object hydratedId = getIdentifierType().hydrate( rs, getIdentifierAliases(), session, null );
-					return (Serializable) getIdentifierType().resolve( hydratedId, session, null );
-				}
-				finally {
-					session.getJdbcCoordinator().getResourceRegistry().release( rs, ps );
-				}
+				final Object hydratedId = getIdentifierType().hydrate( rs, getIdentifierAliases(), session, null );
+				return (Serializable) getIdentifierType().resolve( hydratedId, session, null );
 			}
 			finally {
-				session.getJdbcCoordinator().getResourceRegistry().release( ps );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getResourceRegistry().release( ps );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException e) {

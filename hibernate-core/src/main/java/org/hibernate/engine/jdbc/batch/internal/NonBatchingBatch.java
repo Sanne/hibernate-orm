@@ -42,10 +42,14 @@ public class NonBatchingBatch extends AbstractBatchImpl {
 		for ( Map.Entry<String,PreparedStatement> entry : getStatements().entrySet() ) {
 			try {
 				final PreparedStatement statement = entry.getValue();
-				final int rowCount = jdbcCoordinator.getResultSetReturn().executeUpdate( statement );
-				getKey().getExpectation().verifyOutcome( rowCount, statement, 0 );
-				jdbcCoordinator.getResourceRegistry().release( statement );
-				jdbcCoordinator.afterStatementExecution();
+				try {
+					final int rowCount = jdbcCoordinator.getResultSetReturn().executeUpdate( statement );
+					getKey().getExpectation().verifyOutcome( rowCount, statement, 0 );
+				}
+				finally {
+					jdbcCoordinator.getResourceRegistry().release( statement );
+					jdbcCoordinator.afterStatementExecution();
+				}
 			}
 			catch ( SQLException e ) {
 				abortBatch();

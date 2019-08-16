@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.PostInsertIdentityPersister;
 import org.hibernate.pretty.MessageHelper;
@@ -34,19 +35,19 @@ public abstract class AbstractSelectingDelegate implements InsertGeneratedIdenti
 			String insertSQL,
 			SharedSessionContractImplementor session,
 			Binder binder) {
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
 			// prepare and execute the insert
-			PreparedStatement insert = session
-					.getJdbcCoordinator()
+			PreparedStatement insert = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( insertSQL, PreparedStatement.NO_GENERATED_KEYS );
 			try {
 				binder.bindValues( insert );
-				session.getJdbcCoordinator().getResultSetReturn().executeUpdate( insert );
+				jdbcCoordinator.getResultSetReturn().executeUpdate( insert );
 			}
 			finally {
-				session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( insert );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( insert );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException sqle) {
@@ -61,23 +62,17 @@ public abstract class AbstractSelectingDelegate implements InsertGeneratedIdenti
 
 		try {
 			//fetch the generated id in a separate query
-			PreparedStatement idSelect = session
-					.getJdbcCoordinator()
+			PreparedStatement idSelect = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( selectSQL, false );
 			try {
 				bindParameters( session, idSelect, binder.getEntity() );
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( idSelect );
-				try {
-					return getResult( session, rs, binder.getEntity() );
-				}
-				finally {
-					session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( rs, idSelect );
-				}
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( idSelect );
+				return getResult( session, rs, binder.getEntity() );
 			}
 			finally {
-				session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( idSelect );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( idSelect );
+				jdbcCoordinator.afterStatementExecution();
 			}
 
 		}

@@ -22,6 +22,7 @@ import org.hibernate.boot.model.relational.QualifiedNameParser;
 import org.hibernate.boot.model.relational.Sequence;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
+import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.log.DeprecationLogger;
 import org.hibernate.internal.util.config.ConfigurationHelper;
@@ -111,23 +112,19 @@ public class SequenceGenerator
 
 	protected IntegralDataTypeHolder generateHolder(SharedSessionContractImplementor session) {
 		try {
-			PreparedStatement st = session.getJdbcCoordinator().getStatementPreparer().prepareStatement( sql );
+			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
+			PreparedStatement st = jdbcCoordinator.getStatementPreparer().prepareStatement( sql );
 			try {
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( st );
-				try {
-					rs.next();
-					IntegralDataTypeHolder result = buildHolder();
-					result.initialize( rs, 1 );
-					LOG.debugf( "Sequence identifier generated: %s", result );
-					return result;
-				}
-				finally {
-					session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( rs, st );
-				}
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( st );
+				rs.next();
+				IntegralDataTypeHolder result = buildHolder();
+				result.initialize( rs, 1 );
+				LOG.debugf( "Sequence identifier generated: %s", result );
+				return result;
 			}
 			finally {
-				session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( st );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+				jdbcCoordinator.afterStatementExecution();
 			}
 
 		}

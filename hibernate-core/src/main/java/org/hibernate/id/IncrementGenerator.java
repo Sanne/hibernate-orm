@@ -16,6 +16,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.boot.model.naming.ObjectNameNormalizer;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
+import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.CoreLogging;
 import org.hibernate.internal.CoreMessageLogger;
@@ -106,29 +107,25 @@ public class IncrementGenerator implements IdentifierGenerator, Configurable {
 		if ( LOG.isDebugEnabled() ) {
 			LOG.debugf( "Fetching initial value: %s", sql );
 		}
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
-			PreparedStatement st = session.getJdbcCoordinator().getStatementPreparer().prepareStatement( sql );
+			PreparedStatement st = jdbcCoordinator.getStatementPreparer().prepareStatement( sql );
 			try {
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( st );
-				try {
-					if ( rs.next() ) {
-						previousValueHolder.initialize( rs, 0L ).increment();
-					}
-					else {
-						previousValueHolder.initialize( 1L );
-					}
-					sql = null;
-					if ( LOG.isDebugEnabled() ) {
-						LOG.debugf( "First free id: %s", previousValueHolder.makeValue() );
-					}
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( st );
+				if ( rs.next() ) {
+					previousValueHolder.initialize( rs, 0L ).increment();
 				}
-				finally {
-					session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( rs, st );
+				else {
+					previousValueHolder.initialize( 1L );
+				}
+				sql = null;
+				if ( LOG.isDebugEnabled() ) {
+					LOG.debugf( "First free id: %s", previousValueHolder.makeValue() );
 				}
 			}
 			finally {
-				session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( st );
-				session.getJdbcCoordinator().afterStatementExecution();
+				jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException sqle) {

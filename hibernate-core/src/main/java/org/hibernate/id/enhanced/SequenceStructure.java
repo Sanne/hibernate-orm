@@ -93,23 +93,13 @@ public class SequenceStructure implements DatabaseStructure {
 					final PreparedStatement st = session.getJdbcCoordinator().getStatementPreparer().prepareStatement( sql );
 					try {
 						final ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( st );
-						try {
-							rs.next();
-							final IntegralDataTypeHolder value = IdentifierGeneratorHelper.getIntegralDataTypeHolder( numberType );
-							value.initialize( rs, 1 );
-							if ( LOG.isDebugEnabled() ) {
-								LOG.debugf( "Sequence value obtained: %s", value.makeValue() );
-							}
-							return value;
+						rs.next();
+						final IntegralDataTypeHolder value = IdentifierGeneratorHelper.getIntegralDataTypeHolder( numberType );
+						value.initialize( rs, 1 );
+						if ( LOG.isDebugEnabled() ) {
+							LOG.debugf( "Sequence value obtained: %s", value.makeValue() );
 						}
-						finally {
-							try {
-								session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( rs, st );
-							}
-							catch( Throwable ignore ) {
-								// intentionally empty
-							}
-						}
+						return value;
 					}
 					finally {
 						session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( st );

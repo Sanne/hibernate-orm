@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -108,24 +109,25 @@ public class TableBasedUpdateHandlerImpl
 	@Override
 	public int execute(SharedSessionContractImplementor session, QueryParameters queryParameters) {
 		prepareForUse( targetedPersister, session );
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 		try {
 			// First, save off the pertinent ids, as the return value
 			PreparedStatement ps = null;
 			int resultCount = 0;
 			try {
 				try {
-					ps = session.getJdbcCoordinator().getStatementPreparer().prepareStatement( idInsertSelect, false );
+					ps = jdbcCoordinator.getStatementPreparer().prepareStatement( idInsertSelect, false );
 					int position = 1;
 					position += handlePrependedParametersOnIdSelection( ps, session, position );
 					for ( ParameterSpecification parameterSpecification : idSelectParameterSpecifications ) {
 						position += parameterSpecification.bind( ps, queryParameters, session, position );
 					}
-					resultCount = session.getJdbcCoordinator().getResultSetReturn().executeUpdate( ps );
+					resultCount = jdbcCoordinator.getResultSetReturn().executeUpdate( ps );
 				}
 				finally {
 					if ( ps != null ) {
-						session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( ps );
-						session.getJdbcCoordinator().afterStatementExecution();
+						jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( ps );
+						jdbcCoordinator.afterStatementExecution();
 					}
 				}
 			}
@@ -140,7 +142,7 @@ public class TableBasedUpdateHandlerImpl
 				}
 				try {
 					try {
-						ps = session.getJdbcCoordinator().getStatementPreparer().prepareStatement( updates[i], false );
+						ps = jdbcCoordinator.getStatementPreparer().prepareStatement( updates[i], false );
 						if ( assignmentParameterSpecifications[i] != null ) {
 							int position = 1; // jdbc params are 1-based
 							for ( int x = 0; x < assignmentParameterSpecifications[i].length; x++ ) {
@@ -148,12 +150,12 @@ public class TableBasedUpdateHandlerImpl
 							}
 							handleAddedParametersOnUpdate( ps, session, position );
 						}
-						session.getJdbcCoordinator().getResultSetReturn().executeUpdate( ps );
+						jdbcCoordinator.getResultSetReturn().executeUpdate( ps );
 					}
 					finally {
 						if ( ps != null ) {
-							session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( ps );
-							session.getJdbcCoordinator().afterStatementExecution();
+							jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( ps );
+							jdbcCoordinator.afterStatementExecution();
 						}
 					}
 				}
