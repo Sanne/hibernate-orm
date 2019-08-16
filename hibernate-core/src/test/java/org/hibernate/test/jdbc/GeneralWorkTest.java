@@ -40,32 +40,18 @@ public class GeneralWorkTest extends BaseCoreFunctionalTestCase {
 
 	@Test
 	public void testGeneralUsage() throws Throwable {
-		final Session session = openSession();
+		final SessionImplementor session = (SessionImplementor) openSession();
 		session.beginTransaction();
 		session.doWork(
 				new Work() {
 					public void execute(Connection connection) throws SQLException {
 						// in this current form, users must handle try/catches themselves for proper resource release
-						Statement statement = null;
+						Statement statement = session.getJdbcCoordinator().getStatementPreparer().createStatement();
 						try {
-							statement = ((SessionImplementor)session).getJdbcCoordinator().getStatementPreparer().createStatement();
-							ResultSet resultSet = null;
-							try {
-								
-								resultSet = ((SessionImplementor)session).getJdbcCoordinator().getResultSetReturn().extract( statement, "select * from T_JDBC_PERSON" );
-							}
-							finally {
-								releaseQuietly( ((SessionImplementor)session), resultSet, statement );
-							}
-							try {
-								((SessionImplementor)session).getJdbcCoordinator().getResultSetReturn().extract( statement, "select * from T_JDBC_BOAT" );
-							}
-							finally {
-								releaseQuietly( ((SessionImplementor)session), resultSet, statement );
-							}
+							session.getJdbcCoordinator().getResultSetReturn().extract( statement, "select * from T_JDBC_BOAT" );
 						}
 						finally {
-							releaseQuietly( ((SessionImplementor)session), statement );
+							releaseQuietly( session, statement );
 						}
 					}
 				}
@@ -76,19 +62,18 @@ public class GeneralWorkTest extends BaseCoreFunctionalTestCase {
 
 	@Test
 	public void testSQLExceptionThrowing() {
-		final Session session = openSession();
+		final SessionImplementor session = (SessionImplementor) openSession();
 		session.beginTransaction();
 		try {
 			session.doWork(
 					new Work() {
 						public void execute(Connection connection) throws SQLException {
-							Statement statement = null;
+							Statement statement = session.getJdbcCoordinator().getStatementPreparer().createStatement();
 							try {
-								statement = ((SessionImplementor)session).getJdbcCoordinator().getStatementPreparer().createStatement();
-								((SessionImplementor)session).getJdbcCoordinator().getResultSetReturn().extract( statement, "select * from non_existent" );
+								session.getJdbcCoordinator().getResultSetReturn().extract( statement, "select * from non_existent" );
 							}
 							finally {
-								releaseQuietly( ((SessionImplementor)session), statement );
+								releaseQuietly( session, statement );
 							}
 						}
 					}
@@ -110,29 +95,22 @@ public class GeneralWorkTest extends BaseCoreFunctionalTestCase {
 		session.save( p );
 		session.getTransaction().commit();
 
-		final Session session2 = openSession();
+		final SessionImplementor session2 = (SessionImplementor) openSession();
 		session2.beginTransaction();
 		long count = session2.doReturningWork(
 				new ReturningWork<Long>() {
 					public Long execute(Connection connection) throws SQLException {
 						// in this current form, users must handle try/catches themselves for proper resource release
-						Statement statement = null;
+						Statement statement = session2.getJdbcCoordinator().getStatementPreparer().createStatement();
 						long personCount = 0;
 						try {
-							statement = ((SessionImplementor)session2).getJdbcCoordinator().getStatementPreparer().createStatement();
-							ResultSet resultSet = null;
-							try {
-								resultSet = ((SessionImplementor)session2).getJdbcCoordinator().getResultSetReturn().extract( statement, "select count(*) from T_JDBC_PERSON" );
-								resultSet.next();
-								personCount = resultSet.getLong( 1 );
-								assertEquals( 1L, personCount );
-							}
-							finally {
-								releaseQuietly( ((SessionImplementor)session2), resultSet, statement );
-							}
+							ResultSet resultSet = session2.getJdbcCoordinator().getResultSetReturn().extract( statement, "select count(*) from T_JDBC_PERSON" );
+							resultSet.next();
+							personCount = resultSet.getLong( 1 );
+							assertEquals( 1L, personCount );
 						}
 						finally {
-							releaseQuietly( ((SessionImplementor)session2), statement );
+							releaseQuietly( session2, statement );
 						}
 						return personCount;
 					}
@@ -161,15 +139,4 @@ public class GeneralWorkTest extends BaseCoreFunctionalTestCase {
 		}
 	}
 
-	private void releaseQuietly(SessionImplementor s, ResultSet resultSet, Statement statement) {
-		if ( resultSet == null ) {
-			return;
-		}
-		try {
-			s.getJdbcCoordinator().getResourceRegistry().release( resultSet, statement );
-		}
-		catch (Exception e) {
-			// ignore
-		}
-	}
 }
