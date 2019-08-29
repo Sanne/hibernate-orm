@@ -1459,15 +1459,11 @@ public abstract class Loader {
 			final SharedSessionContractImplementor session) {
 
 		if ( keys != null ) {
+			final boolean debugEnabled = LOG.isDebugEnabled();
 			// this is a collection initializer, so we must create a collection
 			// for each of the passed-in keys, to account for the possibility
 			// that the collection is empty and has no rows in the result set
 			CollectionPersister[] collectionPersisters = getCollectionPersisters();
-			final PersistenceContext persistenceContext = session.getPersistenceContextInternal();
-			final boolean debugEnabled = LOG.isDebugEnabled();
-			final CollectionLoadContext collectionLoadContext = persistenceContext
-					.getLoadContexts()
-					.getCollectionLoadContext( (ResultSet) resultSetId );
 			for ( CollectionPersister collectionPersister : collectionPersisters ) {
 				for ( Serializable key : keys ) {
 					//handle empty collections
@@ -1479,7 +1475,9 @@ public abstract class Loader {
 					}
 
 					throw new NotYetImplementedFor6Exception( getClass() );
-//					scollectionLoadContext
+//					session.getPersistenceContext()
+//							.getLoadContexts()
+//							.getCollectionLoadContext( (ResultSet) resultSetId )
 //							.getLoadingCollection( collectionPersister, key );
 				}
 			}

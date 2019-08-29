@@ -390,6 +390,10 @@ public abstract class AbstractProducedQuery<R> implements QueryImplementor<R> {
 		);
 	}
 
+	private  <P> QueryParameterBinding<P> locateBinding(QueryParameter<P> parameter) {
+		return getQueryParameterBindings().getBinding( parameter );
+	}
+
 	private <P> QueryParameterBinding<P> locateBinding(String name) {
 		//noinspection unchecked
 		return (QueryParameterBinding) getQueryParameterBindings().getBinding( name );
@@ -899,7 +903,7 @@ public abstract class AbstractProducedQuery<R> implements QueryImplementor<R> {
 	}
 
 	protected void collectHints(Map<String, Object> hints) {
-		final RowSelection queryOptions = getQueryOptions();
+		final MutableQueryOptions queryOptions = getQueryOptions();
 		final Integer queryTimeout = queryOptions.getTimeout();
 		if ( queryTimeout != null ) {
 			hints.put( HINT_TIMEOUT, queryTimeout );

@@ -275,7 +275,6 @@ public interface SharedSessionContractImplementor
 	 */
 	Object immediateLoad(String entityName, Serializable id) throws HibernateException;
 
-
 	/**
 	 * Get the <tt>EntityPersister</tt> for any instance
 	 *

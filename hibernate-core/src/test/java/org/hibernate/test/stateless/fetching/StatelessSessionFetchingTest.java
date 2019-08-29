@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;

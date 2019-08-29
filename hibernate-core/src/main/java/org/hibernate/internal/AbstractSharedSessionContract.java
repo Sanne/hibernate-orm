@@ -31,6 +31,7 @@ import org.hibernate.Interceptor;
 import org.hibernate.LockMode;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.NotYetImplementedFor6Exception;
+import org.hibernate.SessionEventListener;
 import org.hibernate.SessionException;
 import org.hibernate.Transaction;
 import org.hibernate.cache.spi.CacheTransactionSynchronization;
@@ -360,6 +361,18 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 				markForRollbackOnly();
 			}
 			throw new IllegalStateException( "Session/EntityManager is closed" );
+		}
+	}
+
+	@Override
+	public void prepareForQueryExecution(boolean requiresTxn) {
+		checkOpen();
+		checkTransactionSynchStatus();
+
+		if ( requiresTxn && !isTransactionInProgress() ) {
+			throw new TransactionRequiredException(
+					"Query requires transaction be in progress, but no transaction is known to be in progress"
+			);
 		}
 	}
 

@@ -17,8 +17,6 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.NClob;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -35,13 +33,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
-import javax.persistence.PessimisticLockScope;
 import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TransactionRequiredException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
 
 import org.hibernate.CacheMode;
 import org.hibernate.Filter;
@@ -75,8 +68,6 @@ import org.hibernate.engine.internal.StatefulPersistenceContext;
 import org.hibernate.engine.jdbc.LobCreator;
 import org.hibernate.engine.jdbc.NonContextualLobCreator;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
-import org.hibernate.engine.query.spi.NativeSQLQueryPlan;
-import org.hibernate.engine.query.spi.sql.NativeSQLQuerySpecification;
 import org.hibernate.engine.spi.ActionQueue;
 import org.hibernate.engine.spi.EffectiveEntityGraph;
 import org.hibernate.engine.spi.EntityEntry;
@@ -137,7 +128,6 @@ import org.hibernate.jpa.internal.util.ConfigurationHelper;
 import org.hibernate.jpa.internal.util.FlushModeTypeHelper;
 import org.hibernate.jpa.internal.util.LockModeTypeHelper;
 import org.hibernate.jpa.internal.util.LockOptionsHelper;
-import org.hibernate.loader.custom.CustomLoader;
 import org.hibernate.loader.custom.CustomQuery;
 import org.hibernate.metamodel.spi.MetamodelImplementor;
 import org.hibernate.persister.entity.EntityPersister;
@@ -147,20 +137,11 @@ import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.procedure.spi.NamedCallableQueryMemento;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
-import org.hibernate.query.ImmutableEntityUpdateQueryHandlingMode;
 import org.hibernate.query.Query;
 import org.hibernate.query.UnknownSqlResultSetMappingException;
-import org.hibernate.query.spi.QueryImplementor;
 import org.hibernate.query.spi.ScrollableResultsImplementor;
-import org.hibernate.query.sqm.internal.QuerySqmImpl;
-import org.hibernate.query.sqm.tree.SqmStatement;
-import org.hibernate.query.sqm.tree.delete.SqmDeleteStatement;
-import org.hibernate.query.sqm.tree.update.SqmUpdateStatement;
 import org.hibernate.resource.transaction.TransactionRequiredForJoinException;
 import org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorImpl;
-import org.hibernate.resource.transaction.backend.jta.internal.synchronization.AfterCompletionAction;
-import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ExceptionMapper;
-import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ManagedFlushChecker;
 import org.hibernate.resource.transaction.spi.TransactionCoordinator;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.stat.SessionStatistics;
@@ -997,7 +978,17 @@ public final class SessionImpl
 			Serializable id,
 			boolean eager,
 			boolean nullable) throws HibernateException {
+		return internalLoad( entityName, id, eager, nullable, null );
 
+	}
+
+	@Override
+	public final Object internalLoad(
+			String entityName,
+			Serializable id,
+			boolean eager,
+			boolean nullable,
+			Boolean unwrapProxy) {
 		final EffectiveEntityGraph effectiveEntityGraph = getLoadQueryInfluencers().getEffectiveEntityGraph();
 		final GraphSemantic semantic = effectiveEntityGraph.getSemantic();
 		final RootGraphImplementor<?> graph = effectiveEntityGraph.getGraph();
@@ -2843,7 +2834,7 @@ public final class SessionImpl
 				if ( !LockModeType.NONE.equals( lockModeType) ) {
 					checkTransactionNeededForUpdateOperation();
 				}
-				lockOptions = buildLockOptions( lockModeType, properties );
+				lockOptions = buildLockOptions( properties );
 				loadAccess.with( lockOptions );
 			}
 
@@ -2946,7 +2937,7 @@ public final class SessionImpl
 			throw new IllegalArgumentException( "entity not in the persistence context" );
 		}
 
-		final LockOptions lockOptions = buildLockOptions( lockModeType, properties );
+		final LockOptions lockOptions = buildLockOptions( properties );
 		try {
 			buildLockRequest( lockOptions ).lock( entity );
 		}
@@ -2985,7 +2976,7 @@ public final class SessionImpl
 					checkTransactionNeededForUpdateOperation();
 				}
 
-				lockOptions = buildLockOptions( lockModeType, properties );
+				lockOptions = buildLockOptions( properties );
 				refresh( entity, lockOptions );
 			}
 			else {
@@ -3003,14 +2994,18 @@ public final class SessionImpl
 		}
 	}
 
-	private LockOptions buildLockOptions(LockModeType lockModeType, Map<String, Object> properties) {
-		final LockOptions lockOptions = new LockOptions();
-		LockOptions.copy( this.lockOptions, this.lockOptions );
-		this.lockOptions.setLockMode( LockModeTypeHelper.getLockMode( lockModeType ) );
-		if ( properties != null ) {
-			setLockOptions( properties, this.lockOptions );
-		}
-		return lockOptions;
+	/**
+	 * This method exists to help port older code, but we hope we'll be eventually able to
+	 * spend some time in making sure the LockOptions instance is only allocated when
+	 * necessary (While this method will always allocate one).
+	 * @param properties
+	 * @return
+	 */
+	@Deprecated
+	static private LockOptions buildLockOptions(final Map<String, Object> properties) {
+		LockOptions def = new LockOptions();
+		LockOptionsHelper.applyPropertiesToLockOptions( properties, () -> def );
+		return def;
 	}
 
 	@Override
