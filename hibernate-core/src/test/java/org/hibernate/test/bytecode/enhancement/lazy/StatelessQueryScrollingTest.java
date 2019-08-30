@@ -50,7 +50,7 @@ public class StatelessQueryScrollingTest extends BaseNonConfigCoreFunctionalTest
 			final Query query = statelessSession.createQuery( "from Task t join fetch t.resource join fetch t.user" );
 			scrollableResults = query.scroll( ScrollMode.FORWARD_ONLY );
 			while ( scrollableResults.next() ) {
-				Task taskRef = (Task) scrollableResults.get( 0 );
+				Task taskRef = (Task) scrollableResults.get();
 				assertTrue( Hibernate.isInitialized( taskRef ) );
 				assertTrue( Hibernate.isInitialized( taskRef.getUser() ) );
 				assertTrue( Hibernate.isInitialized( taskRef.getResource() ) );
@@ -75,7 +75,7 @@ public class StatelessQueryScrollingTest extends BaseNonConfigCoreFunctionalTest
 			final Query query = statelessSession.createQuery( "select p from Producer p join fetch p.products" );
 			scrollableResults = query.scroll( ScrollMode.FORWARD_ONLY );
 			while ( scrollableResults.next() ) {
-				Producer producer = (Producer) scrollableResults.get( 0 );
+				Producer producer = (Producer) scrollableResults.get();
 				assertTrue( Hibernate.isInitialized( producer ) );
 				assertTrue( Hibernate.isPropertyInitialized( producer, "products" ) );
 				assertTrue( Hibernate.isInitialized( producer.getProducts() ) );
