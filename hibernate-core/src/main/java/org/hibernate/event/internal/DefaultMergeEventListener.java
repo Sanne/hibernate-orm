@@ -285,17 +285,7 @@ public class DefaultMergeEventListener extends AbstractSaveEventListener impleme
 		final EntityPersister persister = source.getEntityPersister( event.getEntityName(), entity );
 		final String entityName = persister.getEntityName();
 
-		Serializable id = event.getRequestedId();
-		if ( id == null ) {
-			id = persister.getIdentifier( entity, source );
-		}
-		else {
-			// check that entity id = requestedId
-			Serializable entityId = persister.getIdentifier( entity, source );
-			if ( !persister.getIdentifierType().isEqual( id, entityId, source.getFactory() ) ) {
-				throw new HibernateException( "merge requested with id not matching id of passed entity" );
-			}
-		}
+		Serializable id = persister.getIdentifier( entity, source );
 
 		String previousFetchProfile = source.getLoadQueryInfluencers().getInternalFetchProfile();
 		source.getLoadQueryInfluencers().setInternalFetchProfile( "merge" );
