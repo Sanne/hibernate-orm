@@ -6,9 +6,10 @@
  */
 package org.hibernate.event.spi;
 
+import java.util.Objects;
 import java.io.Serializable;
 
-/** 
+/**
  * An event class for merge() and saveOrUpdateCopy()
  *
  * @author Gavin King
@@ -16,33 +17,18 @@ import java.io.Serializable;
 public class MergeEvent extends AbstractEvent {
 
 	private Object original;
-	private Serializable requestedId;
 	private String entityName;
 	private Object entity;
 	private Object result;
 
 	public MergeEvent(String entityName, Object original, EventSource source) {
-		this(original, source);
+		this( original, source );
 		this.entityName = entityName;
 	}
 
-	public MergeEvent(String entityName, Object original, Serializable id, EventSource source) {
-		this(entityName, original, source);
-		this.requestedId = id;
-		if ( requestedId == null ) {
-			throw new IllegalArgumentException(
-					"attempt to create merge event with null identifier"
-				);
-		}
-	}
-
 	public MergeEvent(Object object, EventSource source) {
-		super(source);
-		if ( object == null ) {
-			throw new IllegalArgumentException(
-					"attempt to create merge event with null entity"
-				);
-		}
+		super( source );
+		Objects.requireNonNull( object );
 		this.original = object;
 	}
 
@@ -54,12 +40,13 @@ public class MergeEvent extends AbstractEvent {
 		this.original = object;
 	}
 
+	/**
+	 * @deprecated not longer used. Always returns null.
+	 * @return returns null.
+	 */
+	@Deprecated
 	public Serializable getRequestedId() {
-		return requestedId;
-	}
-
-	public void setRequestedId(Serializable requestedId) {
-		this.requestedId = requestedId;
+		return null;
 	}
 
 	public String getEntityName() {
@@ -84,4 +71,5 @@ public class MergeEvent extends AbstractEvent {
 	public void setResult(Object result) {
 		this.result = result;
 	}
+
 }
