@@ -65,6 +65,7 @@ import org.hibernate.type.spi.TypeConfiguration;
  * @author Gail Badner
  */
 public class MetadataImpl implements MetadataImplementor, Serializable {
+
 	private static final Pattern LISTENER_SEPARATION_PATTERN = Pattern.compile( " ," );
 
 	private final UUID uuid;
@@ -73,9 +74,9 @@ public class MetadataImpl implements MetadataImplementor, Serializable {
 
 	private final MutableIdentifierGeneratorFactory identifierGeneratorFactory;
 
-	private final Map<String,PersistentClass> entityBindingMap;
+	private final Map<String, PersistentClass> entityBindingMap;
 	private final Map<Class, MappedSuperclass> mappedSuperclassMap;
-	private final Map<String,Collection> collectionBindingMap;
+	private final Map<String, Collection> collectionBindingMap;
 	private final Map<String, TypeDefinition> typeDefinitionMap;
 	private final Map<String, FilterDefinition> filterDefinitionMap;
 	private final Map<String, FetchProfile> fetchProfileMap;
