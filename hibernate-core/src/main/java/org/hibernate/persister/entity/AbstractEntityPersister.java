@@ -119,6 +119,7 @@ import org.hibernate.persister.walking.spi.AttributeDefinition;
 import org.hibernate.persister.walking.spi.EntityIdentifierDefinition;
 import org.hibernate.pretty.MessageHelper;
 import org.hibernate.property.access.internal.PropertyAccessStrategyBackRefImpl;
+import org.hibernate.resource.jdbc.ResourceRegistry;
 import org.hibernate.sql.Alias;
 import org.hibernate.sql.Delete;
 import org.hibernate.sql.Insert;
@@ -3004,18 +3005,19 @@ public abstract class AbstractEntityPersister
 		PreparedStatement sequentialSelect = null;
 		ResultSet sequentialResultSet = null;
 		boolean sequentialSelectEmpty = false;
+		final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
+		final ResourceRegistry resourceRegistry = jdbcCoordinator.getLogicalConnection().getResourceRegistry();
 		try {
 
 			if ( hasDeferred ) {
 				final String sql = rootPersister.getSequentialSelect( getEntityName() );
 				if ( sql != null ) {
 					//TODO: I am not so sure about the exception handling in this bit!
-					sequentialSelect = session
-							.getJdbcCoordinator()
+					sequentialSelect = jdbcCoordinator
 							.getStatementPreparer()
 							.prepareStatement( sql );
 					rootPersister.getIdentifierType().nullSafeSet( sequentialSelect, id, 1, session );
-					sequentialResultSet = session.getJdbcCoordinator().getResultSetReturn().extract( sequentialSelect );
+					sequentialResultSet = jdbcCoordinator.getResultSetReturn().extract( sequentialSelect );
 					if ( !sequentialResultSet.next() ) {
 						// TODO: Deal with the "optional" attribute in the <join> mapping;
 						// this code assumes that optional defaults to "true" because it
@@ -3074,7 +3076,7 @@ public abstract class AbstractEntityPersister
 			}
 
 			if ( sequentialResultSet != null ) {
-				session.getJdbcCoordinator().getResourceRegistry().release( sequentialResultSet, sequentialSelect );
+				resourceRegistry.release( sequentialResultSet, sequentialSelect );
 			}
 
 			return values;
@@ -3082,8 +3084,8 @@ public abstract class AbstractEntityPersister
 		}
 		finally {
 			if ( sequentialSelect != null ) {
-				session.getJdbcCoordinator().getResourceRegistry().release( sequentialSelect );
-				session.getJdbcCoordinator().afterStatementExecution();
+				resourceRegistry.release( sequentialSelect );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 	}
@@ -3203,15 +3205,14 @@ public abstract class AbstractEntityPersister
 		try {
 			// Render the SQL query
 			final PreparedStatement insert;
+			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 			if ( useBatch ) {
-				insert = session
-						.getJdbcCoordinator()
+				insert = jdbcCoordinator
 						.getBatch( inserBatchKey )
 						.getBatchStatement( sql, callable );
 			}
 			else {
-				insert = session
-						.getJdbcCoordinator()
+				insert = jdbcCoordinator
 						.getStatementPreparer()
 						.prepareStatement( sql, callable );
 			}
@@ -3226,11 +3227,11 @@ public abstract class AbstractEntityPersister
 				dehydrate( id, fields, null, notNull, propertyColumnInsertable, j, insert, session, index, false );
 
 				if ( useBatch ) {
-					session.getJdbcCoordinator().getBatch( inserBatchKey ).addToBatch();
+					jdbcCoordinator.getBatch( inserBatchKey ).addToBatch();
 				}
 				else {
 					expectation.verifyOutcome(
-							session.getJdbcCoordinator()
+							jdbcCoordinator
 									.getResultSetReturn()
 									.executeUpdate( insert ), insert, -1
 					);
@@ -3238,14 +3239,14 @@ public abstract class AbstractEntityPersister
 			}
 			catch (SQLException | JDBCException e) {
 				if ( useBatch ) {
-					session.getJdbcCoordinator().abortBatch();
+					jdbcCoordinator.abortBatch();
 				}
 				throw e;
 			}
 			finally {
 				if ( !useBatch ) {
-					session.getJdbcCoordinator().getResourceRegistry().release( insert );
-					session.getJdbcCoordinator().afterStatementExecution();
+					jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( insert );
+					jdbcCoordinator.afterStatementExecution();
 				}
 			}
 		}
@@ -3361,15 +3362,14 @@ public abstract class AbstractEntityPersister
 		try {
 			int index = 1; // starting index
 			final PreparedStatement update;
+			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 			if ( useBatch ) {
-				update = session
-						.getJdbcCoordinator()
+				update = jdbcCoordinator
 						.getBatch( updateBatchKey )
 						.getBatchStatement( sql, callable );
 			}
 			else {
-				update = session
-						.getJdbcCoordinator()
+				update = jdbcCoordinator
 						.getStatementPreparer()
 						.prepareStatement( sql, callable );
 			}
@@ -3422,12 +3422,12 @@ public abstract class AbstractEntityPersister
 				}
 
 				if ( useBatch ) {
-					session.getJdbcCoordinator().getBatch( updateBatchKey ).addToBatch();
+					jdbcCoordinator.getBatch( updateBatchKey ).addToBatch();
 					return true;
 				}
 				else {
 					return check(
-							session.getJdbcCoordinator().getResultSetReturn().executeUpdate( update ),
+							jdbcCoordinator.getResultSetReturn().executeUpdate( update ),
 							id,
 							j,
 							expectation,
@@ -3438,14 +3438,14 @@ public abstract class AbstractEntityPersister
 			}
 			catch (SQLException e) {
 				if ( useBatch ) {
-					session.getJdbcCoordinator().abortBatch();
+					jdbcCoordinator.abortBatch();
 				}
 				throw e;
 			}
 			finally {
 				if ( !useBatch ) {
-					session.getJdbcCoordinator().getResourceRegistry().release( update );
-					session.getJdbcCoordinator().afterStatementExecution();
+					jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( update );
+					jdbcCoordinator.afterStatementExecution();
 				}
 			}
 
@@ -3506,15 +3506,14 @@ public abstract class AbstractEntityPersister
 			//Render the SQL query
 			PreparedStatement delete;
 			int index = 1;
+			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 			if ( useBatch ) {
-				delete = session
-						.getJdbcCoordinator()
+				delete = jdbcCoordinator
 						.getBatch( deleteBatchKey )
 						.getBatchStatement( sql, callable );
 			}
 			else {
-				delete = session
-						.getJdbcCoordinator()
+				delete = jdbcCoordinator
 						.getStatementPreparer()
 						.prepareStatement( sql, callable );
 			}
@@ -3548,11 +3547,11 @@ public abstract class AbstractEntityPersister
 				}
 
 				if ( useBatch ) {
-					session.getJdbcCoordinator().getBatch( deleteBatchKey ).addToBatch();
+					jdbcCoordinator.getBatch( deleteBatchKey ).addToBatch();
 				}
 				else {
 					check(
-							session.getJdbcCoordinator().getResultSetReturn().executeUpdate( delete ),
+							jdbcCoordinator.getResultSetReturn().executeUpdate( delete ),
 							id,
 							j,
 							expectation,
@@ -3563,14 +3562,14 @@ public abstract class AbstractEntityPersister
 			}
 			catch (SQLException sqle) {
 				if ( useBatch ) {
-					session.getJdbcCoordinator().abortBatch();
+					jdbcCoordinator.abortBatch();
 				}
 				throw sqle;
 			}
 			finally {
 				if ( !useBatch ) {
-					session.getJdbcCoordinator().getResourceRegistry().release( delete );
-					session.getJdbcCoordinator().afterStatementExecution();
+					jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( delete );
+					jdbcCoordinator.afterStatementExecution();
 				}
 			}
 
@@ -5231,16 +5230,17 @@ public abstract class AbstractEntityPersister
 			String selectionSQL,
 			GenerationTiming matchTiming) {
 		// force immediate execution of the insert batch (if one)
-		session.getJdbcCoordinator().executeBatch();
+		JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
+		jdbcCoordinator.executeBatch();
 
 		try {
-			PreparedStatement ps = session
-					.getJdbcCoordinator()
+			PreparedStatement ps = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( selectionSQL );
+			final ResourceRegistry resourceRegistry = jdbcCoordinator.getResourceRegistry();
 			try {
 				getIdentifierType().nullSafeSet( ps, id, 1, session );
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( ps );
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( ps );
 				try {
 					if ( !rs.next() ) {
 						throw new HibernateException(
@@ -5273,13 +5273,13 @@ public abstract class AbstractEntityPersister
 				}
 				finally {
 					if ( rs != null ) {
-						session.getJdbcCoordinator().getResourceRegistry().release( rs, ps );
+						resourceRegistry.release( rs, ps );
 					}
 				}
 			}
 			finally {
-				session.getJdbcCoordinator().getResourceRegistry().release( ps );
-				session.getJdbcCoordinator().afterStatementExecution();
+				resourceRegistry.release( ps );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException e) {
@@ -5396,6 +5396,7 @@ public abstract class AbstractEntityPersister
 			PreparedStatement ps = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( sql );
+			final ResourceRegistry resourceRegistry = jdbcCoordinator.getResourceRegistry();
 			try {
 				getIdentifierType().nullSafeSet( ps, id, 1, session );
 				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( ps );
@@ -5420,11 +5421,11 @@ public abstract class AbstractEntityPersister
 					return snapshot;
 				}
 				finally {
-					jdbcCoordinator.getResourceRegistry().release( rs, ps );
+					resourceRegistry.release( rs, ps );
 				}
 			}
 			finally {
-				jdbcCoordinator.getResourceRegistry().release( ps );
+				resourceRegistry.release( ps );
 				jdbcCoordinator.afterStatementExecution();
 			}
 		}
@@ -5454,10 +5455,11 @@ public abstract class AbstractEntityPersister
 		final String sqlEntityIdByNaturalIdString = determinePkByNaturalIdQuery( valueNullness );
 
 		try {
-			PreparedStatement ps = session
-					.getJdbcCoordinator()
+			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
+			PreparedStatement ps = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( sqlEntityIdByNaturalIdString );
+			final ResourceRegistry resourceRegistry = jdbcCoordinator.getResourceRegistry();
 			try {
 				int positions = 1;
 				int loop = 0;
@@ -5469,7 +5471,7 @@ public abstract class AbstractEntityPersister
 						positions += type.getColumnSpan( session.getFactory() );
 					}
 				}
-				ResultSet rs = session.getJdbcCoordinator().getResultSetReturn().extract( ps );
+				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( ps );
 				try {
 					// if there is no resulting row, return null
 					if ( !rs.next() ) {
@@ -5480,12 +5482,12 @@ public abstract class AbstractEntityPersister
 					return (Serializable) getIdentifierType().resolve( hydratedId, session, null );
 				}
 				finally {
-					session.getJdbcCoordinator().getResourceRegistry().release( rs, ps );
+					resourceRegistry.release( rs, ps );
 				}
 			}
 			finally {
-				session.getJdbcCoordinator().getResourceRegistry().release( ps );
-				session.getJdbcCoordinator().afterStatementExecution();
+				resourceRegistry.release( ps );
+				jdbcCoordinator.afterStatementExecution();
 			}
 		}
 		catch (SQLException e) {

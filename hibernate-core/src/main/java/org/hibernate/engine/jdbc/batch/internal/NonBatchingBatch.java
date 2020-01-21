@@ -15,6 +15,7 @@ import org.hibernate.engine.jdbc.batch.spi.BatchKey;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.internal.CoreMessageLogger;
 
+import org.hibernate.resource.jdbc.ResourceRegistry;
 import org.jboss.logging.Logger;
 
 /**
@@ -39,12 +40,13 @@ public class NonBatchingBatch extends AbstractBatchImpl {
 	@Override
 	public void addToBatch() {
 		notifyObserversImplicitExecution();
+		ResourceRegistry resourceRegistry = jdbcCoordinator.getLogicalConnection().getResourceRegistry();
 		for ( Map.Entry<String,PreparedStatement> entry : getStatements().entrySet() ) {
 			try {
 				final PreparedStatement statement = entry.getValue();
 				final int rowCount = jdbcCoordinator.getResultSetReturn().executeUpdate( statement );
 				getKey().getExpectation().verifyOutcome( rowCount, statement, 0 );
-				jdbcCoordinator.getResourceRegistry().release( statement );
+				resourceRegistry.release( statement );
 				jdbcCoordinator.afterStatementExecution();
 			}
 			catch ( SQLException e ) {

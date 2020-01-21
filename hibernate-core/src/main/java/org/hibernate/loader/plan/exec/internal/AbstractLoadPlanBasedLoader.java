@@ -121,7 +121,7 @@ public abstract class AbstractLoadPlanBasedLoader {
 			finally {
 				if ( wrapper != null ) {
 					final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
-					final ResourceRegistry resourceRegistry = jdbcCoordinator.getResourceRegistry();
+					final ResourceRegistry resourceRegistry = jdbcCoordinator.getLogicalConnection().getResourceRegistry();
 					resourceRegistry.release( wrapper.getStatement() );
 					jdbcCoordinator.afterStatementExecution();
 				}
@@ -245,12 +245,12 @@ public abstract class AbstractLoadPlanBasedLoader {
 			}
 		}
 		catch ( SQLException sqle ) {
-			session.getJdbcCoordinator().getResourceRegistry().release( st );
+			session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( st );
 			session.getJdbcCoordinator().afterStatementExecution();
 			throw sqle;
 		}
 		catch ( HibernateException he ) {
-			session.getJdbcCoordinator().getResourceRegistry().release( st );
+			session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( st );
 			session.getJdbcCoordinator().afterStatementExecution();
 			throw he;
 		}
@@ -400,7 +400,7 @@ public abstract class AbstractLoadPlanBasedLoader {
 			return rs;
 		}
 		catch (SQLException | HibernateException ex) {
-			session.getJdbcCoordinator().getResourceRegistry().release( st );
+			session.getJdbcCoordinator().getLogicalConnection().getResourceRegistry().release( st );
 			session.getJdbcCoordinator().afterStatementExecution();
 			throw ex;
 		}

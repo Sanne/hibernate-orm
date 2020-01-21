@@ -18,6 +18,8 @@ import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.jdbc.spi.ResultSetReturn;
 import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.hibernate.engine.jdbc.spi.SqlStatementLogger;
+import org.hibernate.resource.jdbc.ResourceRegistry;
+import org.hibernate.resource.jdbc.spi.JdbcObserver;
 
 /**
  * Standard implementation of the ResultSetReturn contract
@@ -25,11 +27,13 @@ import org.hibernate.engine.jdbc.spi.SqlStatementLogger;
  * @author Brett Meyer
  */
 public class ResultSetReturnImpl implements ResultSetReturn {
-	private final JdbcCoordinator jdbcCoordinator;
 
 	private final Dialect dialect;
 	private final SqlStatementLogger sqlStatementLogger;
 	private final SqlExceptionHelper sqlExceptionHelper;
+	private final ResourceRegistry resourceRegistry;
+	private final JdbcObserver jdbcObserver;
+	private final JdbcCoordinator jdbcCoordinator;
 
 	/**
 	 * Constructs a ResultSetReturnImpl
@@ -41,6 +45,8 @@ public class ResultSetReturnImpl implements ResultSetReturn {
 		this.dialect = jdbcServices.getDialect();
 		this.sqlStatementLogger = jdbcServices.getSqlStatementLogger();
 		this.sqlExceptionHelper = jdbcServices.getSqlExceptionHelper();
+		this.resourceRegistry = jdbcCoordinator.getLogicalConnection().getResourceRegistry();
+		this.jdbcObserver = jdbcCoordinator.getJdbcSessionOwner().getJdbcSessionContext().getObserver();
 	}
 
 	@Override
@@ -69,11 +75,11 @@ public class ResultSetReturnImpl implements ResultSetReturn {
 	}
 
 	private void jdbcExecuteStatementEnd() {
-		jdbcCoordinator.getJdbcSessionOwner().getJdbcSessionContext().getObserver().jdbcExecuteStatementEnd();
+		jdbcObserver.jdbcExecuteStatementEnd();
 	}
 
 	private void jdbcExecuteStatementStart() {
-		jdbcCoordinator.getJdbcSessionOwner().getJdbcSessionContext().getObserver().jdbcExecuteStatementStart();
+		jdbcObserver.jdbcExecuteStatementStart();
 	}
 
 	@Override
@@ -227,7 +233,7 @@ public class ResultSetReturnImpl implements ResultSetReturn {
 
 	private void postExtract(ResultSet rs, Statement st) {
 		if ( rs != null ) {
-			jdbcCoordinator.getResourceRegistry().register( rs, st );
+			resourceRegistry.register( rs, st );
 		}
 	}
 

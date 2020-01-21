@@ -80,6 +80,7 @@ import org.hibernate.persister.walking.spi.CompositeCollectionElementDefinition;
 import org.hibernate.persister.walking.spi.CompositionDefinition;
 import org.hibernate.persister.walking.spi.EntityDefinition;
 import org.hibernate.pretty.MessageHelper;
+import org.hibernate.resource.jdbc.ResourceRegistry;
 import org.hibernate.sql.Alias;
 import org.hibernate.sql.Insert;
 import org.hibernate.sql.Update;
@@ -1219,6 +1220,7 @@ public abstract class AbstractCollectionPersister
 				boolean callable = isDeleteAllCallable();
 				boolean useBatch = expectation.canBeBatched();
 				String sql = getSQLDeleteString();
+				final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 				if ( useBatch ) {
 					if ( removeBatchKey == null ) {
 						removeBatchKey = new BasicBatchKey(
@@ -1226,14 +1228,12 @@ public abstract class AbstractCollectionPersister
 								expectation
 								);
 					}
-					st = session
-							.getJdbcCoordinator()
+					st = jdbcCoordinator
 							.getBatch( removeBatchKey )
 							.getBatchStatement( sql, callable );
 				}
 				else {
-					st = session
-							.getJdbcCoordinator()
+					st = jdbcCoordinator
 							.getStatementPreparer()
 							.prepareStatement( sql, callable );
 				}
@@ -1243,25 +1243,24 @@ public abstract class AbstractCollectionPersister
 
 					writeKey( st, id, offset, session );
 					if ( useBatch ) {
-						session
-								.getJdbcCoordinator()
+						jdbcCoordinator
 								.getBatch( removeBatchKey )
 								.addToBatch();
 					}
 					else {
-						expectation.verifyOutcome( session.getJdbcCoordinator().getResultSetReturn().executeUpdate( st ), st, -1 );
+						expectation.verifyOutcome( jdbcCoordinator.getResultSetReturn().executeUpdate( st ), st, -1 );
 					}
 				}
 				catch ( SQLException sqle ) {
 					if ( useBatch ) {
-						session.getJdbcCoordinator().abortBatch();
+						jdbcCoordinator.abortBatch();
 					}
 					throw sqle;
 				}
 				finally {
 					if ( !useBatch ) {
-						session.getJdbcCoordinator().getResourceRegistry().release( st );
-						session.getJdbcCoordinator().afterStatementExecution();
+						jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+						jdbcCoordinator.afterStatementExecution();
 					}
 				}
 
@@ -1372,7 +1371,7 @@ public abstract class AbstractCollectionPersister
 						}
 						finally {
 							if ( !useBatch ) {
-								jdbcCoordinator.getResourceRegistry().release( st );
+								jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
 								jdbcCoordinator.afterStatementExecution();
 							}
 						}
@@ -1437,6 +1436,7 @@ public abstract class AbstractCollectionPersister
 					boolean useBatch = expectation.canBeBatched();
 					String sql = getSQLDeleteRowString();
 
+					final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 					if ( useBatch ) {
 						if ( deleteBatchKey == null ) {
 							deleteBatchKey = new BasicBatchKey(
@@ -1444,14 +1444,12 @@ public abstract class AbstractCollectionPersister
 									expectation
 									);
 						}
-						st = session
-								.getJdbcCoordinator()
+						st = jdbcCoordinator
 								.getBatch( deleteBatchKey )
 								.getBatchStatement( sql, callable );
 					}
 					else {
-						st = session
-								.getJdbcCoordinator()
+						st = jdbcCoordinator
 								.getStatementPreparer()
 								.prepareStatement( sql, callable );
 					}
@@ -1475,26 +1473,25 @@ public abstract class AbstractCollectionPersister
 						}
 
 						if ( useBatch ) {
-							session
-									.getJdbcCoordinator()
+							jdbcCoordinator
 									.getBatch( deleteBatchKey )
 									.addToBatch();
 						}
 						else {
-							expectation.verifyOutcome( session.getJdbcCoordinator().getResultSetReturn().executeUpdate( st ), st, -1 );
+							expectation.verifyOutcome( jdbcCoordinator.getResultSetReturn().executeUpdate( st ), st, -1 );
 						}
 						count++;
 					}
 					catch ( SQLException sqle ) {
 						if ( useBatch ) {
-							session.getJdbcCoordinator().abortBatch();
+							jdbcCoordinator.abortBatch();
 						}
 						throw sqle;
 					}
 					finally {
 						if ( !useBatch ) {
-							session.getJdbcCoordinator().getResourceRegistry().release( st );
-							session.getJdbcCoordinator().afterStatementExecution();
+							jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+							jdbcCoordinator.afterStatementExecution();
 						}
 					}
 
@@ -1556,6 +1553,7 @@ public abstract class AbstractCollectionPersister
 				PreparedStatement st = null;
 				if ( collection.needsInserting( entry, i, elementType ) ) {
 
+					final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 					if ( useBatch ) {
 						if ( insertBatchKey == null ) {
 							insertBatchKey = new BasicBatchKey(
@@ -1564,15 +1562,13 @@ public abstract class AbstractCollectionPersister
 									);
 						}
 						if ( st == null ) {
-							st = session
-									.getJdbcCoordinator()
+							st = jdbcCoordinator
 									.getBatch( insertBatchKey )
 									.getBatchStatement( sql, callable );
 						}
 					}
 					else {
-						st = session
-								.getJdbcCoordinator()
+						st = jdbcCoordinator
 								.getStatementPreparer()
 								.prepareStatement( sql, callable );
 					}
@@ -1590,24 +1586,24 @@ public abstract class AbstractCollectionPersister
 						writeElement( st, collection.getElement( entry ), offset, session );
 
 						if ( useBatch ) {
-							session.getJdbcCoordinator().getBatch( insertBatchKey ).addToBatch();
+							jdbcCoordinator.getBatch( insertBatchKey ).addToBatch();
 						}
 						else {
-							expectation.verifyOutcome( session.getJdbcCoordinator().getResultSetReturn().executeUpdate( st ), st, -1 );
+							expectation.verifyOutcome( jdbcCoordinator.getResultSetReturn().executeUpdate( st ), st, -1 );
 						}
 						collection.afterRowInsert( this, entry, i );
 						count++;
 					}
 					catch ( SQLException sqle ) {
 						if ( useBatch ) {
-							session.getJdbcCoordinator().abortBatch();
+							jdbcCoordinator.abortBatch();
 						}
 						throw sqle;
 					}
 					finally {
 						if ( !useBatch ) {
-							session.getJdbcCoordinator().getResourceRegistry().release( st );
-							session.getJdbcCoordinator().afterStatementExecution();
+							jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+							jdbcCoordinator.afterStatementExecution();
 						}
 					}
 				}
@@ -1964,6 +1960,7 @@ public abstract class AbstractCollectionPersister
 			PreparedStatement st = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( sqlSelectSizeString );
+			final ResourceRegistry resourceRegistry = jdbcCoordinator.getLogicalConnection().getResourceRegistry();
 			try {
 				getKeyType().nullSafeSet( st, key, 1, session );
 				ResultSet rs = jdbcCoordinator.getResultSetReturn().extract( st );
@@ -1971,11 +1968,11 @@ public abstract class AbstractCollectionPersister
 					return rs.next() ? rs.getInt( 1 ) - baseIndex : 0;
 				}
 				finally {
-					jdbcCoordinator.getResourceRegistry().release( rs, st );
+					resourceRegistry.release( rs, st );
 				}
 			}
 			finally {
-				jdbcCoordinator.getResourceRegistry().release( st );
+				resourceRegistry.release( st );
 				jdbcCoordinator.afterStatementExecution();
 			}
 		}
@@ -2005,6 +2002,7 @@ public abstract class AbstractCollectionPersister
 			PreparedStatement st = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( sql );
+			final ResourceRegistry resourceRegistry = jdbcCoordinator.getLogicalConnection().getResourceRegistry();
 			try {
 				getKeyType().nullSafeSet( st, key, 1, session );
 				indexOrElementType.nullSafeSet( st, indexOrElement, keyColumnNames.length + 1, session );
@@ -2013,14 +2011,14 @@ public abstract class AbstractCollectionPersister
 					return rs.next();
 				}
 				finally {
-					jdbcCoordinator.getResourceRegistry().release( rs, st );
+					resourceRegistry.release( rs, st );
 				}
 			}
 			catch ( TransientObjectException e ) {
 				return false;
 			}
 			finally {
-				jdbcCoordinator.getResourceRegistry().release( st );
+				resourceRegistry.release( st );
 				jdbcCoordinator.afterStatementExecution();
 			}
 		}
@@ -2041,6 +2039,7 @@ public abstract class AbstractCollectionPersister
 			PreparedStatement st = jdbcCoordinator
 					.getStatementPreparer()
 					.prepareStatement( sqlSelectRowByIndexString );
+			final ResourceRegistry resourceRegistry = jdbcCoordinator.getLogicalConnection().getResourceRegistry();
 			try {
 				getKeyType().nullSafeSet( st, key, 1, session );
 				getIndexType().nullSafeSet( st, incrementIndexByBase( index ), keyColumnNames.length + 1, session );
@@ -2054,11 +2053,11 @@ public abstract class AbstractCollectionPersister
 					}
 				}
 				finally {
-					jdbcCoordinator.getResourceRegistry().release( rs, st );
+					resourceRegistry.release( rs, st );
 				}
 			}
 			finally {
-				jdbcCoordinator.getResourceRegistry().release( st );
+				resourceRegistry.release( st );
 				jdbcCoordinator.afterStatementExecution();
 			}
 		}

@@ -18,6 +18,7 @@ import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.access.CollectionDataAccess;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.jdbc.batch.internal.BasicBatchKey;
+import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.engine.spi.SubselectFetch;
@@ -223,6 +224,7 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 							boolean useBatch = expectation.canBeBatched();
 							String sql = getSQLUpdateRowString();
 
+							final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 							if ( useBatch ) {
 								if ( recreateBatchKey == null ) {
 									recreateBatchKey = new BasicBatchKey(
@@ -230,14 +232,12 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 											expectation
 									);
 								}
-								st = session
-										.getJdbcCoordinator()
+								st = jdbcCoordinator
 										.getBatch( recreateBatchKey )
 										.getBatchStatement( sql, callable );
 							}
 							else {
-								st = session
-										.getJdbcCoordinator()
+								st = jdbcCoordinator
 										.getStatementPreparer()
 										.prepareStatement( sql, callable );
 							}
@@ -261,13 +261,13 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 								offset = writeElement( st, collection.getElement( entry ), offset, session );
 
 								if ( useBatch ) {
-									session.getJdbcCoordinator()
+									jdbcCoordinator
 											.getBatch( recreateBatchKey )
 											.addToBatch();
 								}
 								else {
 									expectation.verifyOutcome(
-											session.getJdbcCoordinator()
+											jdbcCoordinator
 													.getResultSetReturn()
 													.executeUpdate( st ), st, -1
 									);
@@ -275,14 +275,14 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 							}
 							catch (SQLException sqle) {
 								if ( useBatch ) {
-									session.getJdbcCoordinator().abortBatch();
+									jdbcCoordinator.abortBatch();
 								}
 								throw sqle;
 							}
 							finally {
 								if ( !useBatch ) {
-									session.getJdbcCoordinator().getResourceRegistry().release( st );
-									session.getJdbcCoordinator().afterStatementExecution();
+									jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+									jdbcCoordinator.afterStatementExecution();
 								}
 							}
 
@@ -330,6 +330,7 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 
 		try {
 			int count = 0;
+			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
 			if ( isRowDeleteEnabled() ) {
 				final Expectation deleteExpectation = Expectations.appropriateExpectation( getDeleteCheckStyle() );
 				final boolean useBatch = deleteExpectation.canBeBatched();
@@ -355,28 +356,25 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 								elementType
 						) ) {  // will still be issued when it used to be null
 							if ( useBatch ) {
-								st = session
-										.getJdbcCoordinator()
+								st = jdbcCoordinator
 										.getBatch( deleteRowBatchKey )
 										.getBatchStatement( sql, isDeleteCallable() );
 							}
 							else {
-								st = session
-										.getJdbcCoordinator()
+								st = jdbcCoordinator
 										.getStatementPreparer()
 										.prepareStatement( sql, isDeleteCallable() );
 							}
 							int loc = writeKey( st, id, offset, session );
 							writeElementToWhere( st, collection.getSnapshotElement( entry, i ), loc, session );
 							if ( useBatch ) {
-								session
-										.getJdbcCoordinator()
+								jdbcCoordinator
 										.getBatch( deleteRowBatchKey )
 										.addToBatch();
 							}
 							else {
 								deleteExpectation.verifyOutcome(
-										session.getJdbcCoordinator()
+										jdbcCoordinator
 												.getResultSetReturn()
 												.executeUpdate( st ), st, -1
 								);
@@ -388,14 +386,14 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 				}
 				catch (SQLException e) {
 					if ( useBatch ) {
-						session.getJdbcCoordinator().abortBatch();
+						jdbcCoordinator.abortBatch();
 					}
 					throw e;
 				}
 				finally {
 					if ( !useBatch ) {
-						session.getJdbcCoordinator().getResourceRegistry().release( st );
-						session.getJdbcCoordinator().afterStatementExecution();
+						jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+						jdbcCoordinator.afterStatementExecution();
 					}
 				}
 			}
@@ -422,14 +420,12 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 						int offset = 1;
 						if ( collection.needsUpdating( entry, i, elementType ) ) {
 							if ( useBatch ) {
-								st = session
-										.getJdbcCoordinator()
+								st = jdbcCoordinator
 										.getBatch( insertRowBatchKey )
 										.getBatchStatement( sql, callable );
 							}
 							else {
-								st = session
-										.getJdbcCoordinator()
+								st = jdbcCoordinator
 										.getStatementPreparer()
 										.prepareStatement( sql, callable );
 							}
@@ -444,11 +440,11 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 							writeElementToWhere( st, collection.getElement( entry ), loc, session );
 
 							if ( useBatch ) {
-								session.getJdbcCoordinator().getBatch( insertRowBatchKey ).addToBatch();
+								jdbcCoordinator.getBatch( insertRowBatchKey ).addToBatch();
 							}
 							else {
 								insertExpectation.verifyOutcome(
-										session.getJdbcCoordinator()
+										jdbcCoordinator
 												.getResultSetReturn()
 												.executeUpdate( st ), st, -1
 								);
@@ -460,14 +456,14 @@ public class OneToManyPersister extends AbstractCollectionPersister {
 				}
 				catch (SQLException sqle) {
 					if ( useBatch ) {
-						session.getJdbcCoordinator().abortBatch();
+						jdbcCoordinator.abortBatch();
 					}
 					throw sqle;
 				}
 				finally {
 					if ( !useBatch ) {
-						session.getJdbcCoordinator().getResourceRegistry().release( st );
-						session.getJdbcCoordinator().afterStatementExecution();
+						jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( st );
+						jdbcCoordinator.afterStatementExecution();
 					}
 				}
 			}

@@ -65,7 +65,7 @@ public final class IteratorImpl implements HibernateIterator {
 		if ( ps != null ) {
 			LOG.debug( "Closing iterator" );
 			final JdbcCoordinator jdbcCoordinator = session.getJdbcCoordinator();
-			jdbcCoordinator.getResourceRegistry().release( ps );
+			jdbcCoordinator.getLogicalConnection().getResourceRegistry().release( ps );
 			try {
 				session.getPersistenceContext().getLoadContexts().cleanup( rs );
 			}
