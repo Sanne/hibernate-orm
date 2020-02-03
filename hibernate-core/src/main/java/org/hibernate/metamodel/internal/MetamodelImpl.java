@@ -37,6 +37,7 @@ import org.hibernate.boot.registry.classloading.spi.ClassLoadingException;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.cache.cfg.internal.DomainDataRegionConfigImpl;
 import org.hibernate.cache.cfg.spi.DomainDataRegionConfig;
+import org.hibernate.cache.spi.CacheImplementor;
 import org.hibernate.cache.spi.access.AccessType;
 import org.hibernate.cache.spi.access.CollectionDataAccess;
 import org.hibernate.cache.spi.access.EntityDataAccess;
@@ -89,8 +90,6 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 	private static final String INVALID_IMPORT = "";
 	private static final String[] EMPTY_IMPLEMENTORS = new String[0];
 
-	private final SessionFactoryImplementor sessionFactory;
-
 	private final Map<String,String> imports = new ConcurrentHashMap<>();
 	private final Map<String,EntityPersister> entityPersisterMap = new ConcurrentHashMap<>();
 	private final Map<Class,String> entityProxyInterfaceMap = new ConcurrentHashMap<>();
@@ -142,8 +141,15 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 
 	private final Map<String, String[]> implementorsCache = new ConcurrentHashMap<>();
 
+	private final ClassLoaderService classLoaderService;
+
+	/**
+	 * This field is only initialized after {@link #initialize(MetadataImplementor, JpaMetaModelPopulationSetting, SessionFactoryImplementor)} is invoked!
+	 */
+	private SessionFactoryImplementor sessionFactory;
+
 	public MetamodelImpl(SessionFactoryImplementor sessionFactory, TypeConfiguration typeConfiguration) {
-		this.sessionFactory = sessionFactory;
+		this.classLoaderService = sessionFactory.getServiceRegistry().getService(ClassLoaderService.class);
 		this.typeConfiguration = typeConfiguration;
 	}
 
@@ -153,11 +159,14 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 	 *
 	 * @param mappingMetadata The mapping information
 	 * @param jpaMetaModelPopulationSetting Should the JPA Metamodel be built as well?
+	 * @param sessionFactory the SessionFactoryImplementor onto which the initialized Metamodel will be bound to
 	 */
-	public void initialize(MetadataImplementor mappingMetadata, JpaMetaModelPopulationSetting jpaMetaModelPopulationSetting) {
+	public void initialize(final MetadataImplementor mappingMetadata, final JpaMetaModelPopulationSetting jpaMetaModelPopulationSetting, final SessionFactoryImplementor sessionFactory) {
+		this.sessionFactory = sessionFactory;
 		this.imports.putAll( mappingMetadata.getImports() );
 
-		primeSecondLevelCacheRegions( mappingMetadata );
+		final CacheImplementor cache = sessionFactory.getCache();
+		cache.prime( primeSecondLevelCacheRegions( mappingMetadata ) );
 
 		final PersisterCreationContext persisterCreationContext = new PersisterCreationContext() {
 			@Override
@@ -175,8 +184,8 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 
 		for ( final PersistentClass model : mappingMetadata.getEntityBindings() ) {
 			final NavigableRole rootEntityRole = new NavigableRole( model.getRootClass().getEntityName() );
-			final EntityDataAccess accessStrategy = sessionFactory.getCache().getEntityRegionAccess( rootEntityRole );
-			final NaturalIdDataAccess naturalIdAccessStrategy = sessionFactory.getCache().getNaturalIdCacheRegionAccessStrategy( rootEntityRole );
+			final EntityDataAccess accessStrategy = cache.getEntityRegionAccess( rootEntityRole );
+			final NaturalIdDataAccess naturalIdAccessStrategy = cache.getNaturalIdCacheRegionAccessStrategy( rootEntityRole );
 
 			final EntityPersister cp = persisterFactory.createEntityPersister(
 					model,
@@ -219,7 +228,7 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 		for ( final Collection model : mappingMetadata.getCollectionBindings() ) {
 			final NavigableRole navigableRole = new NavigableRole( model.getRole() );
 
-			final CollectionDataAccess accessStrategy = sessionFactory.getCache().getCollectionRegionAccess(
+			final CollectionDataAccess accessStrategy = cache.getCollectionRegionAccess(
 					navigableRole );
 
 			final CollectionPersister persister = persisterFactory.createCollectionPersister(
@@ -281,12 +290,12 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 			this.jpaMappedSuperclassTypeMap.putAll( context.getMappedSuperclassTypeMap() );
 			this.jpaEntityTypesByEntityName.putAll( context.getEntityTypesByEntityName() );
 
-			applyNamedEntityGraphs( mappingMetadata.getNamedEntityGraphs().values() );
+			applyNamedEntityGraphs( mappingMetadata.getNamedEntityGraphs().values(), sessionFactory );
 		}
 
 	}
 
-	private void primeSecondLevelCacheRegions(MetadataImplementor mappingMetadata) {
+	private static Set<DomainDataRegionConfig> primeSecondLevelCacheRegions(MetadataImplementor mappingMetadata) {
 		final Map<String, DomainDataRegionConfigImpl.Builder> regionConfigBuilders = new ConcurrentHashMap<>();
 
 		// todo : ultimately this code can be made more efficient when we have a better intrinsic understanding of the hierarchy as a whole
@@ -328,11 +337,11 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 			}
 		}
 
-		getSessionFactory().getCache().prime( regionConfigs );
+		return regionConfigs;
 	}
 
 	@SuppressWarnings("unchecked")
-	private void applyNamedEntityGraphs(java.util.Collection<NamedEntityGraphDefinition> namedEntityGraphs) {
+	private void applyNamedEntityGraphs(java.util.Collection<NamedEntityGraphDefinition> namedEntityGraphs, SessionFactoryImplementor sessionFactory) {
 		for ( NamedEntityGraphDefinition definition : namedEntityGraphs ) {
 			log.debugf(
 					"Applying named entity graph [name=%s, entity-name=%s, jpa-entity-name=%s",
@@ -352,7 +361,7 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 			final RootGraphImpl entityGraph = new RootGraphImpl(
 					definition.getRegisteredName(),
 					entityType,
-					this.getSessionFactory()
+					sessionFactory
 			);
 
 			final NamedEntityGraph namedEntityGraph = definition.getAnnotation();
@@ -555,6 +564,9 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 
 	@Override
 	public SessionFactoryImplementor getSessionFactory() {
+		if ( sessionFactory == null ) {
+			throw new IllegalStateException( "Attempt of invoking getSessionFactory() on a non-initialized instance of MetamodelImpl" );
+		}
 		return sessionFactory;
 	}
 
@@ -627,7 +639,7 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 		String result = imports.get( className );
 		if ( result == null ) {
 			try {
-				sessionFactory.getServiceRegistry().getService( ClassLoaderService.class ).classForName( className );
+				classLoaderService.classForName( className );
 				imports.put( className, className );
 				return className;
 			}
@@ -658,7 +670,7 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 		}
 
 		try {
-			final Class<?> clazz = getSessionFactory().getServiceRegistry().getService( ClassLoaderService.class ).classForName( className );
+			final Class<?> clazz = classLoaderService.classForName( className );
 			implementors = doGetImplementors( clazz );
 			if ( implementors.length > 0 ) {
 				implementorsCache.putIfAbsent( className, implementors );

@@ -298,7 +298,8 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 			this.metamodel = metadata.getTypeConfiguration().scope( this );
 			( (MetamodelImpl) this.metamodel ).initialize(
 					metadata,
-					determineJpaMetaModelPopulationSetting( properties )
+					determineJpaMetaModelPopulationSetting( properties ),
+					this
 			);
 
 			//Named Queries:
