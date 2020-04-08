@@ -16,8 +16,8 @@ import org.hibernate.boot.model.source.spi.AttributePath;
  *
  * @author Steve Ebersole
  *
- * @see javax.persistence.MapKeyColumn
- * @see javax.persistence.MapKeyJoinColumn
+ * @see jakarta.persistence.MapKeyColumn
+ * @see jakarta.persistence.MapKeyJoinColumn
  */
 public interface ImplicitMapKeyColumnNameSource extends ImplicitNameSource {
 	/**

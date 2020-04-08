@@ -20,7 +20,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * Generally used in conjunction with {@link jakarta.persistence.OrderColumn}.
  *
- * @see javax.persistence.OrderColumn
+ * @see jakarta.persistence.OrderColumn
  *
  * @author Steve Ebersole
  */

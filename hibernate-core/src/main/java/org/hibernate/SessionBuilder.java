@@ -82,7 +82,7 @@ public interface SessionBuilder<T extends SessionBuilder> {
 	 *
 	 * @return {@code this}, for method chaining
 	 *
-	 * @see javax.persistence.SynchronizationType#SYNCHRONIZED
+	 * @see jakarta.persistence.SynchronizationType#SYNCHRONIZED
 	 */
 	T autoJoinTransactions(boolean autoJoinTransactions);
 
@@ -102,7 +102,7 @@ public interface SessionBuilder<T extends SessionBuilder> {
 	 *
 	 * @return {@code this}, for method chaining
 	 *
-	 * @see javax.persistence.PersistenceContextType
+	 * @see jakarta.persistence.PersistenceContextType
 	 */
 	T flushMode(FlushMode flushMode);
 
@@ -157,7 +157,7 @@ public interface SessionBuilder<T extends SessionBuilder> {
 	 *
 	 * @return {@code this}, for method chaining
 	 *
-	 * @see javax.persistence.PersistenceContextType
+	 * @see jakarta.persistence.PersistenceContextType
 	 *
 	 * @deprecated Only integrations can specify autoClosing behavior of individual sessions.  See
 	 * {@link org.hibernate.engine.spi.SessionOwner}

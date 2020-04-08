@@ -110,7 +110,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * enabled as per the rules defined in JPA 2 section 3.1.7.
 	 * <p/>
 	 * See JPA 2 sections 9.4.3 and 8.2.1.7
-	 * @see javax.persistence.SharedCacheMode
+	 * @see jakarta.persistence.SharedCacheMode
 	 */
 	String JPA_SHARED_CACHE_MODE = "javax.persistence.sharedCache.mode";
 
@@ -120,7 +120,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * Used to indicate if the provider should attempt to retrieve requested data
 	 * in the shared cache.
 	 *
-	 * @see javax.persistence.CacheRetrieveMode
+	 * @see jakarta.persistence.CacheRetrieveMode
 	 */
 	String JPA_SHARED_CACHE_RETRIEVE_MODE ="javax.persistence.cache.retrieveMode";
 
@@ -130,7 +130,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * Used to indicate if the provider should attempt to store data loaded from the database
 	 * in the shared cache.
 	 *
-	 * @see javax.persistence.CacheStoreMode
+	 * @see jakarta.persistence.CacheStoreMode
 	 */
 	String JPA_SHARED_CACHE_STORE_MODE ="javax.persistence.cache.storeMode";
 
@@ -139,7 +139,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * in JPA 2 section 3.6.1.1
 	 * <p/>
 	 * See JPA 2 sections 9.4.3 and 8.2.1.8
-	 * @see javax.persistence.ValidationMode
+	 * @see jakarta.persistence.ValidationMode
 	 */
 	String JPA_VALIDATION_MODE = "javax.persistence.validation.mode";
 

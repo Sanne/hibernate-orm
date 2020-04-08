@@ -14,7 +14,7 @@ import org.hibernate.boot.model.source.spi.AttributePath;
  *
  * @author Steve Ebersole
  *
- * @see javax.persistence.JoinColumn
+ * @see jakarta.persistence.JoinColumn
  */
 public interface ImplicitJoinColumnNameSource extends ImplicitNameSource {
 	public static enum Nature {

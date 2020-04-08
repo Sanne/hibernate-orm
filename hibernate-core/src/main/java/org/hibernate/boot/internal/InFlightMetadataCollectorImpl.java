@@ -1083,7 +1083,7 @@ public class InFlightMetadataCollectorImpl implements InFlightMetadataCollector 
 		else if ( clazz.isAnnotationPresent( Embeddable.class ) ) {
 			type = AnnotatedClassType.EMBEDDABLE;
 		}
-		else if ( clazz.isAnnotationPresent( javax.persistence.MappedSuperclass.class ) ) {
+		else if ( clazz.isAnnotationPresent( jakarta.persistence.MappedSuperclass.class ) ) {
 			type = AnnotatedClassType.EMBEDDABLE_SUPERCLASS;
 		}
 		else {

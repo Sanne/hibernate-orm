@@ -21,7 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Emmanuel Bernard
  * @author Steve Ebersole
  *
- * @see javax.persistence.OrderBy
+ * @see jakarta.persistence.OrderBy
  * @see SortComparator
  * @see SortNatural
  */

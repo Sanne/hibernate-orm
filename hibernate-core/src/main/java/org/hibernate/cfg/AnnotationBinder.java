@@ -595,8 +595,8 @@ public final class AnnotationBinder {
 		String catalog = "";
 		List<UniqueConstraintHolder> uniqueConstraints = new ArrayList<>();
 		javax.persistence.Table tabAnn = null;
-		if ( clazzToProcess.isAnnotationPresent( javax.persistence.Table.class ) ) {
-			tabAnn = clazzToProcess.getAnnotation( javax.persistence.Table.class );
+		if ( clazzToProcess.isAnnotationPresent( jakarta.persistence.Table.class ) ) {
+			tabAnn = clazzToProcess.getAnnotation( jakarta.persistence.Table.class );
 			table = tabAnn.name();
 			schema = tabAnn.schema();
 			catalog = tabAnn.catalog();
@@ -1949,7 +1949,7 @@ public final class AnnotationBinder {
 
 				collectionBinder.setBatchSize( property.getAnnotation( BatchSize.class ) );
 
-				collectionBinder.setJpaOrderBy( property.getAnnotation( javax.persistence.OrderBy.class ) );
+				collectionBinder.setJpaOrderBy( property.getAnnotation( jakarta.persistence.OrderBy.class ) );
 				collectionBinder.setSqlOrderBy( property.getAnnotation( OrderBy.class ) );
 
 				collectionBinder.setSort( property.getAnnotation( Sort.class ) );
@@ -2508,7 +2508,7 @@ public final class AnnotationBinder {
 			final UniqueConstraint[] uniqueConstraints;
 			final JoinColumn[] joins;
 			final JoinColumn[] inverseJoins;
-			final javax.persistence.Index[] jpaIndexes;
+			final jakarta.persistence.Index[] jpaIndexes;
 
 
 			//JPA 2 has priority
@@ -3306,7 +3306,7 @@ public final class AnnotationBinder {
 	private static EnumSet<CascadeType> convertToHibernateCascadeType(javax.persistence.CascadeType[] ejbCascades) {
 		EnumSet<CascadeType> hibernateCascadeSet = EnumSet.noneOf( CascadeType.class );
 		if ( ejbCascades != null && ejbCascades.length > 0 ) {
-			for ( javax.persistence.CascadeType cascade : ejbCascades ) {
+			for ( jakarta.persistence.CascadeType cascade : ejbCascades ) {
 				switch ( cascade ) {
 					case ALL:
 						hibernateCascadeSet.add( CascadeType.ALL );

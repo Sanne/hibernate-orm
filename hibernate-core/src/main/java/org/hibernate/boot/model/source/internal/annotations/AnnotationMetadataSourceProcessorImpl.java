@@ -277,7 +277,7 @@ public class AnnotationMetadataSourceProcessorImpl implements MetadataSourceProc
 					&& !reflectionManager.equals( superClass, Object.class )
 					&& !copy.contains( superClass ) ) {
 				if ( superClass.isAnnotationPresent( Entity.class )
-						|| superClass.isAnnotationPresent( javax.persistence.MappedSuperclass.class ) ) {
+						|| superClass.isAnnotationPresent( jakarta.persistence.MappedSuperclass.class ) ) {
 					copy.add( superClass );
 				}
 				superClass = superClass.getSuperclass();
