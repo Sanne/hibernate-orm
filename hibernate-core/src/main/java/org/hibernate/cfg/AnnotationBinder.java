@@ -594,7 +594,7 @@ public final class AnnotationBinder {
 		String table = ""; //might be no @Table annotation on the annotated class
 		String catalog = "";
 		List<UniqueConstraintHolder> uniqueConstraints = new ArrayList<>();
-		javax.persistence.Table tabAnn = null;
+		jakarta.persistence.Table tabAnn = null;
 		if ( clazzToProcess.isAnnotationPresent( jakarta.persistence.Table.class ) ) {
 			tabAnn = clazzToProcess.getAnnotation( jakarta.persistence.Table.class );
 			table = tabAnn.name();
