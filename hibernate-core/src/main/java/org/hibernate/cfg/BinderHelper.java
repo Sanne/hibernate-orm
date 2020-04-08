@@ -748,7 +748,7 @@ public class BinderHelper {
 		log.debugf( "Could not resolve explicit IdentifierGeneratorDefinition - using implicit interpretation (%s)", name );
 
 		// If we were unable to locate an actual matching named generator assume a sequence/table of the given name.
-		//		this really needs access to the `javax.persistence.GenerationType` to work completely properly
+		//		this really needs access to the `jakarta.persistence.GenerationType` to work completely properly
 		//
 		// 		(the crux of HHH-12122)
 

@@ -268,7 +268,7 @@ public class PersistenceUnitOverridesTests extends BaseUnitTestCase {
 							@Override
 							public DataSource getJtaDataSource() {
 								// pretend the DataSource was defined using the `jta-data-source` element in persistence.xml
-								//		- as opposed using `javax.persistence.jtaDataSource` under the `properties` element
+								//		- as opposed using `jakarta.persistence.jtaDataSource` under the `properties` element
 								return puDataSource;
 							}
 						},
