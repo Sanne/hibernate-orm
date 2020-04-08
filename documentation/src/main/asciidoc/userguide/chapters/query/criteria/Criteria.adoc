@@ -173,7 +173,7 @@ An alternate approach is to use `createQuery( Tuple.class )`.
 Again we see the use of the `multiselect()` method, just like in <<criteria-typedquery-multiselect-array-implicit-example>>.
 The difference here is that the type of the `javax.persistence.criteria.CriteriaQuery` was defined as `javax.persistence.Tuple` so the compound selections, in this case, are interpreted to be the tuple elements.
 
-The javax.persistence.Tuple contract provides three forms of access to the underlying elements:
+The jakarta.persistence.Tuple contract provides three forms of access to the underlying elements:
 
 typed::
   The <<criteria-tuple-example>> example illustrates this form of access in the `tuple.get( idPath )` and `tuple.get( nickNamePath )` calls.

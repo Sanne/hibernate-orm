@@ -136,7 +136,7 @@ class PropertyContainer {
 			final XProperty xProperty = propertyIterator.next();
 			final Access localAccessAnnotation = xProperty.getAnnotation( Access.class );
 			if ( localAccessAnnotation == null
-					|| localAccessAnnotation.value() != javax.persistence.AccessType.FIELD ) {
+					|| localAccessAnnotation.value() != jakarta.persistence.AccessType.FIELD ) {
 				continue;
 			}
 
@@ -150,7 +150,7 @@ class PropertyContainer {
 			final XProperty xProperty = propertyIterator.next();
 			final Access localAccessAnnotation = xProperty.getAnnotation( Access.class );
 			if ( localAccessAnnotation == null
-					|| localAccessAnnotation.value() != javax.persistence.AccessType.PROPERTY ) {
+					|| localAccessAnnotation.value() != jakarta.persistence.AccessType.PROPERTY ) {
 				continue;
 			}
 

@@ -152,7 +152,7 @@ public class ProcedureParameterMetadata implements ParameterMetadata {
 			}
 		}
 
-		throw new IllegalArgumentException( "Could not resolve javax.persistence.Parameter to org.hibernate.query.QueryParameter" );
+		throw new IllegalArgumentException( "Could not resolve jakarta.persistence.Parameter to org.hibernate.query.QueryParameter" );
 	}
 
 	@Override

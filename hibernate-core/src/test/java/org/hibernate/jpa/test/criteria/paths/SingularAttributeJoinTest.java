@@ -75,7 +75,7 @@ public class SingularAttributeJoinTest extends BaseEntityManagerFunctionalTestCa
         final EntityManager entityManager = entityManagerFactory().createEntityManager();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
-        javax.persistence.metamodel.EntityType distributionEntity = getEntityType("Distribution");
+        jakarta.persistence.metamodel.EntityType distributionEntity = getEntityType("Distribution");
         From distributionFrom = criteriaQuery.from(distributionEntity);
         From policyJoin = distributionFrom.join("policy");
         Path policyId = policyJoin.get("policyId");

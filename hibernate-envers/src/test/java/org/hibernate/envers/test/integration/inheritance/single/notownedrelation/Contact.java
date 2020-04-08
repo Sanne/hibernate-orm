@@ -22,7 +22,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("Contact")
-@DiscriminatorColumn(name = "contactType", discriminatorType = javax.persistence.DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "contactType", discriminatorType = jakarta.persistence.DiscriminatorType.STRING)
 @Audited
 public class Contact implements Serializable {
 	@Id

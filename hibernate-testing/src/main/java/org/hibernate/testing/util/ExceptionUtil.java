@@ -72,7 +72,7 @@ public class ExceptionUtil {
 				|| LockTimeoutException.class.isInstance( e )
 				|| GenericJDBCException.class.isInstance( e )
 				|| PessimisticLockException.class.isInstance( e )
-				|| javax.persistence.PessimisticLockException.class.isInstance( e )
+				|| jakarta.persistence.PessimisticLockException.class.isInstance( e )
 				|| JDBCConnectionException.class.isInstance( e ) ) {
 			return true;
 		}

@@ -56,7 +56,7 @@ The entity is exactly the same as in <<hibernate-gsg-tutorial-annotations-entity
 The previous tutorials used the Hibernate native APIs.  This tutorial uses the JPA APIs.
 
 [[hibernate-gsg-tutorial-jpa-test-setUp]]
-.Obtaining the javax.persistence.EntityManagerFactory
+.Obtaining the jakarta.persistence.EntityManagerFactory
 ====
 [source, JAVA]
 ----

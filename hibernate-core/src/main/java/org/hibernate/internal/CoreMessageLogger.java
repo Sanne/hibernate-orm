@@ -527,7 +527,7 @@ public interface CoreMessageLogger extends BasicLogger {
 			int numberOfArguments);
 
 	@LogMessage(level = WARN)
-	@Message(value = "Class annotated @org.hibernate.annotations.Entity but not javax.persistence.Entity (most likely a user error): %s",
+	@Message(value = "Class annotated @org.hibernate.annotations.Entity but not jakarta.persistence.Entity (most likely a user error): %s",
 			id = 175)
 	void missingEntityAnnotation(String className);
 
