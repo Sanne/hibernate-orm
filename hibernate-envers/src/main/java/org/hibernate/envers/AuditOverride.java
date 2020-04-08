@@ -23,10 +23,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Erik-Berndt Scheper
  * @author Lukasz Antoniak (lukasz dot antoniak at gmail dot com)
  *
- * @see javax.persistence.Embedded
- * @see javax.persistence.Embeddable
- * @see javax.persistence.MappedSuperclass
- * @see javax.persistence.AssociationOverride
+ * @see jakarta.persistence.Embedded
+ * @see jakarta.persistence.Embeddable
+ * @see jakarta.persistence.MappedSuperclass
+ * @see jakarta.persistence.AssociationOverride
  * @see AuditJoinTable
  */
 @Target({TYPE, METHOD, FIELD})

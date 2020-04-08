@@ -36,7 +36,7 @@ import static org.hibernate.procedure.internal.ProcedureCallMementoImpl.Paramete
  *
  * @author Steve Ebersole
  *
- * @see javax.persistence.NamedStoredProcedureQuery
+ * @see jakarta.persistence.NamedStoredProcedureQuery
  */
 public class NamedProcedureCallDefinition {
 	private final String registeredName;
