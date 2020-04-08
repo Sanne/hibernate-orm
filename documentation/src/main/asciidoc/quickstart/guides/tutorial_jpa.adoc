@@ -38,7 +38,7 @@ is required to locate all JPA configuration files by classpath lookup of the `ME
 reference the configuration when obtaining an `jakarta.persistence.EntityManagerFactory` reference.
 
 The settings defined in the `<properties/>` element are discussed in <<hibernate-gsg-tutorial-basic-config>>.
-Here the `javax.persistence`-prefixed varieties are used when possible.  Notice that the remaining
+Here the `jakarta.persistence`-prefixed varieties are used when possible.  Notice that the remaining
 Hibernate-specific configuration setting names are now prefixed with `hibernate.`.
 
 Additionally, the `<class/>` element functions the same as we saw in <<hibernate-gsg-tutorial-annotations-config>>.
