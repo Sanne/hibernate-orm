@@ -100,7 +100,7 @@ public class OneToOneSecondPass implements SecondPass {
 		AnnotationBinder.bindForeignKeyNameAndDefinition(
 				value,
 				inferredData.getProperty(),
-				inferredData.getProperty().getAnnotation( javax.persistence.ForeignKey.class ),
+				inferredData.getProperty().getAnnotation( jakarta.persistence.ForeignKey.class ),
 				inferredData.getProperty().getAnnotation( JoinColumn.class ),
 				inferredData.getProperty().getAnnotation( JoinColumns.class )
 		);

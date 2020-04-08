@@ -90,10 +90,10 @@ public class EnumType<T extends Enum>
 			if ( enumType == null ) {
 				isOrdinal = true;
 			}
-			else if ( javax.persistence.EnumType.ORDINAL.equals( enumType ) ) {
+			else if ( jakarta.persistence.EnumType.ORDINAL.equals( enumType ) ) {
 				isOrdinal = true;
 			}
-			else if ( javax.persistence.EnumType.STRING.equals( enumType ) ) {
+			else if ( jakarta.persistence.EnumType.STRING.equals( enumType ) ) {
 				isOrdinal = false;
 			}
 			else {

@@ -88,9 +88,9 @@ public class ClassPropertyHolder extends AbstractPropertyHolder {
 		// collect superclass info first
 		collectAttributeConversionInfo( infoMap, xClass.getSuperclass() );
 
-		final boolean canContainConvert = xClass.isAnnotationPresent( javax.persistence.Entity.class )
-				|| xClass.isAnnotationPresent( javax.persistence.MappedSuperclass.class )
-				|| xClass.isAnnotationPresent( javax.persistence.Embeddable.class );
+		final boolean canContainConvert = xClass.isAnnotationPresent( jakarta.persistence.Entity.class )
+				|| xClass.isAnnotationPresent( jakarta.persistence.MappedSuperclass.class )
+				|| xClass.isAnnotationPresent( jakarta.persistence.Embeddable.class );
 		if ( ! canContainConvert ) {
 			return;
 		}

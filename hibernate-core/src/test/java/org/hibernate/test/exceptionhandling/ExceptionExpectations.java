@@ -57,7 +57,7 @@ interface ExceptionExpectations {
 
 			@Override
 			public void onGetSingleResultWithMultipleResults(RuntimeException e) {
-				assertThat( e, instanceOf( javax.persistence.NonUniqueResultException.class ) );
+				assertThat( e, instanceOf( jakarta.persistence.NonUniqueResultException.class ) );
 			}
 
 			@Override
@@ -210,7 +210,7 @@ interface ExceptionExpectations {
 
 			@Override
 			public void onGetSingleResultWithMultipleResults(RuntimeException e) {
-				assertThat( e, instanceOf( javax.persistence.NonUniqueResultException.class ) );
+				assertThat( e, instanceOf( jakarta.persistence.NonUniqueResultException.class ) );
 			}
 
 			@Override
