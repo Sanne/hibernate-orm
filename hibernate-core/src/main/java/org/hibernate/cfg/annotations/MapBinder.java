@@ -369,7 +369,7 @@ public class MapBinder extends CollectionBinder {
 		}
 	}
 
-	private javax.persistence.ForeignKey getMapKeyForeignKey(XProperty property) {
+	private jakarta.persistence.ForeignKey getMapKeyForeignKey(XProperty property) {
 		final MapKeyJoinColumns mapKeyJoinColumns = property.getAnnotation( MapKeyJoinColumns.class );
 		if ( mapKeyJoinColumns != null ) {
 			return mapKeyJoinColumns.foreignKey();

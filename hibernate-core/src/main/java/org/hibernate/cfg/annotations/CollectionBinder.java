@@ -169,7 +169,7 @@ public abstract class CollectionBinder {
 	private boolean hibernateExtensionMapping;
 
 	private boolean isSortedCollection;
-	private javax.persistence.OrderBy jpaOrderBy;
+	private jakarta.persistence.OrderBy jpaOrderBy;
 	private OrderBy sqlOrderBy;
 	private Sort deprecatedSort;
 	private SortNatural naturalSort;

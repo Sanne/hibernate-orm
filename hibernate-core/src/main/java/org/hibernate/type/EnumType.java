@@ -130,7 +130,7 @@ public class EnumType<T extends Enum>
 		);
 	}
 
-	private javax.persistence.EnumType getEnumType(ParameterType reader) {
+	private jakarta.persistence.EnumType getEnumType(ParameterType reader) {
 		javax.persistence.EnumType enumType = null;
 		if ( reader.isPrimaryKey() ) {
 			MapKeyEnumerated enumAnn = getAnnotation( reader.getAnnotationsMethod(), MapKeyEnumerated.class );
