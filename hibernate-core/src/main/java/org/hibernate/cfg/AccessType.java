@@ -72,7 +72,7 @@ public enum AccessType {
 	 *
 	 * @return The Hibernate AccessType
 	 */
-	public static AccessType getAccessStrategy(javax.persistence.AccessType type) {
+	public static AccessType getAccessStrategy(jakarta.persistence.AccessType type) {
 		if ( jakarta.persistence.AccessType.PROPERTY.equals( type ) ) {
 			return PROPERTY;
 		}

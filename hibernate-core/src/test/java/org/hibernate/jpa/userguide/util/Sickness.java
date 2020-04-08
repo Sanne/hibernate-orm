@@ -41,7 +41,7 @@ public class Sickness {
 	}
 
 
-	@Temporal(javax.persistence.TemporalType.DATE)
+	@Temporal(jakarta.persistence.TemporalType.DATE)
 	public Date getBeginTime() {
 		return beginTime;
 	}

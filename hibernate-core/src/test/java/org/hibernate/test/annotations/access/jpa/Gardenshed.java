@@ -22,7 +22,7 @@ import jakarta.persistence.Transient;
  * @since 2007-05-31
  */
 @Entity
-@Access(javax.persistence.AccessType.PROPERTY)
+@Access(jakarta.persistence.AccessType.PROPERTY)
 public class Gardenshed
 		extends
 		Woody {
@@ -51,7 +51,7 @@ public class Gardenshed
 
 	// These 2 functions should not return in Hibernate, but the value should come from the field "floors"
 
-	@Access(javax.persistence.AccessType.FIELD)
+	@Access(jakarta.persistence.AccessType.FIELD)
 	public long getFloors() {
 		return this.floors + 2;
 	}

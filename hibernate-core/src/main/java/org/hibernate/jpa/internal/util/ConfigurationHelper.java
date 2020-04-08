@@ -34,7 +34,7 @@ public abstract class ConfigurationHelper {
 			flushMode = (FlushMode) value;
 		}
 		else if ( value instanceof javax.persistence.FlushModeType ) {
-			flushMode = ConfigurationHelper.getFlushMode( (javax.persistence.FlushModeType) value );
+			flushMode = ConfigurationHelper.getFlushMode( (jakarta.persistence.FlushModeType) value );
 		}
 		else if ( value instanceof String ) {
 			flushMode = ConfigurationHelper.getFlushMode( (String) value );

@@ -18,7 +18,7 @@ import jakarta.persistence.Transient;
  * @author Emmanuel Bernard
  */
 @Entity
-@Access(javax.persistence.AccessType.FIELD)
+@Access(jakarta.persistence.AccessType.FIELD)
 public class Furniture extends Woody {
 	@Id
 	@GeneratedValue
@@ -45,7 +45,7 @@ public class Furniture extends Woody {
 
 	public long weight;
 
-	@Access(javax.persistence.AccessType.PROPERTY)
+	@Access(jakarta.persistence.AccessType.PROPERTY)
 	public long getWeight() {
 		return weight + 1;
 	}

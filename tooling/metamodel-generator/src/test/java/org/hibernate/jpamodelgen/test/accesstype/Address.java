@@ -16,7 +16,7 @@ import jakarta.persistence.CollectionTable;
  * @author Emmanuel Bernard
  */
 @Embeddable
-@Access(javax.persistence.AccessType.PROPERTY)
+@Access(jakarta.persistence.AccessType.PROPERTY)
 public class Address {
 	private String street1;
 	private String city;

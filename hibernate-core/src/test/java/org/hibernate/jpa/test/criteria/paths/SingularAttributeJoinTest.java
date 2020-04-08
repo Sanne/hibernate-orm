@@ -85,7 +85,7 @@ public class SingularAttributeJoinTest extends BaseEntityManagerFunctionalTestCa
     }
 
     private jakarta.persistence.metamodel.EntityType getEntityType(String entityName) {
-        for(javax.persistence.metamodel.EntityType entityType : entityManagerFactory().getMetamodel().getEntities()) {
+        for(jakarta.persistence.metamodel.EntityType entityType : entityManagerFactory().getMetamodel().getEntities()) {
             if (entityType.getName().equals("Distribution")) {
                 return entityType;
             }

@@ -15,7 +15,7 @@ import jakarta.persistence.ElementCollection;
  * @author Emmanuel Bernard
  */
 @Embeddable
-@Access(javax.persistence.AccessType.FIELD)
+@Access(jakarta.persistence.AccessType.FIELD)
 public class Inhabitant {
 	private String name;
 	@ElementCollection

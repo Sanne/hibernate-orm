@@ -1231,7 +1231,7 @@ public class EntityBinder {
 	public void setIgnoreIdAnnotations(boolean ignoreIdAnnotations) {
 		this.ignoreIdAnnotations = ignoreIdAnnotations;
 	}
-	public void processComplementaryTableDefinitions(javax.persistence.Table table) {
+	public void processComplementaryTableDefinitions(jakarta.persistence.Table table) {
 		if ( table == null ) return;
 		TableBinder.addIndexes( persistentClass.getTable(), table.indexes(), context );
 	}

@@ -121,7 +121,7 @@ public interface MetadataBuilder {
 	 * @return {@code this}, for method chaining
 	 *
 	 * @see org.hibernate.cfg.AvailableSettings#DEFAULT_CACHE_CONCURRENCY_STRATEGY
-	 * @see #applySharedCacheMode(javax.persistence.SharedCacheMode)
+	 * @see #applySharedCacheMode(jakarta.persistence.SharedCacheMode)
 	 */
 	MetadataBuilder applyAccessType(AccessType accessType);
 

@@ -17,7 +17,7 @@ import jakarta.persistence.Entity;
  */
 @Entity
 // explicitly override the access type to be property (default is field, see Being)
-@Access(javax.persistence.AccessType.PROPERTY)
+@Access(jakarta.persistence.AccessType.PROPERTY)
 public class Person extends Being {
 
 	String firstname;

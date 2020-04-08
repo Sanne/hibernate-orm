@@ -3303,7 +3303,7 @@ public final class AnnotationBinder {
 		propertyHolder.addProperty( prop, columns, inferredData.getDeclaringClass() );
 	}
 
-	private static EnumSet<CascadeType> convertToHibernateCascadeType(javax.persistence.CascadeType[] ejbCascades) {
+	private static EnumSet<CascadeType> convertToHibernateCascadeType(jakarta.persistence.CascadeType[] ejbCascades) {
 		EnumSet<CascadeType> hibernateCascadeSet = EnumSet.noneOf( CascadeType.class );
 		if ( ejbCascades != null && ejbCascades.length > 0 ) {
 			for ( jakarta.persistence.CascadeType cascade : ejbCascades ) {

@@ -13,7 +13,7 @@ import jakarta.persistence.Access;
  * @author Emmanuel Bernard
  */
 @MappedSuperclass
-@Access(javax.persistence.AccessType.FIELD)
+@Access(jakarta.persistence.AccessType.FIELD)
 public class LivingBeing {
 	boolean isReallyAlive;
 

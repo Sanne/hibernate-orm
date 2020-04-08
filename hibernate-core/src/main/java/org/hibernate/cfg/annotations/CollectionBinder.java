@@ -240,7 +240,7 @@ public abstract class CollectionBinder {
 		this.batchSize = batchSize == null ? -1 : batchSize.size();
 	}
 
-	public void setJpaOrderBy(javax.persistence.OrderBy jpaOrderBy) {
+	public void setJpaOrderBy(jakarta.persistence.OrderBy jpaOrderBy) {
 		this.jpaOrderBy = jpaOrderBy;
 	}
 
@@ -1661,7 +1661,7 @@ public abstract class CollectionBinder {
 
 	}
 
-	private String extractHqlOrderBy(javax.persistence.OrderBy jpaOrderBy) {
+	private String extractHqlOrderBy(jakarta.persistence.OrderBy jpaOrderBy) {
 		if ( jpaOrderBy != null ) {
 			return jpaOrderBy.value(); // Null not possible. In case of empty expression, apply default ordering.
 		}

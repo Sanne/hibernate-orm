@@ -104,7 +104,7 @@ public class TableBinder {
 		this.uniqueConstraints = TableBinder.buildUniqueConstraintHolders( uniqueConstraints );
 	}
 
-	public void setJpaIndex(javax.persistence.Index[] jpaIndex){
+	public void setJpaIndex(jakarta.persistence.Index[] jpaIndex){
 		this.jpaIndexHolders = buildJpaIndexHolder( jpaIndex );
 	}
 
@@ -744,9 +744,9 @@ public class TableBinder {
 		buildingContext.getMetadataCollector().addJpaIndexHolders( hibTable, buildJpaIndexHolder( indexes ) );
 	}
 
-	public static List<JPAIndexHolder> buildJpaIndexHolder(javax.persistence.Index[] indexes){
+	public static List<JPAIndexHolder> buildJpaIndexHolder(jakarta.persistence.Index[] indexes){
 		List<JPAIndexHolder> holders = new ArrayList<JPAIndexHolder>( indexes.length );
-		for(javax.persistence.Index index : indexes){
+		for(jakarta.persistence.Index index : indexes){
 			holders.add( new JPAIndexHolder( index ) );
 		}
 		return holders;
