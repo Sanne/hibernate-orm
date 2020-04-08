@@ -9,8 +9,8 @@ package org.hibernate.jpa.internal.util;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import javax.persistence.FlushModeType;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.PersistenceException;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.CacheMode;

@@ -9,12 +9,12 @@ package org.hibernate.query.criteria.internal.path;
 import java.io.Serializable;
 import java.lang.reflect.Member;
 import java.util.Map;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.Bindable;
-import javax.persistence.metamodel.ManagedType;
-import javax.persistence.metamodel.MapAttribute;
-import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.metamodel.Type;
+import jakarta.persistence.metamodel.Attribute;
+import jakarta.persistence.metamodel.Bindable;
+import jakarta.persistence.metamodel.ManagedType;
+import jakarta.persistence.metamodel.MapAttribute;
+import jakarta.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.metamodel.Type;
 
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;

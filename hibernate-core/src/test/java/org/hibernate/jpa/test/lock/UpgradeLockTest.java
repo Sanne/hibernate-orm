@@ -8,8 +8,8 @@ package org.hibernate.jpa.test.lock;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 
 import org.hibernate.jpa.test.BaseEntityManagerFunctionalTestCase;
 

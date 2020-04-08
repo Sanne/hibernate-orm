@@ -6,8 +6,8 @@
  */
 package org.hibernate.cfg;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Convert;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Convert;
 
 import org.hibernate.annotations.common.reflection.XAnnotatedElement;
 

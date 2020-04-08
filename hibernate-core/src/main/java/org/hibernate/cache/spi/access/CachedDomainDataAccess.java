@@ -7,7 +7,7 @@
 package org.hibernate.cache.spi.access;
 
 import java.io.Serializable;
-import javax.persistence.Cache;
+import jakarta.persistence.Cache;
 
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.DomainDataRegion;

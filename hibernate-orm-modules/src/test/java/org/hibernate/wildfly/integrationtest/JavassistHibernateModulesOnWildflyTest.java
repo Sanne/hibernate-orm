@@ -7,8 +7,8 @@
 package org.hibernate.wildfly.integrationtest;
 
 import java.util.Properties;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.hibernate.Session;
 import org.hibernate.bytecode.internal.javassist.BytecodeProviderImpl;

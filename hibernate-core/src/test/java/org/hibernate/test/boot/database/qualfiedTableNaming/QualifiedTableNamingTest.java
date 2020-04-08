@@ -9,8 +9,8 @@ package org.hibernate.test.boot.database.qualfiedTableNaming;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Namespace;

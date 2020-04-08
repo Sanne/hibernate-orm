@@ -6,9 +6,9 @@
  */
 package org.hibernate.jpa.test.graphs.inherited;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.Subgraph;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Subgraph;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -6,9 +6,9 @@
  */
 package org.hibernate.wildfly.integrationtest;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 
 import org.hibernate.Session;
 import org.hibernate.engine.transaction.spi.TransactionImplementor;

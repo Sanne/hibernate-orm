@@ -8,9 +8,9 @@ package org.hibernate.jpa.spi;
 
 import java.util.List;
 import java.util.Map;
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceException;
-import javax.persistence.criteria.Selection;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.criteria.Selection;
 
 import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;

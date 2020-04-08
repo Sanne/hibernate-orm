@@ -9,7 +9,7 @@ package org.hibernate.cfg.annotations;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.UniqueConstraint;
+import jakarta.persistence.UniqueConstraint;
 
 import org.hibernate.AnnotationException;
 import org.hibernate.AssertionFailure;

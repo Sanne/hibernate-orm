@@ -8,9 +8,9 @@ package org.hibernate.jpa;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.metamodel.EntityType;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.metamodel.EntityType;
 
 import org.hibernate.Metamodel;
 import org.hibernate.boot.spi.SessionFactoryOptions;

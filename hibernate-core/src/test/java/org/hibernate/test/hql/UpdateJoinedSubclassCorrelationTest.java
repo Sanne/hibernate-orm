@@ -5,9 +5,9 @@ import org.hibernate.testing.TestForIssue;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 
 import java.util.List;
 

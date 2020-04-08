@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.persistence.Parameter;
+import jakarta.persistence.Parameter;
 
 import org.hibernate.procedure.internal.ProcedureCallImpl;
 import org.hibernate.procedure.spi.ParameterRegistrationImplementor;

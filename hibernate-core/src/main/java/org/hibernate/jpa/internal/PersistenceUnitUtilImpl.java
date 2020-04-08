@@ -7,8 +7,8 @@
 package org.hibernate.jpa.internal;
 
 import java.io.Serializable;
-import javax.persistence.PersistenceUnitUtil;
-import javax.persistence.spi.LoadState;
+import jakarta.persistence.PersistenceUnitUtil;
+import jakarta.persistence.spi.LoadState;
 
 import org.hibernate.Hibernate;
 import org.hibernate.MappingException;

@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import javax.persistence.AttributeConverter;
-import javax.persistence.SharedCacheMode;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.SharedCacheMode;
 
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.HibernateException;

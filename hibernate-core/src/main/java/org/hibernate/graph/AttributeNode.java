@@ -7,8 +7,8 @@
 package org.hibernate.graph;
 
 import java.util.Map;
-import javax.persistence.Subgraph;
-import javax.persistence.metamodel.Attribute;
+import jakarta.persistence.Subgraph;
+import jakarta.persistence.metamodel.Attribute;
 
 /**
  * Hibernate extension to the JPA entity-graph AttributeNode contract.

@@ -8,9 +8,9 @@ package org.hibernate.cfg.annotations;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 import org.hibernate.AnnotationException;
 import org.hibernate.HibernateException;

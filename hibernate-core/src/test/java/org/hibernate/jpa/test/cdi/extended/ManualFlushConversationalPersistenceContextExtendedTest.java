@@ -7,8 +7,8 @@
 package org.hibernate.jpa.test.cdi.extended;
 
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.hibernate.testing.TestForIssue;
 import org.junit.Ignore;

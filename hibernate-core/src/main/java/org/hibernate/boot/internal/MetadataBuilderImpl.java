@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import javax.persistence.AttributeConverter;
-import javax.persistence.SharedCacheMode;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.SharedCacheMode;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MultiTenancyStrategy;

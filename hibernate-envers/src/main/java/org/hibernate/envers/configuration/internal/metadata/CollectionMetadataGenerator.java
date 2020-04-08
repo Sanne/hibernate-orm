@@ -16,8 +16,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.persistence.EnumType;
-import javax.persistence.JoinColumn;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.JoinColumn;
 
 import org.dom4j.Element;
 import org.hibernate.MappingException;

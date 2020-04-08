@@ -6,8 +6,8 @@
  */
 package org.hibernate.test.inheritance.discriminator.joinedsubclass;
 
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 
 /**
  * @author Andrea Boriero

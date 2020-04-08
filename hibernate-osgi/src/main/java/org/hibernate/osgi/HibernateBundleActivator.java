@@ -8,7 +8,7 @@ package org.hibernate.osgi;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import javax.persistence.spi.PersistenceProvider;
+import jakarta.persistence.spi.PersistenceProvider;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.jpa.HibernatePersistenceProvider;

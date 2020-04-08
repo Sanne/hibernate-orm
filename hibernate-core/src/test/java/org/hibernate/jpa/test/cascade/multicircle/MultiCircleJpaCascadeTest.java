@@ -6,8 +6,8 @@
  */
 package org.hibernate.jpa.test.cascade.multicircle;
 
-import javax.persistence.EntityManager;
-import javax.persistence.RollbackException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.RollbackException;
 
 import org.hibernate.TransientPropertyValueException;
 import org.hibernate.jpa.test.BaseEntityManagerFunctionalTestCase;

@@ -6,8 +6,8 @@
  */
 package org.hibernate.wildfly.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Gunnar Morling

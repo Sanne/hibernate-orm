@@ -7,7 +7,7 @@
 package org.hibernate.cfg;
 
 import java.util.function.Supplier;
-import javax.persistence.GeneratedValue;
+import jakarta.persistence.GeneratedValue;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;

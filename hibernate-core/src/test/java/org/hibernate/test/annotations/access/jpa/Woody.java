@@ -8,8 +8,8 @@
 //$Id$
 
 package org.hibernate.test.annotations.access.jpa;
-import javax.persistence.Access;
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.Access;
+import jakarta.persistence.MappedSuperclass;
 
 /**
  * @author Emmanuel Bernard

@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.Collections;
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;

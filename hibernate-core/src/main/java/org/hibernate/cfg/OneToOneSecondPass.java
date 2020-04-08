@@ -9,8 +9,8 @@ package org.hibernate.cfg;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 
 import org.hibernate.AnnotationException;
 import org.hibernate.MappingException;

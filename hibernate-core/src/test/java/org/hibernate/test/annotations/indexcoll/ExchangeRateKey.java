@@ -7,9 +7,9 @@
 
 //$Id$
 package org.hibernate.test.annotations.indexcoll;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
 
 
 @Embeddable

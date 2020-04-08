@@ -6,10 +6,10 @@
  */
 package org.hibernate.boot.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.TableGenerator;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.TableGenerator;
 
 /**
  * Strategy for interpreting identifier generator related information.

@@ -10,9 +10,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.persistence.LockModeType;
-import javax.persistence.NamedQuery;
-import javax.persistence.QueryHint;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.QueryHint;
 
 import org.hibernate.AnnotationException;
 import org.hibernate.CacheMode;

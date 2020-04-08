@@ -8,7 +8,7 @@ package org.hibernate.query.criteria.internal;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import javax.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Expression;
 
 /**
  * Internal contract for implementations of the JPA {@link Expression} contract.

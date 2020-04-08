@@ -6,8 +6,8 @@
  */
 package org.hibernate.metamodel.model.domain;
 
-import javax.persistence.metamodel.EmbeddableType;
-import javax.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.EmbeddableType;
+import jakarta.persistence.metamodel.EntityType;
 
 /**
  * Hibernate extension to the JPA {@link EntityType} contract.

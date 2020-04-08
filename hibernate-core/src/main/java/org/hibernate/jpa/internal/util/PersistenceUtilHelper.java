@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.persistence.spi.LoadState;
+import jakarta.persistence.spi.LoadState;
 
 import org.hibernate.HibernateException;
 import org.hibernate.bytecode.enhance.spi.interceptor.AbstractLazyLoadInterceptor;

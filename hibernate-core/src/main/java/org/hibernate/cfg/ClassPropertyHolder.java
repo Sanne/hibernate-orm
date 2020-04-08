@@ -8,9 +8,9 @@ package org.hibernate.cfg;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.persistence.Convert;
-import javax.persistence.Converts;
-import javax.persistence.JoinTable;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Converts;
+import jakarta.persistence.JoinTable;
 
 import org.hibernate.annotations.common.AssertionFailure;
 import org.hibernate.annotations.common.reflection.XClass;

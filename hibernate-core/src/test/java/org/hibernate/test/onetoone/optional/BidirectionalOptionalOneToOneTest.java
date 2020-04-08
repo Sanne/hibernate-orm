@@ -6,10 +6,10 @@
  */
 package org.hibernate.test.onetoone.optional;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 import org.hibernate.jpa.test.BaseEntityManagerFunctionalTestCase;
 

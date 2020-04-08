@@ -9,8 +9,8 @@ package org.hibernate.wildfly.integrationtest;
 import java.util.Arrays;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
 import org.hibernate.Session;

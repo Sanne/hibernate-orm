@@ -7,8 +7,8 @@
 package org.hibernate.graph;
 
 import java.util.List;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.ManagedType;
+import jakarta.persistence.metamodel.Attribute;
+import jakarta.persistence.metamodel.ManagedType;
 
 /**
  * A container for {@link AttributeNode}s.

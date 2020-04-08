@@ -10,8 +10,8 @@ package org.jboss.as.jpa.hibernate5;
 import java.util.Map;
 import java.util.Properties;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.persistence.SharedCacheMode;
-import javax.persistence.spi.PersistenceUnitInfo;
+import jakarta.persistence.SharedCacheMode;
+import jakarta.persistence.spi.PersistenceUnitInfo;
 
 import org.hibernate.cfg.AvailableSettings;
 

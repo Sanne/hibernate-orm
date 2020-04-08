@@ -11,9 +11,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.FlushModeType;
-import javax.persistence.Parameter;
-import javax.persistence.TemporalType;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.Parameter;
+import jakarta.persistence.TemporalType;
 
 import org.hibernate.engine.query.spi.sql.NativeSQLQueryReturn;
 import org.hibernate.query.NativeQuery;

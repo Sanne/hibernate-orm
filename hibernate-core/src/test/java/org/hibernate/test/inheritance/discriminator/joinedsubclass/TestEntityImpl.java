@@ -6,7 +6,7 @@
  */
 package org.hibernate.test.inheritance.discriminator.joinedsubclass;
 
-import javax.persistence.Id;
+import jakarta.persistence.Id;
 
 /**
  * @author Andrea Boriero

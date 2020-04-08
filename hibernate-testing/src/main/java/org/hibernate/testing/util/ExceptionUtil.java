@@ -6,7 +6,7 @@
  */
 package org.hibernate.testing.util;
 
-import javax.persistence.LockTimeoutException;
+import jakarta.persistence.LockTimeoutException;
 
 import org.hibernate.PessimisticLockException;
 import org.hibernate.exception.GenericJDBCException;

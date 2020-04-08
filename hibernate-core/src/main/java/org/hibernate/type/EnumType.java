@@ -14,8 +14,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Locale;
 import java.util.Properties;
-import javax.persistence.Enumerated;
-import javax.persistence.MapKeyEnumerated;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.MapKeyEnumerated;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.HibernateException;

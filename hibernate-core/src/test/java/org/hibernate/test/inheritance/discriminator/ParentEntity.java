@@ -6,12 +6,12 @@
  */
 package org.hibernate.test.inheritance.discriminator;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
 
 import static javax.persistence.DiscriminatorType.INTEGER;
 import static javax.persistence.GenerationType.IDENTITY;

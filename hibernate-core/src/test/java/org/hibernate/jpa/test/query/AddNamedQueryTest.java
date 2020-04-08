@@ -6,10 +6,10 @@
  */
 package org.hibernate.jpa.test.query;
 
-import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.Query;
 
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;

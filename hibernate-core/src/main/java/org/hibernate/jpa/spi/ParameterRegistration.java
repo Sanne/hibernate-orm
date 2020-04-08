@@ -6,10 +6,10 @@
  */
 package org.hibernate.jpa.spi;
 
-import javax.persistence.Parameter;
-import javax.persistence.ParameterMode;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
+import jakarta.persistence.Parameter;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.Query;
+import jakarta.persistence.TemporalType;
 
 /**
  * Hibernate specific extension to the JPA {@link javax.persistence.Parameter} contract as known to the

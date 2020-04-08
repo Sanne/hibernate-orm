@@ -8,7 +8,7 @@ package org.hibernate.internal.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import javax.persistence.FetchType;
+import jakarta.persistence.FetchType;
 
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.boot.spi.SessionFactoryOptions;

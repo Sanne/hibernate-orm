@@ -6,7 +6,7 @@
  */
 package org.hibernate.jpa.test.transaction;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;

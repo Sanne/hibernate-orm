@@ -8,8 +8,8 @@ package org.hibernate.procedure;
 
 import java.util.List;
 import java.util.Map;
-import javax.persistence.ParameterMode;
-import javax.persistence.StoredProcedureQuery;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.StoredProcedureQuery;
 
 import org.hibernate.BasicQueryContract;
 import org.hibernate.MappingException;

@@ -8,9 +8,9 @@ package org.hibernate.query;
 
 import org.hibernate.SQLQuery;
 
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.CriteriaDelete;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
 
 /**
  * Contract for things that can produce Query instances.  Expected implementors include

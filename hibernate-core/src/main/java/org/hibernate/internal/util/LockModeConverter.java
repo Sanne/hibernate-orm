@@ -6,7 +6,7 @@
  */
 package org.hibernate.internal.util;
 
-import javax.persistence.LockModeType;
+import jakarta.persistence.LockModeType;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.LockMode;

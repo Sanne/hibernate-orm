@@ -6,9 +6,9 @@
  */
 package org.hibernate.jpa.test.criteria.components.joins;
 
-import javax.persistence.Embedded;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 @javax.persistence.Entity
 public class Entity {
