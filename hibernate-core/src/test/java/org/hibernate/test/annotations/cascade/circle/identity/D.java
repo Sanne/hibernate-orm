@@ -17,7 +17,7 @@ public class D extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.ManyToMany(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     )
     private java.util.Set<A> aCollection = new java.util.HashSet<A>();
 
@@ -25,7 +25,7 @@ public class D extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.OneToMany(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     )
     private java.util.Set<E> eCollection = new java.util.HashSet<E>();
 

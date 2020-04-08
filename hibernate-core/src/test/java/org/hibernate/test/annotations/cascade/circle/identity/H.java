@@ -17,7 +17,7 @@ public class H extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.OneToOne(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     )
     private G g;
 

@@ -23,9 +23,9 @@ public class EntityD extends AbstractEntity {
 	private EntityE e;
 
     @jakarta.persistence.OneToMany(cascade =  {
-        javax.persistence.CascadeType.MERGE,
-			javax.persistence.CascadeType.PERSIST,
-			javax.persistence.CascadeType.REFRESH},
+        jakarta.persistence.CascadeType.MERGE,
+			jakarta.persistence.CascadeType.PERSIST,
+			jakarta.persistence.CascadeType.REFRESH},
 			mappedBy = "d"
     )
     private java.util.Set<EntityF> fCollection = new java.util.HashSet<EntityF>();

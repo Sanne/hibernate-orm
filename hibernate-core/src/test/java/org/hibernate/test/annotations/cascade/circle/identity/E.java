@@ -17,7 +17,7 @@ public class E extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.ManyToOne(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     , optional = false)
     private F f;
 

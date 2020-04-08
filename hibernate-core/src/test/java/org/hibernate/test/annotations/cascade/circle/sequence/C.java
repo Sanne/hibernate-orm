@@ -17,7 +17,7 @@ public class C extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.ManyToOne(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     , optional = false)
     private org.hibernate.test.annotations.cascade.circle.sequence.A a;
 
@@ -25,7 +25,7 @@ public class C extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.ManyToOne(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     )
     private G g;
 
@@ -33,7 +33,7 @@ public class C extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.ManyToOne(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     , optional = false)
     private org.hibernate.test.annotations.cascade.circle.sequence.B b;
 

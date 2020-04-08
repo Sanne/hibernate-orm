@@ -3334,7 +3334,7 @@ public final class AnnotationBinder {
 	}
 
 	private static String getCascadeStrategy(
-			javax.persistence.CascadeType[] ejbCascades,
+			jakarta.persistence.CascadeType.] ejbCascades,
 			Cascade hibernateCascadeAnnotation,
 			boolean orphanRemoval,
 			boolean forcePersist) {

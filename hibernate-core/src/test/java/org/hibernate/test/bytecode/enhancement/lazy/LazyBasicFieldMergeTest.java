@@ -80,7 +80,7 @@ public class LazyBasicFieldMergeTest extends BaseCoreFunctionalTestCase {
         @Column(name = "NAME")
         private String name;
 
-        @OneToOne(mappedBy = "company", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+        @OneToOne(mappedBy = "company", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
         private Manager manager;
 
         public Long getId() {

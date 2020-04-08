@@ -17,7 +17,7 @@ public class B extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.OneToMany(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     , mappedBy = "b")
     private java.util.Set<G> gCollection = new java.util.HashSet<org.hibernate.test.annotations.cascade.multicircle.jpa.sequence.G>();
 
@@ -26,7 +26,7 @@ public class B extends AbstractEntity {
 	 * No documentation
 	 */
 	@jakarta.persistence.ManyToOne(cascade =  {
-		javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+		jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
 	, optional = false)
 	private C c;
 
@@ -36,7 +36,7 @@ public class B extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.ManyToOne(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     , optional = false)
     private D d;
 

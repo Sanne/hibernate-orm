@@ -17,7 +17,7 @@ public class G extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.OneToMany(cascade =  {
-        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
+        jakarta.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     , mappedBy = "g")
     private java.util.Set<org.hibernate.test.annotations.cascade.circle.sequence.C> cCollection = new java.util.HashSet<org.hibernate.test.annotations.cascade.circle.sequence.C>();
 
