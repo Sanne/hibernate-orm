@@ -17,7 +17,7 @@ public class H extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.OneToOne(cascade =  {
-        javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
+        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     )
     private org.hibernate.test.annotations.cascade.circle.sequence.G g;
 

@@ -17,7 +17,7 @@ public class EntityB extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.OneToMany(cascade =  {
-        javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
+        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     , mappedBy = "b")
     private java.util.Set<EntityG> gCollection = new java.util.HashSet<EntityG>();
 
@@ -26,7 +26,7 @@ public class EntityB extends AbstractEntity {
 	 * No documentation
 	 */
 	@jakarta.persistence.ManyToOne(cascade =  {
-		javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
+		javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
 	, optional = false)
 	private EntityC c;
 
@@ -36,7 +36,7 @@ public class EntityB extends AbstractEntity {
      * No documentation
      */
     @jakarta.persistence.ManyToOne(cascade =  {
-        javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
+        javax.persistence.CascadeType.MERGE, jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.REFRESH}
     , optional = false)
     private EntityD d;
 

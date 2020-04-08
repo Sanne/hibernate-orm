@@ -90,7 +90,7 @@ public interface ProcedureCall extends BasicQueryContract<CommonQueryContract>, 
 			throws NamedParametersNotSupportedException;
 
 	/**
-	 * Chained form of {@link #registerParameter(String, Class, javax.persistence.ParameterMode)}
+	 * Chained form of {@link #registerParameter(String, Class, jakarta.persistence.ParameterMode)}
 	 *
 	 * @param parameterName The parameter name
 	 * @param type The Java type of the parameter
