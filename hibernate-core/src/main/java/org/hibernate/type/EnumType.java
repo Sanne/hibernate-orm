@@ -86,7 +86,7 @@ public class EnumType<T extends Enum>
 			enumClass = reader.getReturnedClass().asSubclass( Enum.class );
 
 			final boolean isOrdinal;
-			final javax.persistence.EnumType enumType = getEnumType( reader );
+			final jakarta.persistence.EnumType enumType = getEnumType( reader );
 			if ( enumType == null ) {
 				isOrdinal = true;
 			}

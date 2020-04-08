@@ -1257,7 +1257,7 @@ public abstract class CollectionBinder {
 						}
 					}
 					else {
-						final javax.persistence.ForeignKey fkOverride = propertyHolder.getOverriddenForeignKey(
+						final jakarta.persistence.ForeignKey fkOverride = propertyHolder.getOverriddenForeignKey(
 								StringHelper.qualify( propertyHolder.getPath(), property.getName() )
 						);
 						if ( fkOverride != null && fkOverride.value() == ConstraintMode.NO_CONSTRAINT ) {
