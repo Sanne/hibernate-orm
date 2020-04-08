@@ -938,7 +938,7 @@ public class BinderHelper {
 	public static Any buildAnyValue(
 			String anyMetaDefName,
 			Ejb3JoinColumn[] columns,
-			javax.persistence.Column metaColumn,
+			jakarta.persistence.Column metaColumn,
 			PropertyData inferredData,
 			boolean cascadeOnDelete,
 			boolean lazy,
@@ -997,7 +997,7 @@ public class BinderHelper {
 		}
 
 		Ejb3Column[] metaColumns = Ejb3Column.buildColumnFromAnnotation(
-				new javax.persistence.Column[] { metaColumn },
+				new jakarta.persistence.Column[] { metaColumn },
 				null,
 				nullability,
 				propertyHolder,
