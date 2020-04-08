@@ -63,14 +63,14 @@ See the <<chapters/domain/embeddables.adoc#embeddable-collections,Collections of
 [[annotations-jpa-column]]
 ==== `@Column`
 
-The https://javaee.github.io/javaee-spec/javadocs/javax/persistence/Column.html[`@Column`] annotation is used to specify the mapping between a basic entity attribute and the database table column.
+The https://javaee.github.io/javaee-spec/javadocs/jakarta.persistence.Column.html[`@Column`] annotation is used to specify the mapping between a basic entity attribute and the database table column.
 
 See the <<chapters/domain/basic_types.adoc#basic-column-annotation, `@Column` annotation>> section for more info.
 
 [[annotations-jpa-columnresult]]
 ==== `@ColumnResult`
 
-The https://javaee.github.io/javaee-spec/javadocs/javax/persistence/ColumnResult.html[`@ColumnResult`] annotation is used in conjunction with the <<annotations-jpa-sqlresultsetmapping>> or <<annotations-jpa-constructorresult>> annotations to map a SQL column for a given SELECT query.
+The https://javaee.github.io/javaee-spec/javadocs/jakarta.persistence.ColumnResult.html[`@ColumnResult`] annotation is used in conjunction with the <<annotations-jpa-sqlresultsetmapping>> or <<annotations-jpa-constructorresult>> annotations to map a SQL column for a given SELECT query.
 
 See the <<chapters/query/native/Native.adoc#sql-composite-key-entity-associations_named-query-example, Entity associations with named native queries>> section for more info.
 
@@ -579,14 +579,14 @@ See the <<chapters/query/native/Native.adoc#sql-sp-named-query, Using named quer
 [[annotations-jpa-table]]
 ==== `@Table`
 
-The https://javaee.github.io/javaee-spec/javadocs/javax/persistence/Table.html[`@Table`] annotation is used to specify the primary table of the currently annotated entity.
+The https://javaee.github.io/javaee-spec/javadocs/jakarta.persistence.Table.html[`@Table`] annotation is used to specify the primary table of the currently annotated entity.
 
 See the <<chapters/query/native/Native.adoc#sql-custom-crud-secondary-table-example, `@Table` mapping>> section for more info.
 
 [[annotations-jpa-tablegenerator]]
 ==== `@TableGenerator`
 
-The https://javaee.github.io/javaee-spec/javadocs/javax/persistence/TableGenerator.html[`@TableGenerator`] annotation is used to specify the database table used by the identity generator of the currently annotated entity.
+The https://javaee.github.io/javaee-spec/javadocs/jakarta.persistence.TableGenerator.html[`@TableGenerator`] annotation is used to specify the database table used by the identity generator of the currently annotated entity.
 
 See the <<chapters/domain/identifiers.adoc#identifiers-generators-table-configured-mapping-example,`@TableGenerator` mapping>> section for more info.
 
@@ -676,7 +676,7 @@ See the <<chapters/caching/Caching.adoc#caching,Caching>> chapter for more info.
 
 The https://docs.jboss.org/hibernate/orm/{majorMinorVersion}/javadocs/org/hibernate/annotations/Cascade.html[`@Cascade`] annotation is used to apply the Hibernate specific http://docs.jboss.org/hibernate/orm/{majorMinorVersion}/javadocs/org/hibernate/annotations/CascadeType.html[`CascadeType`] strategies (e.g. `CascadeType.LOCK`, `CascadeType.SAVE_UPDATE`, `CascadeType.REPLICATE`) on a given association.
 
-For JPA cascading, prefer using the https://javaee.github.io/javaee-spec/javadocs/javax/persistence/CascadeType.html[`javax.persistence.CascadeType`] instead.
+For JPA cascading, prefer using the https://javaee.github.io/javaee-spec/javadocs/jakarta.persistence.CascadeType.html[`jakarta.persistence.CascadeType.] instead.
 
 When combining both JPA and Hibernate `CascadeType` strategies, Hibernate will merge both sets of cascades.
 

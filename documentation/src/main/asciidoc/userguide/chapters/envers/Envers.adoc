@@ -1431,7 +1431,7 @@ Although Hibernate allows this, Envers (or more precisely the database connector
 
 There are at least two ways out if you need bag semantics:
 
-. use an indexed collection, with the `@javax.persistence.OrderColumn` annotation.
+. use an indexed collection, with the `@jakarta.persistence.OrderColumn` annotation.
 . provide a unique id for your elements with the `@CollectionId` annotation.
 
 ==== What isn't and _will_ be supported

@@ -1130,7 +1130,7 @@ include::{sourcedir-caching}/FirstLevelCacheTest.java[tags=caching-management-co
 === Cascading entity state transitions
 
 JPA allows you to propagate the state transition from a parent entity to a child.
-For this purpose, the JPA `javax.persistence.CascadeType` defines various cascade types:
+For this purpose, the JPA `jakarta.persistence.CascadeType. defines various cascade types:
 
 `ALL`:: cascades all entity state transitions.
 `PERSIST`:: cascades the entity persist operation.
