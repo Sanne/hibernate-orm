@@ -17,7 +17,7 @@ import org.hibernate.bytecode.enhance.spi.EnhancementContext;
 
 /**
  * Abstraction for dealing with either {@code <persistence-unit/>} information whether that comes from
- * an EE container in the form of {@link javax.persistence.spi.PersistenceUnitInfo} or in an SE environment
+ * an EE container in the form of {@link jakarta.persistence.spi.PersistenceUnitInfo} or in an SE environment
  * where Hibernate has parsed the {@code persistence.xml} file itself.
  *
  * @author Steve Ebersole

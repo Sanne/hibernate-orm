@@ -332,7 +332,7 @@ public class GeneratedValueTests extends BaseUnitTestCase {
 	@Entity
 	public static class ImplicitTableGeneratorEntity {
 		/**
-		 * This entity does not have explicit {@link javax.persistence.TableGenerator} defined
+		 * This entity does not have explicit {@link jakarta.persistence.TableGenerator} defined
 		 */
 		@Id
 		@GeneratedValue( strategy = GenerationType.TABLE, generator = "my_id_table" )
@@ -343,8 +343,8 @@ public class GeneratedValueTests extends BaseUnitTestCase {
 	@Entity
 	public static class ExplicitTableGeneratorImplicitNameEntity {
 		/**
-		 * This entity has an explicit {@link javax.persistence.TableGenerator} defined,
-		 * but does not define {@link javax.persistence.TableGenerator#table()}.  In
+		 * This entity has an explicit {@link jakarta.persistence.TableGenerator} defined,
+		 * but does not define {@link jakarta.persistence.TableGenerator#table()}.  In
 		 * this case, the generator-name ("my_id_table")
 		 */
 		@Id
@@ -365,7 +365,7 @@ public class GeneratedValueTests extends BaseUnitTestCase {
 	)
 	public static class ExplicitTableGeneratorEntity {
 		/**
-		 * This entity has an explicit {@link javax.persistence.TableGenerator} defined,
+		 * This entity has an explicit {@link jakarta.persistence.TableGenerator} defined,
 		 * and specifies a table name.  That table name ("my_real_id_table") should be used.
 		 */
 		@Id
@@ -377,7 +377,7 @@ public class GeneratedValueTests extends BaseUnitTestCase {
 	@Entity
 	public static class ExplicitIncrementGeneratorEntity {
 		/**
-		 * This entity does not have explicit {@link javax.persistence.TableGenerator} defined
+		 * This entity does not have explicit {@link jakarta.persistence.TableGenerator} defined
 		 */
 		@Id
 		@GeneratedValue( strategy = GenerationType.AUTO, generator = "increment" )
@@ -389,7 +389,7 @@ public class GeneratedValueTests extends BaseUnitTestCase {
 	@Entity
 	public static class ImplicitIncrementGeneratorEntity {
 		/**
-		 * This entity does not have explicit {@link javax.persistence.TableGenerator} defined
+		 * This entity does not have explicit {@link jakarta.persistence.TableGenerator} defined
 		 */
 		@Id
 		@GeneratedValue( strategy = GenerationType.AUTO, generator = "increment" )

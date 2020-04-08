@@ -10,7 +10,7 @@ import org.hibernate.boot.model.source.spi.AttributePath;
 
 /**
  * Context for determining the implicit name of a "join column" (think
- * {@link javax.persistence.JoinColumn}).
+ * {@link jakarta.persistence.JoinColumn}).
  *
  * @author Steve Ebersole
  *

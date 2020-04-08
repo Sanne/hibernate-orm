@@ -459,7 +459,7 @@ public interface Query<R> extends TypedQuery<R>, CommonQueryContract {
 	Query<R> setComment(String comment);
 
 	/**
-	 * Add a DB query hint to the SQL.  These differ from JPA's {@link javax.persistence.QueryHint}, which is specific
+	 * Add a DB query hint to the SQL.  These differ from JPA's {@link jakarta.persistence.QueryHint}, which is specific
 	 * to the JPA implementation and ignores DB vendor-specific hints.  Instead, these are intended solely for the
 	 * vendor-specific hints, such as Oracle's optimizers.  Multiple query hints are supported; the Dialect will
 	 * determine concatenation and placement.
@@ -1590,7 +1590,7 @@ public interface Query<R> extends TypedQuery<R>, CommonQueryContract {
 	Query<R> setResultTransformer(ResultTransformer transformer);
 
 	/**
-	 * @deprecated (since 5.2) use {@link javax.persistence.Tuple} if you need access to "result variables".
+	 * @deprecated (since 5.2) use {@link jakarta.persistence.Tuple} if you need access to "result variables".
 	 */
 	@Deprecated
 	String[] getReturnAliases();

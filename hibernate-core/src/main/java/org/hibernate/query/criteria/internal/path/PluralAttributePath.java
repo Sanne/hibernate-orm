@@ -24,7 +24,7 @@ import org.hibernate.persister.collection.CollectionPersister;
 
 /**
  * Models a path for a {@link PluralAttribute} generally obtained from a
- * {@link javax.persistence.criteria.Path#get} call
+ * {@link jakarta.persistence.criteria.Path#get} call
  *
  * @author Steve Ebersole
  */

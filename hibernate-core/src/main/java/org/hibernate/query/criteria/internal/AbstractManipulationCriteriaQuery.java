@@ -29,8 +29,8 @@ import org.hibernate.query.spi.QueryImplementor;
 import org.hibernate.sql.ast.Clause;
 
 /**
- * Base class for commonality between {@link javax.persistence.criteria.CriteriaUpdate} and
- * {@link javax.persistence.criteria.CriteriaDelete}
+ * Base class for commonality between {@link jakarta.persistence.criteria.CriteriaUpdate} and
+ * {@link jakarta.persistence.criteria.CriteriaDelete}
  *
  * @author Steve Ebersole
  */

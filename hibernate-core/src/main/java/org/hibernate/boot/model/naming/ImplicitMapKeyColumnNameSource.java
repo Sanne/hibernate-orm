@@ -11,8 +11,8 @@ import org.hibernate.boot.model.source.spi.AttributePath;
 /**
  * Context for determining the implicit name of a column used to back the key
  * of a {@link java.util.Map}.  This is used for both
- * {@link javax.persistence.MapKeyColumn} and
- * {@link javax.persistence.MapKeyJoinColumn} cases.
+ * {@link jakarta.persistence.MapKeyColumn} and
+ * {@link jakarta.persistence.MapKeyJoinColumn} cases.
  *
  * @author Steve Ebersole
  *

@@ -798,7 +798,7 @@ public class Configuration {
 	/**
 	 * Sets the SharedCacheMode to use.
 	 *
-	 * Note that at the moment, only {@link javax.persistence.SharedCacheMode#ALL} has
+	 * Note that at the moment, only {@link jakarta.persistence.SharedCacheMode#ALL} has
 	 * any effect in terms of {@code hbm.xml} binding.
 	 *
 	 * @param sharedCacheMode The SharedCacheMode to use

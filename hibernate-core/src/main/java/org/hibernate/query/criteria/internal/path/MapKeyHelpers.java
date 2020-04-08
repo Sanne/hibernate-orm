@@ -25,8 +25,8 @@ import org.hibernate.query.criteria.internal.compile.RenderingContext;
 import org.hibernate.persister.collection.CollectionPersister;
 
 /**
- * {@link javax.persistence.criteria.MapJoin#key} poses a number of implementation difficulties in terms of the
- * type signatures amongst the {@link javax.persistence.criteria.Path}, {@link javax.persistence.criteria.Join} and
+ * {@link jakarta.persistence.criteria.MapJoin#key} poses a number of implementation difficulties in terms of the
+ * type signatures amongst the {@link jakarta.persistence.criteria.Path}, {@link jakarta.persistence.criteria.Join} and
  * {@link Attribute}.  The implementations found here provide that bridge.
  *
  * @author Steve Ebersole
@@ -39,7 +39,7 @@ public class MapKeyHelpers {
 	}
 
 	/**
-	 * Models a path to a map key.  This is the actual return used from {@link javax.persistence.criteria.MapJoin#key}
+	 * Models a path to a map key.  This is the actual return used from {@link jakarta.persistence.criteria.MapJoin#key}
 	 *
 	 * @param <K> The type of the map key.
 	 */
@@ -179,7 +179,7 @@ public class MapKeyHelpers {
 	}
 
 	/**
-	 * Defines an {@link javax.persistence.metamodel.Attribute} modelling of a map-key.
+	 * Defines an {@link jakarta.persistence.metamodel.Attribute} modelling of a map-key.
 	 *
 	 * @param <K> The type of the map key
 	 */

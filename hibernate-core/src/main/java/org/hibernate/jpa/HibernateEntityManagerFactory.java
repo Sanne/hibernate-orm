@@ -17,7 +17,7 @@ import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 
 /**
- * Contract giving access to the underlying {@link org.hibernate.SessionFactory} from an {@link javax.persistence.EntityManagerFactory}
+ * Contract giving access to the underlying {@link org.hibernate.SessionFactory} from an {@link jakarta.persistence.EntityManagerFactory}
  *
  * @author Gavin King
  *

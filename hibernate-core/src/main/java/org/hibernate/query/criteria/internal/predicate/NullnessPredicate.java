@@ -16,7 +16,7 @@ import org.hibernate.query.criteria.internal.compile.RenderingContext;
 import org.hibernate.query.criteria.internal.expression.UnaryOperatorExpression;
 
 /**
- * Defines a {@link javax.persistence.criteria.Predicate} for checking the
+ * Defines a {@link jakarta.persistence.criteria.Predicate} for checking the
  * nullness state of an expression, aka an <tt>IS [NOT] NULL</tt> predicate.
  * <p/>
  * The <tt>NOT NULL</tt> form can be built by calling the constructor and then

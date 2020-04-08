@@ -191,10 +191,10 @@ public interface MetadataBuilder {
 	/**
 	 * Should we enable support for the "new" (since 3.2) identifier generator mappings for
 	 * handling:<ul>
-	 *     <li>{@link javax.persistence.GenerationType#SEQUENCE}</li>
-	 *     <li>{@link javax.persistence.GenerationType#IDENTITY}</li>
-	 *     <li>{@link javax.persistence.GenerationType#TABLE}</li>
-	 *     <li>{@link javax.persistence.GenerationType#AUTO}</li>
+	 *     <li>{@link jakarta.persistence.GenerationType#SEQUENCE}</li>
+	 *     <li>{@link jakarta.persistence.GenerationType#IDENTITY}</li>
+	 *     <li>{@link jakarta.persistence.GenerationType#TABLE}</li>
+	 *     <li>{@link jakarta.persistence.GenerationType#AUTO}</li>
 	 * </ul>
 	 * <p/>
 	 * Its default is defined by the {@link org.hibernate.cfg.AvailableSettings#USE_NEW_ID_GENERATOR_MAPPINGS}
@@ -350,7 +350,7 @@ public interface MetadataBuilder {
 	 * Ideally we should avoid accessing ClassLoaders when perform 1st phase of bootstrap.  This
 	 * is a ClassLoader that can be used in cases when we have to.  IN EE managed environments, this
 	 * is the ClassLoader mandated by
-	 * {@link javax.persistence.spi.PersistenceUnitInfo#getNewTempClassLoader()}.  This ClassLoader
+	 * {@link jakarta.persistence.spi.PersistenceUnitInfo#getNewTempClassLoader()}.  This ClassLoader
 	 * is thrown away by the container afterwards.  The idea being that the Class can still be enhanced
 	 * in the application ClassLoader.  In other environments, pass a ClassLoader that performs the
 	 * same function if desired.

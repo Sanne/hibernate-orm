@@ -136,7 +136,7 @@ public interface MetadataBuildingOptions {
 
 	/**
 	 * Access the temporary ClassLoader passed to us as defined by
-	 * {@link javax.persistence.spi.PersistenceUnitInfo#getNewTempClassLoader()}, if any.
+	 * {@link jakarta.persistence.spi.PersistenceUnitInfo#getNewTempClassLoader()}, if any.
 	 *
 	 * @return The tempo ClassLoader
 	 *

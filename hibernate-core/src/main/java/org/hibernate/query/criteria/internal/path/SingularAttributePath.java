@@ -20,7 +20,7 @@ import org.hibernate.query.criteria.internal.compile.RenderingContext;
 
 /**
  * Models a path for a {@link SingularAttribute} generally obtained from a
- * {@link javax.persistence.criteria.Path#get(SingularAttribute)} call
+ * {@link jakarta.persistence.criteria.Path#get(SingularAttribute)} call
  *
  * @author Steve Ebersole
  */

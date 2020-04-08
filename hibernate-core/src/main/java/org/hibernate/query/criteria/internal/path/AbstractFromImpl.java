@@ -41,7 +41,7 @@ import org.hibernate.query.criteria.internal.SetJoinImplementor;
 import org.hibernate.query.criteria.internal.compile.RenderingContext;
 
 /**
- * Convenience base class for various {@link javax.persistence.criteria.From} implementations.
+ * Convenience base class for various {@link jakarta.persistence.criteria.From} implementations.
  *
  * @author Steve Ebersole
  */

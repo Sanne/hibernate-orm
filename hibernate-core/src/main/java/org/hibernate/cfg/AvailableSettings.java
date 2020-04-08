@@ -34,7 +34,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	/**
-	 * The name of the {@link javax.persistence.spi.PersistenceProvider} implementor
+	 * The name of the {@link jakarta.persistence.spi.PersistenceProvider} implementor
 	 * <p/>
 	 * See JPA 2 sections 9.4.3 and 8.2.1.4
 	 */
@@ -531,7 +531,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 
 	/**
 	 * Setting used to give the name of the default {@link org.hibernate.annotations.CacheConcurrencyStrategy}
-	 * to use when either {@link javax.persistence.Cacheable @Cacheable} or
+	 * to use when either {@link jakarta.persistence.Cacheable @Cacheable} or
 	 * {@link org.hibernate.annotations.Cache @Cache} is used.  {@link org.hibernate.annotations.Cache @Cache(strategy="..")} is used to override.
 	 *
 	 * @see MetadataBuilder#applyAccessType(org.hibernate.cache.spi.access.AccessType)
@@ -1167,8 +1167,8 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 
 	/**
 	 * Assuming {@link #GLOBALLY_QUOTED_IDENTIFIERS}, this allows such global quoting
-	 * to skip column-definitions as defined by {@link javax.persistence.Column},
-	 * {@link javax.persistence.JoinColumn}, etc.
+	 * to skip column-definitions as defined by {@link jakarta.persistence.Column},
+	 * {@link jakarta.persistence.JoinColumn}, etc.
 	 * <p/>
 	 * JPA states that column-definitions are subject to global quoting, so by default this setting
 	 * is {@code false} for JPA compliance.  Set to {@code true} to avoid column-definitions
@@ -1799,14 +1799,14 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	String COLLECTION_JOIN_SUBQUERY = "hibernate.collection_join_subquery";
 
 	/**
-	 * Setting that allows to call {@link javax.persistence.EntityManager#refresh(Object)}
+	 * Setting that allows to call {@link jakarta.persistence.EntityManager#refresh(Object)}
 	 * or {@link org.hibernate.Session#refresh(Object)} on a detached entity instance when the {@link org.hibernate.Session} is obtained from
-	 * a JPA {@link javax.persistence.EntityManager}).
+	 * a JPA {@link jakarta.persistence.EntityManager}).
 	 * <p>
 	 * <p/>
 	 * Values are: {@code true} permits the refresh, {@code false} does not permit the detached instance refresh and an {@link IllegalArgumentException} is thrown.
 	 * <p/>
-	 * The default value is {@code false} when the Session is bootstrapped via JPA {@link javax.persistence.EntityManagerFactory}, otherwise is {@code true}
+	 * The default value is {@code false} when the Session is bootstrapped via JPA {@link jakarta.persistence.EntityManagerFactory}, otherwise is {@code true}
 	 *
 	 * @since 5.2
 	 */
@@ -1853,12 +1853,12 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	/**
 	 * Setting which indicates if {@link org.hibernate.query.Query#setParameter} should not perform parameters validation
 	 *
-	 * This setting is applied only when the Session is bootstrapped via JPA {@link javax.persistence.EntityManagerFactory}
+	 * This setting is applied only when the Session is bootstrapped via JPA {@link jakarta.persistence.EntityManagerFactory}
 	 *
 	 * </p>
 	 * Values are: {@code true} indicates the validation should be performed, {@code false} otherwise
 	 * <p>
-	 * The default value is {@code true} when the Session is bootstrapped via JPA {@link javax.persistence.EntityManagerFactory},
+	 * The default value is {@code true} when the Session is bootstrapped via JPA {@link jakarta.persistence.EntityManagerFactory},
 	 * otherwise is {@code false}
 	 *
 	 */
@@ -1886,8 +1886,8 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 
 	/**
 	 * True/false setting indicating whether the value specified for {@link GeneratedValue#generator()}
-	 * should be used as the sequence/table name when no matching {@link javax.persistence.SequenceGenerator}
-	 * or {@link javax.persistence.TableGenerator} is found.
+	 * should be used as the sequence/table name when no matching {@link jakarta.persistence.SequenceGenerator}
+	 * or {@link jakarta.persistence.TableGenerator} is found.
 	 *
 	 * The default value is `true` meaning that {@link GeneratedValue#generator()} will be used as the
 	 * sequence/table name by default.  Users migrating from earlier versions using the legacy
@@ -1897,7 +1897,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 
 	/**
 	 * Should Hibernate's {@link Transaction} behave as
-	 * defined by the spec for JPA's {@link javax.persistence.EntityTransaction}
+	 * defined by the spec for JPA's {@link jakarta.persistence.EntityTransaction}
 	 * since it extends the JPA one.
 	 *
 	 * @see JpaCompliance#isJpaTransactionComplianceEnabled()
@@ -1906,10 +1906,10 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	String JPA_TRANSACTION_COMPLIANCE = "hibernate.jpa.compliance.transaction";
 
 	/**
-	 * Controls whether Hibernate's handling of {@link javax.persistence.Query}
+	 * Controls whether Hibernate's handling of {@link jakarta.persistence.Query}
 	 * (JPQL, Criteria and native-query) should strictly follow the JPA spec.
 	 * This includes both in terms of parsing or translating a query as well
-	 * as calls to the {@link javax.persistence.Query} methods throwing spec
+	 * as calls to the {@link jakarta.persistence.Query} methods throwing spec
 	 * defined exceptions where as Hibernate might not.
 	 *
 	 * Deviations result in an exception if enabled
@@ -1924,7 +1924,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * ({@link org.hibernate.collection.internal.PersistentBag}) as a List
 	 * ({@link org.hibernate.collection.internal.PersistentList}) or as a bag.
 	 *
-	 * If enabled, we will recognize it as a List where {@link javax.persistence.OrderColumn}
+	 * If enabled, we will recognize it as a List where {@link jakarta.persistence.OrderColumn}
 	 * is just missing (and its defaults will apply).
 	 *
 	 * @see JpaCompliance#isJpaListComplianceEnabled()
@@ -1934,7 +1934,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 
 	/**
 	 * JPA defines specific exceptions on specific methods when called on
-	 * {@link javax.persistence.EntityManager} and {@link javax.persistence.EntityManagerFactory}
+	 * {@link jakarta.persistence.EntityManager} and {@link jakarta.persistence.EntityManagerFactory}
 	 * when those objects have been closed.  This setting controls
 	 * whether the spec defined behavior or Hibernate's behavior will be used.
 	 *
@@ -1947,7 +1947,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	String JPA_CLOSED_COMPLIANCE = "hibernate.jpa.compliance.closed";
 
 	/**
-	 * The JPA spec says that a {@link javax.persistence.EntityNotFoundException}
+	 * The JPA spec says that a {@link jakarta.persistence.EntityNotFoundException}
 	 * should be thrown when accessing an entity Proxy which does not have an associated
 	 * table row in the database.
 	 *
@@ -1968,7 +1968,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	String JPA_CACHING_COMPLIANCE = "hibernate.jpa.compliance.caching";
 
 	/**
-	 * Determine if the scope of {@link javax.persistence.TableGenerator#name()} and {@link javax.persistence.SequenceGenerator#name()} should be
+	 * Determine if the scope of {@link jakarta.persistence.TableGenerator#name()} and {@link jakarta.persistence.SequenceGenerator#name()} should be
 	 * considered globally or locally defined.
 	 *
 	 * If enabled, the names will be considered globally scoped so defining two different generators with the same name
@@ -1980,7 +1980,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	String JPA_ID_GENERATOR_GLOBAL_SCOPE_COMPLIANCE = "hibernate.jpa.compliance.global_id_generators";
 
 	/**
-	 * True/False setting indicating if the value stored in the table used by the {@link javax.persistence.TableGenerator}
+	 * True/False setting indicating if the value stored in the table used by the {@link jakarta.persistence.TableGenerator}
 	 * is the last value generated or the next value to be used.
 	 *
 	 * The default value is true.
@@ -1999,7 +1999,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 
 	/**
 	 * This setting defines how {@link org.hibernate.annotations.Immutable} entities are handled when executing a
-	 * bulk update {@link javax.persistence.Query}.
+	 * bulk update {@link jakarta.persistence.Query}.
 	 *
 	 * By default, the ({@link ImmutableEntityUpdateQueryHandlingMode#WARNING}) mode is used, meaning that
 	 * a warning log message is issued when an {@link org.hibernate.annotations.Immutable} entity
@@ -2063,7 +2063,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 
 	/**
 	 * <p>
-	 * When you use {@link javax.persistence.InheritanceType#JOINED} strategy for inheritance mapping and query
+	 * When you use {@link jakarta.persistence.InheritanceType#JOINED} strategy for inheritance mapping and query
 	 * a value from an entity, all superclass tables are joined in the query regardless you need them. With
 	 * this setting set to true only superclass tables which are really needed are joined.
 	 * </p>

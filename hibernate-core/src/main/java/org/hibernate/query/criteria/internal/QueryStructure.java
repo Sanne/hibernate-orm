@@ -35,8 +35,8 @@ import org.hibernate.sql.ast.Clause;
 
 /**
  * Models basic query structure.  Used as a delegate in implementing both
- * {@link javax.persistence.criteria.CriteriaQuery} and
- * {@link javax.persistence.criteria.Subquery}.
+ * {@link jakarta.persistence.criteria.CriteriaQuery} and
+ * {@link jakarta.persistence.criteria.Subquery}.
  * <p/>
  * Note the <tt>ORDER BY</tt> specs are neglected here.  That's because it is not valid
  * for a subquery to define an <tt>ORDER BY</tt> clause.  So we just handle them on the

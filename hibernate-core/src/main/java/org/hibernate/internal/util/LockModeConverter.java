@@ -13,7 +13,7 @@ import org.hibernate.LockMode;
 
 /**
  * Helper to deal with conversions (both directions) between {@link org.hibernate.LockMode} and
- * {@link javax.persistence.LockModeType}.
+ * {@link jakarta.persistence.LockModeType}.
  *
  * @author Steve Ebersole
  */

@@ -20,7 +20,7 @@ import org.hibernate.bytecode.enhance.spi.EnhancementContext;
 /**
  * Describes the information gleaned from a {@code <persistence-unit/>} element in a {@code persistence.xml} file
  * whether parsed directly by Hibernate or passed to us by an EE container as a
- * {@link javax.persistence.spi.PersistenceUnitInfo}.
+ * {@link jakarta.persistence.spi.PersistenceUnitInfo}.
  *
  * Easier to consolidate both views into a single contract and extract information through that shared contract.
  *

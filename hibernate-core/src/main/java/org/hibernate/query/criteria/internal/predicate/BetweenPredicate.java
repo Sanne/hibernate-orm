@@ -15,7 +15,7 @@ import org.hibernate.query.criteria.internal.Renderable;
 import org.hibernate.query.criteria.internal.compile.RenderingContext;
 
 /**
- * Models a <tt>BETWEEN</tt> {@link javax.persistence.criteria.Predicate}.
+ * Models a <tt>BETWEEN</tt> {@link jakarta.persistence.criteria.Predicate}.
  *
  * @author Steve Ebersole
  */

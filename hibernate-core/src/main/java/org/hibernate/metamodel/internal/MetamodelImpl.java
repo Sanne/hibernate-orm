@@ -77,7 +77,7 @@ import org.hibernate.type.Type;
 import org.hibernate.type.spi.TypeConfiguration;
 
 /**
- * Hibernate implementation of the JPA {@link javax.persistence.metamodel.Metamodel} contract.
+ * Hibernate implementation of the JPA {@link jakarta.persistence.metamodel.Metamodel} contract.
  *
  * @author Steve Ebersole
  * @author Emmanuel Bernard
@@ -521,7 +521,7 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
 //	 * @param entityNameResolvers
 //	 * @param entities The entity mappings.
 //	 * @param embeddables The embeddable (component) mappings.
-//	 * @param mappedSuperclassTypeMap The {@link javax.persistence.MappedSuperclass} mappings
+//	 * @param mappedSuperclassTypeMap The {@link jakarta.persistence.MappedSuperclass} mappings
 //	 */
 //	private MetamodelImpl(
 //			SessionFactoryImplementor sessionFactory,

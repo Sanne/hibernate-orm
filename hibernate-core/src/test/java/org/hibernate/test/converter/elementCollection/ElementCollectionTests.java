@@ -42,7 +42,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Test for {@link org.hibernate.cfg.CollectionPropertyHolder}.
  *
- * Tests that {@link javax.persistence.AttributeConverter}s are considered correctly for {@link javax.persistence.ElementCollection}.
+ * Tests that {@link jakarta.persistence.AttributeConverter}s are considered correctly for {@link jakarta.persistence.ElementCollection}.
  *
  * @author Markus Heiden
  * @author Steve Ebersole

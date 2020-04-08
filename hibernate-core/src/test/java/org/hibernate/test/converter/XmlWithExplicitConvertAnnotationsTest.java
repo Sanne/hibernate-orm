@@ -28,7 +28,7 @@ import static org.hibernate.testing.junit4.ExtraAssertions.assertTyping;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Jira HHH-8812 claims that explicit {@link javax.persistence.Convert} annotations are not processed when a orm.xml
+ * Jira HHH-8812 claims that explicit {@link jakarta.persistence.Convert} annotations are not processed when a orm.xml
  * file is used - specifically that the mixed case is not handled properly.
  *
  * @author Steve Ebersole

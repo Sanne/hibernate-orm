@@ -15,7 +15,7 @@ import org.hibernate.query.criteria.internal.Renderable;
 import org.hibernate.query.criteria.internal.compile.RenderingContext;
 
 /**
- * Defines a {@link javax.persistence.criteria.Predicate} used to wrap an {@link Expression Expression&lt;Boolean&gt;}.
+ * Defines a {@link jakarta.persistence.criteria.Predicate} used to wrap an {@link Expression Expression&lt;Boolean&gt;}.
  * 
  * @author Steve Ebersole
  */

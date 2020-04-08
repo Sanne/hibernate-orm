@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * Tests for {@link javax.persistence.EntityManagerFactory#addNamedQuery} handling.
+ * Tests for {@link jakarta.persistence.EntityManagerFactory#addNamedQuery} handling.
  *
  * @author Steve Ebersole
  */

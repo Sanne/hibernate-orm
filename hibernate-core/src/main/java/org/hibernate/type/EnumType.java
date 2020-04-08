@@ -47,7 +47,7 @@ import org.jboss.logging.Logger;
  *     </li>
  *     <li>
  *         <strong>useNamed</strong> - Should enum be mapped via name.  Default is to map as ordinal.  Used when
- *         annotations are not used (otherwise {@link javax.persistence.EnumType} is used).
+ *         annotations are not used (otherwise {@link jakarta.persistence.EnumType} is used).
  *     </li>
  *     <li>
  *         <strong>type</strong> - Identifies the JDBC type (via type code) to be used for the column.

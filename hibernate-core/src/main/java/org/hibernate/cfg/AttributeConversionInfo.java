@@ -12,7 +12,7 @@ import jakarta.persistence.Convert;
 import org.hibernate.annotations.common.reflection.XAnnotatedElement;
 
 /**
- * Describes a {@link javax.persistence.Convert} conversion
+ * Describes a {@link jakarta.persistence.Convert} conversion
  *
  * @author Steve Ebersole
  */

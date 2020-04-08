@@ -13,7 +13,7 @@ import org.hibernate.query.criteria.internal.ParameterRegistry;
 import org.hibernate.query.criteria.internal.ValueHandlerFactory;
 
 /**
- * Implementation of {@link javax.persistence.criteria.Expression} wraps another Expression and delegates most of its
+ * Implementation of {@link jakarta.persistence.criteria.Expression} wraps another Expression and delegates most of its
  * functionality to that wrapped Expression
  *
  * @author Steve Ebersole
