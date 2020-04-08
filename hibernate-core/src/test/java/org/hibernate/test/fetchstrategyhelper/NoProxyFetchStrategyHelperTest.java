@@ -107,7 +107,7 @@ public class NoProxyFetchStrategyHelperTest extends BaseCoreFunctionalTestCase {
 				OtherEntity.class
 		};
 	}
-	@javax.persistence.Entity
+	@jakarta.persistence.Entity
 	@Table(name="entity")
 	public static class AnEntity {
 		@Id
@@ -128,7 +128,7 @@ public class NoProxyFetchStrategyHelperTest extends BaseCoreFunctionalTestCase {
 		// @Fetch(FetchMode.SUBSELECT) is not allowed for ToOne associations
 	}
 
-	@javax.persistence.Entity
+	@jakarta.persistence.Entity
 	@Table(name="otherentity")
 	@Proxy(lazy = false)
 	public static class OtherEntity {

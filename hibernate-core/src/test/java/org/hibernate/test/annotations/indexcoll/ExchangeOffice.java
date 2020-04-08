@@ -38,8 +38,8 @@ public class ExchangeOffice {
 		return id;
 	}
 
-	@javax.persistence.OneToMany(mappedBy = "parent")
-    @javax.persistence.MapKey(name="key")
+	@jakarta.persistence.OneToMany(mappedBy = "parent")
+    @jakarta.persistence.MapKey(name="key")
     private Map<ExchangeRateKey, ExchangeRate> exchangeRates = new java.util.HashMap<ExchangeRateKey, ExchangeRate>();
 	
 	public Map<ExchangeRateKey,ExchangeRate> getExchangeRates() {

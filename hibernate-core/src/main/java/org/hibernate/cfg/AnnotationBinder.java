@@ -1288,7 +1288,7 @@ public final class AnnotationBinder {
 
 		if ( !classType.equals( AnnotatedClassType.ENTITY ) ) {
 			throw new AnnotationException(
-					"Annotated class should have a @javax.persistence.Entity, @javax.persistence.Embeddable or @javax.persistence.EmbeddedSuperclass annotation: " + clazzToProcess
+					"Annotated class should have a @jakarta.persistence.Entity, @jakarta.persistence.Embeddable or @jakarta.persistence.EmbeddedSuperclass annotation: " + clazzToProcess
 							.getName()
 			);
 		}

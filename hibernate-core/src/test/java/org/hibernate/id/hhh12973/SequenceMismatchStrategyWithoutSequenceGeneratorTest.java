@@ -123,7 +123,7 @@ public class SequenceMismatchStrategyWithoutSequenceGeneratorTest extends BaseEn
 	public static class ApplicationConfigurationHBM2DDL {
 
 		@Id
-		@javax.persistence.SequenceGenerator(
+		@jakarta.persistence.SequenceGenerator(
 				name = "hibernate_sequence",
 				sequenceName = "hibernate_sequence",
 				allocationSize = 1

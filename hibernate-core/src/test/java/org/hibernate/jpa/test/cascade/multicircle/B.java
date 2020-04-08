@@ -9,14 +9,14 @@ package org.hibernate.jpa.test.cascade.multicircle;
 /**
  * No Documentation
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class B extends AbstractEntity {
     private static final long serialVersionUID = 325417243L;
 
     /**
      * No documentation
      */
-    @javax.persistence.OneToMany(cascade =  {
+    @jakarta.persistence.OneToMany(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
     , mappedBy = "b")
     private java.util.Set<G> gCollection = new java.util.HashSet<G>();
@@ -25,7 +25,7 @@ public class B extends AbstractEntity {
 	/**
 	 * No documentation
 	 */
-	@javax.persistence.ManyToOne(cascade =  {
+	@jakarta.persistence.ManyToOne(cascade =  {
 		javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
 	, optional = false)
 	private C c;
@@ -35,7 +35,7 @@ public class B extends AbstractEntity {
     /**
      * No documentation
      */
-    @javax.persistence.ManyToOne(cascade =  {
+    @jakarta.persistence.ManyToOne(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
     , optional = false)
     private D d;

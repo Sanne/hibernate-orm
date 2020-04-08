@@ -9,14 +9,14 @@ package org.hibernate.test.annotations.cascade.circle.identity;
 /**
  * No Documentation
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class G extends AbstractEntity {
     private static final long serialVersionUID = 325417437L;
 
     /**
      * No documentation
      */
-    @javax.persistence.OneToMany(cascade =  {
+    @jakarta.persistence.OneToMany(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
     , mappedBy = "g")
     private java.util.Set<C> cCollection = new java.util.HashSet<C>();

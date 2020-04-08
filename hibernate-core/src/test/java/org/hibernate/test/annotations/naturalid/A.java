@@ -41,10 +41,10 @@ public class A {
 
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@org.hibernate.annotations.OptimisticLock(excluded = true)
-	@javax.persistence.OneToMany(mappedBy = "a")
+	@jakarta.persistence.OneToMany(mappedBy = "a")
 	private Set<D> ds = new HashSet<D>();
 
-	@javax.persistence.OneToOne
+	@jakarta.persistence.OneToOne
 	private D singleD = null;
 
 	public String getName() {

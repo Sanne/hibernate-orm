@@ -258,7 +258,7 @@ public class JoinedSubclassBatchingTest extends BaseCoreFunctionalTestCase {
 		@Column(nullable = false, updatable = false)
 		private char sex;
 
-		@javax.persistence.Version
+		@jakarta.persistence.Version
 		private int version;
 
 		private double heightInches;

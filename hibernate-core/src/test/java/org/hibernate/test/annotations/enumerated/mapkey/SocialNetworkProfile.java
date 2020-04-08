@@ -23,10 +23,10 @@ import jakarta.persistence.UniqueConstraint;
 @Entity
 @Table(name = "social_network_profile", uniqueConstraints = {@UniqueConstraint(columnNames = {"social_network", "network_id"})})
 public class SocialNetworkProfile {
-	@javax.persistence.Id
-	@javax.persistence.GeneratedValue(generator = "system-uuid")
+	@jakarta.persistence.Id
+	@jakarta.persistence.GeneratedValue(generator = "system-uuid")
 	@org.hibernate.annotations.GenericGenerator(name = "system-uuid", strategy = "uuid2")
-	@javax.persistence.Column(name = "id", unique = true)
+	@jakarta.persistence.Column(name = "id", unique = true)
 	private java.lang.String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

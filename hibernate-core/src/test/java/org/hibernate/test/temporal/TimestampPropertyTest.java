@@ -140,7 +140,7 @@ public class TimestampPropertyTest extends BaseCoreFunctionalTestCase {
 		return new Class[] { Entity.class };
 	}
 
-	@javax.persistence.Entity
+	@jakarta.persistence.Entity
 	@Table(name = "MyEntity")
 	public static class Entity {
 		@GeneratedValue

@@ -89,7 +89,7 @@ public class TableCommentTest extends BaseNonConfigCoreFunctionalTestCase {
 	}
 
 	@Entity(name = "TableWithComment")
-	@javax.persistence.Table(name = "TABLE_WITH_COMMENT")
+	@jakarta.persistence.Table(name = "TABLE_WITH_COMMENT")
 	@Table(appliesTo = "TABLE_WITH_COMMENT", comment = "comment snippet")
 	public static class TableWithComment {
 

@@ -349,13 +349,13 @@ public class GeneratedValueTests extends BaseUnitTestCase {
 		 */
 		@Id
 		@GeneratedValue( strategy = GenerationType.TABLE, generator = "my_id_table" )
-		@javax.persistence.TableGenerator( name = "my_id_table", allocationSize = 25 )
+		@jakarta.persistence.TableGenerator( name = "my_id_table", allocationSize = 25 )
 		public Integer id;
 		public String name;
 	}
 
 	@Entity
-	@javax.persistence.TableGenerator(
+	@jakarta.persistence.TableGenerator(
 			name = "my_id_table",
 			table = "my_real_id_table",
 			pkColumnName = "PK_COL",

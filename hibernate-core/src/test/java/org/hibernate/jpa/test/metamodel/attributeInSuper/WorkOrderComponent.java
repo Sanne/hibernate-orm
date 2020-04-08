@@ -14,7 +14,7 @@ import jakarta.persistence.ManyToOne;
 /**
  * @author Steve Ebersole
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class WorkOrderComponent {
 	@EmbeddedId
 	private WorkOrderComponentId id;

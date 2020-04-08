@@ -22,7 +22,7 @@ public class CompleteSequenceEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPLETE_SEQ")
-	@javax.persistence.SequenceGenerator(
+	@jakarta.persistence.SequenceGenerator(
 			name = "COMPLETE_SEQ",
 			sequenceName = SEQ_NAME,
 			initialValue = 1000,

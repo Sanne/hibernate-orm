@@ -25,10 +25,10 @@ import java.util.Map;
 @Entity
 @Table( name = "USER_TABLE" )
 public class User {
-	@javax.persistence.Id
-	@javax.persistence.GeneratedValue(generator = "system-uuid")
+	@jakarta.persistence.Id
+	@jakarta.persistence.GeneratedValue(generator = "system-uuid")
 	@org.hibernate.annotations.GenericGenerator(name = "system-uuid", strategy = "uuid2")
-	@javax.persistence.Column(name = "id", unique = true)
+	@jakarta.persistence.Column(name = "id", unique = true)
 	private java.lang.String id;
 
 	@MapKeyEnumerated( EnumType.STRING )

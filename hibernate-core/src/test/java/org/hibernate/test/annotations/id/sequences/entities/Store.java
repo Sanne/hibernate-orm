@@ -19,7 +19,7 @@ import jakarta.persistence.Id;
  * @author Emmanuel Bernard
  */
 @Entity
-@javax.persistence.SequenceGenerator(
+@jakarta.persistence.SequenceGenerator(
 		name = "SEQ_STORE",
 		sequenceName = "my_sequence"
 )

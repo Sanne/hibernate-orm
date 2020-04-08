@@ -30,7 +30,7 @@ import org.hibernate.annotations.TypeDef;
 		typeClass = DefaultableListType.class,
 		parameters = @Parameter(name = "default", value = "Hello" )
 )
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class Entity {
 	private String name;
 	private List values = new ArrayList();

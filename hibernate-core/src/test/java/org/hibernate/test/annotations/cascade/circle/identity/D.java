@@ -9,14 +9,14 @@ package org.hibernate.test.annotations.cascade.circle.identity;
 /**
  * No Documentation
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class D extends AbstractEntity {
     private static final long serialVersionUID = 2417176961L;
 
     /**
      * No documentation
      */
-    @javax.persistence.ManyToMany(cascade =  {
+    @jakarta.persistence.ManyToMany(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
     )
     private java.util.Set<A> aCollection = new java.util.HashSet<A>();
@@ -24,7 +24,7 @@ public class D extends AbstractEntity {
     /**
      * No documentation
      */
-    @javax.persistence.OneToMany(cascade =  {
+    @jakarta.persistence.OneToMany(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
     )
     private java.util.Set<E> eCollection = new java.util.HashSet<E>();

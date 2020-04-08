@@ -185,7 +185,7 @@ public class FetchStrategyHelperTest extends BaseCoreFunctionalTestCase {
 				OtherEntity.class
 		};
 	}
-	@javax.persistence.Entity
+	@jakarta.persistence.Entity
 	@Table(name="entity")
 	public static class AnEntity {
 		@Id
@@ -221,7 +221,7 @@ public class FetchStrategyHelperTest extends BaseCoreFunctionalTestCase {
 		private Set<String> colorsSubselect = new HashSet<String>();
 	}
 
-	@javax.persistence.Entity
+	@jakarta.persistence.Entity
 	@Table(name="otherentity")
 	public static class OtherEntity {
 		@Id

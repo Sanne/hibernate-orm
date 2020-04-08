@@ -125,7 +125,7 @@ public class OracleSQLCallableStatementProxyTest extends
 		),
 	})
 	@Entity(name = "Person")
-	@javax.persistence.Table(name = "person")
+	@jakarta.persistence.Table(name = "person")
 	public static class Person {
 
 		@Id

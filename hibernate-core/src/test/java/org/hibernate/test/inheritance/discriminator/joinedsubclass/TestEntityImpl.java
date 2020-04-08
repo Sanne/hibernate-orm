@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 /**
  * @author Andrea Boriero
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class TestEntityImpl implements TestEntityInterface {
 	@Id
 	private Integer id;

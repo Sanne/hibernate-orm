@@ -28,7 +28,7 @@ public class Parent implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
 	@BatchSize(size = 5)
-	@javax.persistence.OrderBy("favoriteSuperhero asc, favoriteSinger desc")
+	@jakarta.persistence.OrderBy("favoriteSuperhero asc, favoriteSinger desc")
 	public Set<Child> children;
 
 	public int hashCode() {

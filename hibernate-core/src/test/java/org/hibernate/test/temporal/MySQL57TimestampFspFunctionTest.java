@@ -76,7 +76,7 @@ public class MySQL57TimestampFspFunctionTest extends BaseCoreFunctionalTestCase 
 	}
 
 	// If MySQL supported something like Oracle's "dual", then this entity wouldn't be needed.
-	@javax.persistence.Entity
+	@jakarta.persistence.Entity
 	@Table(name = "DummyEntity")
 	public static class Entity {
 		@GeneratedValue

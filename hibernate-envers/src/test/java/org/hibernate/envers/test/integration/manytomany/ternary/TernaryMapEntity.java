@@ -28,7 +28,7 @@ public class TernaryMapEntity {
 
 	@Audited
 	@ManyToMany
-	@javax.persistence.MapKeyJoinColumn
+	@jakarta.persistence.MapKeyJoinColumn
 	private Map<IntTestPrivSeqEntity, StrTestPrivSeqEntity> map;
 
 	public TernaryMapEntity() {

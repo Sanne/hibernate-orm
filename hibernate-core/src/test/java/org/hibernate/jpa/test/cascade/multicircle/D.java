@@ -9,20 +9,20 @@ package org.hibernate.jpa.test.cascade.multicircle;
 /**
  * No Documentation
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class D extends AbstractEntity {
     private static final long serialVersionUID = 2417176961L;
 
-	@javax.persistence.OneToMany(mappedBy = "d")
+	@jakarta.persistence.OneToMany(mappedBy = "d")
 	private java.util.Set<B> bCollection = new java.util.HashSet<B>();
 
-	@javax.persistence.ManyToOne(optional = false)
+	@jakarta.persistence.ManyToOne(optional = false)
 	private C c;
 
-	@javax.persistence.ManyToOne(optional = false)
+	@jakarta.persistence.ManyToOne(optional = false)
 	private E e;
 
-    @javax.persistence.OneToMany(cascade =  {
+    @jakarta.persistence.OneToMany(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH},
 			mappedBy = "d"
     )

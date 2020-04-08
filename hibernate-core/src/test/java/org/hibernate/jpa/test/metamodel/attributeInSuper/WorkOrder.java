@@ -13,7 +13,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class WorkOrder implements Serializable {
 	@EmbeddedId
 	private WorkOrderId id;

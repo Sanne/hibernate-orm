@@ -217,7 +217,7 @@ public class ForeignKeyConstraintTest extends BaseNonConfigCoreFunctionalTestCas
 	public static class Person {
 		@Id
 		@GeneratedValue
-		@javax.persistence.Column( nullable = false, unique = true)
+		@jakarta.persistence.Column( nullable = false, unique = true)
 		public long id;
 
 		@OneToMany
@@ -242,7 +242,7 @@ public class ForeignKeyConstraintTest extends BaseNonConfigCoreFunctionalTestCas
 	@PrimaryKeyJoinColumn( name = "PERSON_ID", foreignKey = @ForeignKey( name = "FK_STUDENT_PERSON" ) )
 	public static class Student extends Person {
 
-		@javax.persistence.Column( name = "MATRICULATION_NUMBER" )
+		@jakarta.persistence.Column( name = "MATRICULATION_NUMBER" )
 		public String matriculationNumber;
 
 		@ManyToOne
@@ -320,9 +320,9 @@ public class ForeignKeyConstraintTest extends BaseNonConfigCoreFunctionalTestCas
 
 	@Embeddable
 	public static class VehicleId implements Serializable {
-		@javax.persistence.Column( name = "VEHICLE_VENDOR_NR" )
+		@jakarta.persistence.Column( name = "VEHICLE_VENDOR_NR" )
 		public long vehicleVendorNumber;
-		@javax.persistence.Column( name = "VEHICLE_NR" )
+		@jakarta.persistence.Column( name = "VEHICLE_NR" )
 		public long vehicleNumber;
 
 		@Override

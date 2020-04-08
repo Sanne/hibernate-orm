@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 /**
  * @author Hardy Ferentschik
  */
-@javax.persistence.MappedSuperclass
+@jakarta.persistence.MappedSuperclass
 public class MappedSuperclass {
 	@Id
 	private long id;

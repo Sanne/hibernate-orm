@@ -12,7 +12,7 @@ import jakarta.persistence.InheritanceType;
 /**
  * @author Andrea Boriero
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public interface TestEntityInterface extends Common {
 }

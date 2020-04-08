@@ -177,7 +177,7 @@ public class SchemaFilterTest extends BaseUnitTestCase {
 	}
 
 	@Entity
-	@javax.persistence.Table(name = "the_entity_1", schema = "the_schema_1")
+	@jakarta.persistence.Table(name = "the_entity_1", schema = "the_schema_1")
 	public static class Schema1Entity1 {
 
 		@Id
@@ -193,7 +193,7 @@ public class SchemaFilterTest extends BaseUnitTestCase {
 	}
 
 	@Entity
-	@javax.persistence.Table(name = "the_entity_2", schema = "the_schema_1")
+	@jakarta.persistence.Table(name = "the_entity_2", schema = "the_schema_1")
 	public static class Schema1Entity2 {
 
 		@Id
@@ -209,7 +209,7 @@ public class SchemaFilterTest extends BaseUnitTestCase {
 	}
 
 	@Entity
-	@javax.persistence.Table(name = "the_entity_3", schema = "the_schema_2")
+	@jakarta.persistence.Table(name = "the_entity_3", schema = "the_schema_2")
 	public static class Schema2Entity3 {
 
 		@Id
@@ -225,7 +225,7 @@ public class SchemaFilterTest extends BaseUnitTestCase {
 	}
 
 	@Entity
-	@javax.persistence.Table(name = "the_entity_4", schema = "the_schema_2")
+	@jakarta.persistence.Table(name = "the_entity_4", schema = "the_schema_2")
 	public static class Schema2Entity4 {
 
 		@Id
@@ -241,7 +241,7 @@ public class SchemaFilterTest extends BaseUnitTestCase {
 	}
 
 	@Entity
-	@javax.persistence.Table(name = "the_entity_0")
+	@jakarta.persistence.Table(name = "the_entity_0")
 	public static class SchemaNoneEntity0 {
 
 		@Id

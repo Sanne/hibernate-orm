@@ -56,7 +56,7 @@ public class ExchangeRate {
 		this.key = key;
 	}
 
-	@javax.persistence.ManyToOne(fetch = FetchType.LAZY )
+	@jakarta.persistence.ManyToOne(fetch = FetchType.LAZY )
     private ExchangeOffice parent = null;
 
 

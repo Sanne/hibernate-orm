@@ -21,7 +21,7 @@ public class Phone {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Phone_Gen")
-	@javax.persistence.SequenceGenerator(
+	@jakarta.persistence.SequenceGenerator(
 			name = "Phone_Gen",
 			sequenceName = "phone_seq"
 	)

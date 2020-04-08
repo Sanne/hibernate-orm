@@ -77,7 +77,7 @@ public class QualifiedTableNamingTest extends BaseNonConfigCoreFunctionalTestCas
 	}
 
 	@Entity(name = "Box")
-	@javax.persistence.Table(name = "Box", schema = "PUBLIC", catalog = "DB1")
+	@jakarta.persistence.Table(name = "Box", schema = "PUBLIC", catalog = "DB1")
 	public static class Box {
 		@Id
 		public Integer id;

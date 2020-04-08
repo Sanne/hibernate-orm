@@ -104,7 +104,7 @@ public class SequenceMismatchStrategyDefaultExceptionTest extends BaseEntityMana
 	public static class ApplicationConfigurationHBM2DDL {
 
 		@Id
-		@javax.persistence.SequenceGenerator(
+		@jakarta.persistence.SequenceGenerator(
 				name = "app_config_sequence",
 				sequenceName = "app_config_sequence",
 				allocationSize = 1
@@ -126,7 +126,7 @@ public class SequenceMismatchStrategyDefaultExceptionTest extends BaseEntityMana
 	public static class ApplicationConfiguration {
 
 		@Id
-		@javax.persistence.SequenceGenerator(
+		@jakarta.persistence.SequenceGenerator(
 				name = "app_config_sequence",
 				sequenceName = "app_config_sequence"
 		)

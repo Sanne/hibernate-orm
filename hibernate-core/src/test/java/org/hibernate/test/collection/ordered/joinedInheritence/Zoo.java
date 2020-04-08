@@ -59,7 +59,7 @@ public class Zoo {
 
 	@OneToMany
 	@JoinColumn
-	@javax.persistence.OrderBy( "weight" )
+	@jakarta.persistence.OrderBy( "weight" )
 	public Set<Tiger> getTigers() {
 		return tigers;
 	}
@@ -81,7 +81,7 @@ public class Zoo {
 
 	@OneToMany
 	@JoinColumn
-	@javax.persistence.OrderBy( "id asc" ) // HHH-7630 ensure explicitly naming the superclass id works
+	@jakarta.persistence.OrderBy( "id asc" ) // HHH-7630 ensure explicitly naming the superclass id works
 	public Set<Animal> getAnimalsById() {
 		return animals;
 	}

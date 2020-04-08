@@ -182,7 +182,7 @@ public class MySQL57TimestampPropertyTest extends BaseCoreFunctionalTestCase {
 		return new Class[] { Entity.class };
 	}
 
-	@javax.persistence.Entity(name = "Entity")
+	@jakarta.persistence.Entity(name = "Entity")
 	public static class Entity {
 		@GeneratedValue
 		@Id

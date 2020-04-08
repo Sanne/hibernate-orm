@@ -116,13 +116,13 @@ public class ConstraintTest extends BaseNonConfigCoreFunctionalTestCase {
 	public static class DataPoint {
 		@Id
 		@GeneratedValue
-		@javax.persistence.Column( nullable = false, unique = true)
+		@jakarta.persistence.Column( nullable = false, unique = true)
 		public long id;
 		
-		@javax.persistence.Column( nullable = false, unique = true)
+		@jakarta.persistence.Column( nullable = false, unique = true)
 		public String foo1;
 		
-		@javax.persistence.Column( nullable = true, unique = true)
+		@jakarta.persistence.Column( nullable = true, unique = true)
 		public String foo2;
 		
 		public String explicit;
@@ -144,7 +144,7 @@ public class ConstraintTest extends BaseNonConfigCoreFunctionalTestCase {
 		public DataPoint explicit_native;
 		
 		@OneToOne
-		@JoinColumn(name = "explicit_jpa", foreignKey = @javax.persistence.ForeignKey(name = EXPLICIT_FK_NAME_JPA))
+		@JoinColumn(name = "explicit_jpa", foreignKey = @jakarta.persistence.ForeignKey(name = EXPLICIT_FK_NAME_JPA))
 		public DataPoint explicit_jpa;
 	}
 }

@@ -29,10 +29,10 @@ public class D {
 	@Version
 	private int version;
 
-	@javax.persistence.ManyToOne(fetch = FetchType.LAZY)
+	@jakarta.persistence.ManyToOne(fetch = FetchType.LAZY)
 	private A a = null;
 
-	@javax.persistence.OneToOne(mappedBy = "singleD")
+	@jakarta.persistence.OneToOne(mappedBy = "singleD")
 	private A singleA = null;
 
 	public A getA() {

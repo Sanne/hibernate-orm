@@ -31,10 +31,10 @@ public class ExchangeRateKey
     @Column(name="`date`", nullable = false)
     protected long date;
     
-    @javax.persistence.ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @jakarta.persistence.ManyToOne(fetch = FetchType.LAZY, optional = false)
     protected Currency currency1;
     
-    @javax.persistence.ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @jakarta.persistence.ManyToOne(fetch = FetchType.LAZY, optional = false)
     protected Currency currency2;
     
 

@@ -14,7 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class RootEntity implements Serializable {
 
 	@Id
@@ -24,7 +24,7 @@ public class RootEntity implements Serializable {
 
 	public String description;
 
-	@javax.persistence.OneToMany(mappedBy = "linkedRoot")
+	@jakarta.persistence.OneToMany(mappedBy = "linkedRoot")
 	private java.util.List<RelatedEntity> linkedEntities = new java.util.ArrayList<RelatedEntity>();
 
 	public long getUid() {

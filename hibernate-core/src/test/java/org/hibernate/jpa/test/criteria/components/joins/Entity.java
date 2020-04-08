@@ -10,7 +10,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class Entity {
 	@Id
 	@GeneratedValue

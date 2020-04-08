@@ -9,14 +9,14 @@ package org.hibernate.test.annotations.cascade.circle.sequence;
 /**
  * No Documentation
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class A extends AbstractEntity {
     private static final long serialVersionUID = 864804063L;
 
     /**
      * No documentation
      */
-    @javax.persistence.OneToMany(cascade =  {
+    @jakarta.persistence.OneToMany(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
     , mappedBy = "a")
     private java.util.Set<B> bCollection = new java.util.HashSet<B>();
@@ -24,7 +24,7 @@ public class A extends AbstractEntity {
     /**
      * No documentation
      */
-    @javax.persistence.ManyToMany(cascade =  {
+    @jakarta.persistence.ManyToMany(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
     , mappedBy = "aCollection")
     private java.util.Set<D> dCollection = new java.util.HashSet<D>();
@@ -32,7 +32,7 @@ public class A extends AbstractEntity {
     /**
      * No documentation
      */
-    @javax.persistence.OneToMany(cascade =  {
+    @jakarta.persistence.OneToMany(cascade =  {
         javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.REFRESH}
     , mappedBy = "a")
     private java.util.Set<C> cCollection = new java.util.HashSet<C>();

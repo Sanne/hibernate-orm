@@ -25,7 +25,7 @@ public class Department implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_DEPT")
-	@javax.persistence.SequenceGenerator(
+	@jakarta.persistence.SequenceGenerator(
 			name = "SEQ_DEPT",
 			sequenceName = "my_sequence"
 	)

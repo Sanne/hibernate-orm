@@ -35,12 +35,12 @@ public class Zoo implements Serializable {
 
 	@OneToMany
 	@JoinColumn(name = "zoo_id")
-	@javax.persistence.OrderBy("name asc nulls last") // According to JPA specification this is illegal, but works in Hibernate.
+	@jakarta.persistence.OrderBy("name asc nulls last") // According to JPA specification this is illegal, but works in Hibernate.
 	private Set<Monkey> monkeys = new HashSet<Monkey>();
 
 	@OneToMany
 	@JoinColumn(name = "zoo_id")
-	@javax.persistence.OrderBy("lastName desc nulls last, firstName asc nulls LaSt") // Sorting by multiple columns.
+	@jakarta.persistence.OrderBy("lastName desc nulls last, firstName asc nulls LaSt") // Sorting by multiple columns.
 	private Set<Visitor> visitors = new HashSet<Visitor>();
 
 	public Zoo() {

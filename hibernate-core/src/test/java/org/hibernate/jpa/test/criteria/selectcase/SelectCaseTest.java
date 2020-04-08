@@ -121,7 +121,7 @@ public class SelectCaseTest extends BaseEntityManagerFunctionalTestCase {
 		entityManager.createQuery( query ).getResultList();
 	}
 
-	@javax.persistence.Entity
+	@jakarta.persistence.Entity
 	@Table(name = "entity")
 	public static class Entity {
 

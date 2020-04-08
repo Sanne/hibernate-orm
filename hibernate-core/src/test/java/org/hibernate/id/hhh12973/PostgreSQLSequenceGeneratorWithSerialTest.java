@@ -136,7 +136,7 @@ public class PostgreSQLSequenceGeneratorWithSerialTest extends BaseEntityManager
 	public static class ApplicationConfiguration {
 
 		@Id
-		@javax.persistence.SequenceGenerator(
+		@jakarta.persistence.SequenceGenerator(
 				name = "application_configurations_id_seq",
 				sequenceName = "application_configurations_id_seq"
 		)

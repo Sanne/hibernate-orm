@@ -324,7 +324,7 @@ public class IdentityJoinedSubclassBatchingTest extends BaseCoreFunctionalTestCa
 		@Column(nullable = false, updatable = false)
 		private char sex;
 
-		@javax.persistence.Version
+		@jakarta.persistence.Version
 		private int version;
 
 		private double heightInches;

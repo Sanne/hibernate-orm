@@ -22,7 +22,7 @@ public class MinimalSequenceEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MINIMAL_SEQ")
-	@javax.persistence.SequenceGenerator( name = "MINIMAL_SEQ", sequenceName = SEQ_NAME )
+	@jakarta.persistence.SequenceGenerator( name = "MINIMAL_SEQ", sequenceName = SEQ_NAME )
 	public Long getId() {
 		return id;
 	}

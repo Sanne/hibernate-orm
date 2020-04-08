@@ -143,7 +143,7 @@ public class EnumeratedWithMappedSuperclassTest extends BaseUnitTestCase {
 		LIST, EXLIST, INPUT
 	}
 
-	@javax.persistence.Entity(name = "AddressLevel")
+	@jakarta.persistence.Entity(name = "AddressLevel")
 	@Table(name = "address_level")
 	public static class AddressLevel extends DescriptionEntity {
 //		@Column(columnDefinition = "varchar", nullable = false, length = 100)

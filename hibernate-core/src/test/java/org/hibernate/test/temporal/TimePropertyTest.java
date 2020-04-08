@@ -96,7 +96,7 @@ public class TimePropertyTest extends BaseCoreFunctionalTestCase {
 		return new Class[] { Entity.class };
 	}
 
-	@javax.persistence.Entity
+	@jakarta.persistence.Entity
 	@Table(name = "entity")
 	public static class Entity {
 		@GeneratedValue
