@@ -6,8 +6,8 @@
  */
 package org.hibernate.test.mapping;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.FetchType.EAGER;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
 
 import java.io.Serializable;
 import java.util.HashSet;

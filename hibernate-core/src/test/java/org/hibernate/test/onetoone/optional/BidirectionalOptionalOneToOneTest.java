@@ -16,7 +16,7 @@ import org.hibernate.jpa.test.BaseEntityManagerFunctionalTestCase;
 import org.hibernate.testing.FailureExpected;
 import org.junit.Test;
 
-import static javax.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.ALL;
 import static org.hibernate.testing.transaction.TransactionUtil.doInJPA;
 
 /**

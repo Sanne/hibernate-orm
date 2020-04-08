@@ -13,9 +13,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 
-import static javax.persistence.DiscriminatorType.INTEGER;
-import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
+import static jakarta.persistence.DiscriminatorType.INTEGER;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
 /**
  * @author Pawel Stawicki

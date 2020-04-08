@@ -12,8 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 
-import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.InheritanceType.JOINED;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.InheritanceType.JOINED;
 
 /**
  * @author Andrey Vlasov

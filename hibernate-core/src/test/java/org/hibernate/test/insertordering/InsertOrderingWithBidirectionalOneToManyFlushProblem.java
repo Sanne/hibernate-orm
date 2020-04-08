@@ -21,8 +21,8 @@ import org.hibernate.testing.TestForIssue;
 import org.hibernate.testing.junit4.BaseNonConfigCoreFunctionalTestCase;
 import org.junit.Test;
 
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.GenerationType.SEQUENCE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 import static org.hibernate.cfg.AvailableSettings.ORDER_INSERTS;
 import static org.hibernate.cfg.AvailableSettings.STATEMENT_BATCH_SIZE;
 import static org.hibernate.testing.transaction.TransactionUtil.doInHibernate;

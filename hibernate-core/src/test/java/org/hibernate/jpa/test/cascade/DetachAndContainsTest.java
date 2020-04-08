@@ -20,8 +20,8 @@ import org.junit.Test;
 
 import org.hibernate.jpa.test.BaseEntityManagerFunctionalTestCase;
 
-import static javax.persistence.CascadeType.DETACH;
-import static javax.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.CascadeType.DETACH;
+import static jakarta.persistence.CascadeType.REMOVE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

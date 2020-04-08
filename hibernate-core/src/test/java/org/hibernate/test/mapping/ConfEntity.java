@@ -6,7 +6,7 @@
  */
 package org.hibernate.test.mapping;
 
-import static javax.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.ALL;
 
 import java.io.Serializable;
 import java.util.HashSet;

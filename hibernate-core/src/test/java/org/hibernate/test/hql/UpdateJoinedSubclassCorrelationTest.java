@@ -11,7 +11,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 
 import java.util.List;
 
-import static javax.persistence.InheritanceType.JOINED;
+import static jakarta.persistence.InheritanceType.JOINED;
 import static org.hibernate.testing.transaction.TransactionUtil.doInJPA;
 
 @TestForIssue(jiraKey = "HHH-13169")

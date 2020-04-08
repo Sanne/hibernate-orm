@@ -14,8 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
-import static javax.persistence.CascadeType.DETACH;
-import static javax.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.CascadeType.DETACH;
+import static jakarta.persistence.CascadeType.REMOVE;
 
 /**
  * @author Emmanuel Bernard
