@@ -152,7 +152,7 @@ public class LockTest extends BaseEntityManagerFunctionalTestCase {
 					TransactionUtil.setJdbcTimeout( entityManager.unwrap( Session.class ) );
 					entityManager.createQuery( "from Lock_ where id = " + lock.getId(), Lock.class )
 							.setLockMode( LockModeType.PESSIMISTIC_WRITE )
-							.setHint( "javax.persistence.lock.timeout", 0 )
+							.setHint( "jakarta.persistence.lock.timeout", 0 )
 							.getSingleResult();
 					fail( "Exception should be thrown" );
 				}
@@ -196,7 +196,7 @@ public class LockTest extends BaseEntityManagerFunctionalTestCase {
 					TransactionUtil.setJdbcTimeout( entityManager.unwrap( Session.class ) );
 					entityManager.createQuery( "from Lock_ where id = " + lock.getId(), Lock.class )
 							.setLockMode( LockModeType.PESSIMISTIC_WRITE )
-							.setHint( "javax.persistence.lock.timeout", 0 )
+							.setHint( "jakarta.persistence.lock.timeout", 0 )
 							.getResultList();
 					fail( "Exception should be thrown" );
 				}

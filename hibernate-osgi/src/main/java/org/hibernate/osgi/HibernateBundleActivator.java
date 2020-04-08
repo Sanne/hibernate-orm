@@ -55,7 +55,7 @@ public class HibernateBundleActivator implements BundleActivator {
 
 		final Dictionary properties = new Hashtable();
 		// In order to support existing persistence.xml files, register using the legacy provider name.
-		properties.put( "javax.persistence.provider", HibernatePersistenceProvider.class.getName() );
+		properties.put( "jakarta.persistence.provider", HibernatePersistenceProvider.class.getName() );
 		persistenceProviderService = context.registerService(
 				PersistenceProvider.class.getName(),
 				new OsgiPersistenceProviderService( osgiJtaPlatform, osgiServiceUtil ),

@@ -655,19 +655,19 @@ public class QueryTest extends BaseEntityManagerFunctionalTestCase {
 
 			query.getHints().clear();
 
-			query.setHint( "javax.persistence.cache.retrieveMode", CacheRetrieveMode.USE );
-			query.setHint( "javax.persistence.cache.storeMode", CacheStoreMode.REFRESH );
+			query.setHint( "jakarta.persistence.cache.retrieveMode", CacheRetrieveMode.USE );
+			query.setHint( "jakarta.persistence.cache.storeMode", CacheStoreMode.REFRESH );
 
-			assertEquals( CacheRetrieveMode.USE, query.getHints().get( "javax.persistence.cache.retrieveMode" ) );
-			assertEquals( CacheStoreMode.REFRESH, query.getHints().get( "javax.persistence.cache.storeMode" ) );
+			assertEquals( CacheRetrieveMode.USE, query.getHints().get( "jakarta.persistence.cache.retrieveMode" ) );
+			assertEquals( CacheStoreMode.REFRESH, query.getHints().get( "jakarta.persistence.cache.storeMode" ) );
 
 			query.getHints().clear();
 
-			query.setHint( "javax.persistence.cache.retrieveMode", "USE" );
-			query.setHint( "javax.persistence.cache.storeMode", "REFRESH" );
+			query.setHint( "jakarta.persistence.cache.retrieveMode", "USE" );
+			query.setHint( "jakarta.persistence.cache.storeMode", "REFRESH" );
 
-			assertEquals( CacheRetrieveMode.USE, query.getHints().get( "javax.persistence.cache.retrieveMode" ) );
-			assertEquals( CacheStoreMode.REFRESH, query.getHints().get( "javax.persistence.cache.storeMode" ) );
+			assertEquals( CacheRetrieveMode.USE, query.getHints().get( "jakarta.persistence.cache.retrieveMode" ) );
+			assertEquals( CacheStoreMode.REFRESH, query.getHints().get( "jakarta.persistence.cache.storeMode" ) );
 
 			em.getTransaction().commit();
 		}

@@ -18,7 +18,7 @@ import jakarta.persistence.QueryHint;
  */
 @Entity
 @NamedQuery(name = "getAll", query = "select u from UnversionedLock u",
-hints = @QueryHint( name = "javax.persistence.lock.timeout", value = "3000"))
+hints = @QueryHint( name = "jakarta.persistence.lock.timeout", value = "3000"))
 public class UnversionedLock {
 	@Id
 	@GeneratedValue

@@ -61,7 +61,7 @@ public class EntityGraphNativeQueryTest extends BaseEntityManagerFunctionalTestC
 			fooGraph.addAttributeNodes( "bar", "baz" );
 
 			return em.createQuery( "select f from Foo f", Foo.class )
-					.setHint( "javax.persistence.loadgraph", fooGraph )
+					.setHint( "jakarta.persistence.loadgraph", fooGraph )
 					.getSingleResult();
 		} );
 

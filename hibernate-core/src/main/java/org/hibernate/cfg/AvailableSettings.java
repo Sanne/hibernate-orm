@@ -38,28 +38,28 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * <p/>
 	 * See JPA 2 sections 9.4.3 and 8.2.1.4
 	 */
-	String JPA_PERSISTENCE_PROVIDER = "javax.persistence.provider";
+	String JPA_PERSISTENCE_PROVIDER = "jakarta.persistence.provider";
 
 	/**
 	 * The type of transactions supported by the entity managers.
 	 * <p/>
 	 * See JPA 2 sections 9.4.3 and 8.2.1.2
 	 */
-	String JPA_TRANSACTION_TYPE = "javax.persistence.transactionType";
+	String JPA_TRANSACTION_TYPE = "jakarta.persistence.transactionType";
 
 	/**
 	 * The JNDI name of a JTA {@link javax.sql.DataSource}.
 	 * <p/>
 	 * See JPA 2 sections 9.4.3 and 8.2.1.5
 	 */
-	String JPA_JTA_DATASOURCE = "javax.persistence.jtaDataSource";
+	String JPA_JTA_DATASOURCE = "jakarta.persistence.jtaDataSource";
 
 	/**
 	 * The JNDI name of a non-JTA {@link javax.sql.DataSource}.
 	 * <p/>
 	 * See JPA 2 sections 9.4.3 and 8.2.1.5
 	 */
-	String JPA_NON_JTA_DATASOURCE = "javax.persistence.nonJtaDataSource";
+	String JPA_NON_JTA_DATASOURCE = "jakarta.persistence.nonJtaDataSource";
 
 	/**
 	 * The name of a JDBC driver to use to connect to the database.
@@ -70,7 +70,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * <p/>
 	 * See section 8.2.1.9
 	 */
-	String JPA_JDBC_DRIVER = "javax.persistence.jdbc.driver";
+	String JPA_JDBC_DRIVER = "jakarta.persistence.jdbc.driver";
 
 	/**
 	 * The JDBC connection url to use to connect to the database.
@@ -81,7 +81,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * <p/>
 	 * See section 8.2.1.9
 	 */
-	String JPA_JDBC_URL = "javax.persistence.jdbc.url";
+	String JPA_JDBC_URL = "jakarta.persistence.jdbc.url";
 
 	/**
 	 * The JDBC connection user name.
@@ -92,7 +92,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * <p/>
 	 * See section 8.2.1.9
 	 */
-	String JPA_JDBC_USER = "javax.persistence.jdbc.user";
+	String JPA_JDBC_USER = "jakarta.persistence.jdbc.user";
 
 	/**
 	 * The JDBC connection password.
@@ -103,7 +103,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * <p/>
 	 * See JPA 2 section 8.2.1.9
 	 */
-	String JPA_JDBC_PASSWORD = "javax.persistence.jdbc.password";
+	String JPA_JDBC_PASSWORD = "jakarta.persistence.jdbc.password";
 
 	/**
 	 * Used to indicate whether second-level (what JPA terms shared cache) caching is
@@ -112,7 +112,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * See JPA 2 sections 9.4.3 and 8.2.1.7
 	 * @see jakarta.persistence.SharedCacheMode
 	 */
-	String JPA_SHARED_CACHE_MODE = "javax.persistence.sharedCache.mode";
+	String JPA_SHARED_CACHE_MODE = "jakarta.persistence.sharedCache.mode";
 
 	/**
 	 * NOTE : Not a valid EMF property...
@@ -122,7 +122,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 *
 	 * @see jakarta.persistence.CacheRetrieveMode
 	 */
-	String JPA_SHARED_CACHE_RETRIEVE_MODE ="javax.persistence.cache.retrieveMode";
+	String JPA_SHARED_CACHE_RETRIEVE_MODE ="jakarta.persistence.cache.retrieveMode";
 
 	/**
 	 * NOTE : Not a valid EMF property...
@@ -132,7 +132,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 *
 	 * @see jakarta.persistence.CacheStoreMode
 	 */
-	String JPA_SHARED_CACHE_STORE_MODE ="javax.persistence.cache.storeMode";
+	String JPA_SHARED_CACHE_STORE_MODE ="jakarta.persistence.cache.storeMode";
 
 	/**
 	 * Used to indicate what form of automatic validation is in effect as per rules defined
@@ -141,47 +141,47 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * See JPA 2 sections 9.4.3 and 8.2.1.8
 	 * @see jakarta.persistence.ValidationMode
 	 */
-	String JPA_VALIDATION_MODE = "javax.persistence.validation.mode";
+	String JPA_VALIDATION_MODE = "jakarta.persistence.validation.mode";
 
 	/**
 	 * Used to pass along any discovered validator factory.
 	 */
-	String JPA_VALIDATION_FACTORY = "javax.persistence.validation.factory";
+	String JPA_VALIDATION_FACTORY = "jakarta.persistence.validation.factory";
 
 	/**
 	 * Used to coordinate with bean validators
 	 * <p/>
 	 * See JPA 2 section 8.2.1.9
 	 */
-	String JPA_PERSIST_VALIDATION_GROUP = "javax.persistence.validation.group.pre-persist";
+	String JPA_PERSIST_VALIDATION_GROUP = "jakarta.persistence.validation.group.pre-persist";
 
 	/**
 	 * Used to coordinate with bean validators
 	 * <p/>
 	 * See JPA 2 section 8.2.1.9
 	 */
-	String JPA_UPDATE_VALIDATION_GROUP = "javax.persistence.validation.group.pre-update";
+	String JPA_UPDATE_VALIDATION_GROUP = "jakarta.persistence.validation.group.pre-update";
 
 	/**
 	 * Used to coordinate with bean validators
 	 * <p/>
 	 * See JPA 2 section 8.2.1.9
 	 */
-	String JPA_REMOVE_VALIDATION_GROUP = "javax.persistence.validation.group.pre-remove";
+	String JPA_REMOVE_VALIDATION_GROUP = "jakarta.persistence.validation.group.pre-remove";
 
 	/**
 	 * Used to request (hint) a pessimistic lock scope.
 	 * <p/>
 	 * See JPA 2 sections 8.2.1.9 and 3.4.4.3
 	 */
-	String JPA_LOCK_SCOPE = "javax.persistence.lock.scope";
+	String JPA_LOCK_SCOPE = "jakarta.persistence.lock.scope";
 
 	/**
 	 * Used to request (hint) a pessimistic lock timeout (in milliseconds).
 	 * <p/>
 	 * See JPA 2 sections 8.2.1.9 and 3.4.4.3
 	 */
-	String JPA_LOCK_TIMEOUT = "javax.persistence.lock.timeout";
+	String JPA_LOCK_TIMEOUT = "jakarta.persistence.lock.timeout";
 
 	/**
 	 * Used to pass along the CDI BeanManager, if any, to be used.
@@ -205,7 +205,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * This setting is used to configure Hibernate ORM's access to
 	 * the BeanManager (either directly or via {@link ExtendedBeanManager}).
 	 */
-	String CDI_BEAN_MANAGER = "javax.persistence.bean.manager";
+	String CDI_BEAN_MANAGER = "jakarta.persistence.bean.manager";
 
 
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1274,7 +1274,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 *
 	 * @see org.hibernate.tool.schema.Action
 	 */
-	String HBM2DDL_DATABASE_ACTION = "javax.persistence.schema-generation.database.action";
+	String HBM2DDL_DATABASE_ACTION = "jakarta.persistence.schema-generation.database.action";
 
 	/**
 	 * Setting to perform SchemaManagementTool actions writing the commands into a DDL script file.
@@ -1285,7 +1285,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 *
 	 * @see org.hibernate.tool.schema.Action
 	 */
-	String HBM2DDL_SCRIPTS_ACTION = "javax.persistence.schema-generation.scripts.action";
+	String HBM2DDL_SCRIPTS_ACTION = "jakarta.persistence.schema-generation.scripts.action";
 
 	/**
 	 * Allows passing a specific {@link java.sql.Connection} instance to be used by SchemaManagementTool.
@@ -1293,7 +1293,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * May also be used to determine the values for {@value #HBM2DDL_DB_NAME},
 	 * {@value #HBM2DDL_DB_MAJOR_VERSION} and {@value #HBM2DDL_DB_MINOR_VERSION}.
 	 */
-	String HBM2DDL_CONNECTION = "javax.persistence.schema-generation-connection";
+	String HBM2DDL_CONNECTION = "jakarta.persistence.schema-generation-connection";
 
 	/**
 	 * Specifies the name of the database provider in cases where a Connection to the underlying database is
@@ -1310,7 +1310,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * @see #HBM2DDL_DB_MINOR_VERSION
 	 */
 	@SuppressWarnings("JavaDoc")
-	String HBM2DDL_DB_NAME = "javax.persistence.database-product-name";
+	String HBM2DDL_DB_NAME = "jakarta.persistence.database-product-name";
 
 	/**
 	 * Specifies the major version of the underlying database, as would be returned by
@@ -1321,7 +1321,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * @see #HBM2DDL_DB_NAME
 	 * @see #HBM2DDL_DB_MINOR_VERSION
 	 */
-	String HBM2DDL_DB_MAJOR_VERSION = "javax.persistence.database-major-version";
+	String HBM2DDL_DB_MAJOR_VERSION = "jakarta.persistence.database-major-version";
 
 	/**
 	 * Specifies the minor version of the underlying database, as would be returned by
@@ -1333,7 +1333,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * @see #HBM2DDL_DB_NAME
 	 * @see #HBM2DDL_DB_MAJOR_VERSION
 	 */
-	String HBM2DDL_DB_MINOR_VERSION = "javax.persistence.database-minor-version";
+	String HBM2DDL_DB_MINOR_VERSION = "jakarta.persistence.database-minor-version";
 
 	/**
 	 * Specifies whether schema generation commands for schema creation are to be determined based on object/relational
@@ -1349,7 +1349,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 *
 	 * @see SourceType
 	 */
-	String HBM2DDL_CREATE_SOURCE = "javax.persistence.schema-generation.create-source";
+	String HBM2DDL_CREATE_SOURCE = "jakarta.persistence.schema-generation.create-source";
 
 	/**
 	 * Specifies whether schema generation commands for schema dropping are to be determined based on object/relational
@@ -1365,7 +1365,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 *
 	 * @see SourceType
 	 */
-	String HBM2DDL_DROP_SOURCE = "javax.persistence.schema-generation.drop-source";
+	String HBM2DDL_DROP_SOURCE = "jakarta.persistence.schema-generation.drop-source";
 
 	/**
 	 * Specifies the CREATE script file as either a {@link java.io.Reader} configured for reading of the DDL script
@@ -1377,7 +1377,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * @see #HBM2DDL_CREATE_SOURCE
 	 * @see #HBM2DDL_IMPORT_FILES
 	 */
-	String HBM2DDL_CREATE_SCRIPT_SOURCE = "javax.persistence.schema-generation.create-script-source";
+	String HBM2DDL_CREATE_SCRIPT_SOURCE = "jakarta.persistence.schema-generation.create-script-source";
 
 	/**
 	 * Specifies the DROP script file as either a {@link java.io.Reader} configured for reading of the DDL script
@@ -1385,7 +1385,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 *
 	 * @see #HBM2DDL_DROP_SOURCE
 	 */
-	String HBM2DDL_DROP_SCRIPT_SOURCE = "javax.persistence.schema-generation.drop-script-source";
+	String HBM2DDL_DROP_SCRIPT_SOURCE = "jakarta.persistence.schema-generation.drop-script-source";
 
 	/**
 	 * For cases where the {@value #HBM2DDL_SCRIPTS_ACTION} value indicates that schema creation commands should
@@ -1396,7 +1396,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * @see #HBM2DDL_SCRIPTS_ACTION
 	 */
 	@SuppressWarnings("JavaDoc")
-	String HBM2DDL_SCRIPTS_CREATE_TARGET = "javax.persistence.schema-generation.scripts.create-target";
+	String HBM2DDL_SCRIPTS_CREATE_TARGET = "jakarta.persistence.schema-generation.scripts.create-target";
 
 	/**
 	 * For cases where the {@value #HBM2DDL_SCRIPTS_ACTION} value indicates that schema drop commands should
@@ -1407,7 +1407,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * @see #HBM2DDL_SCRIPTS_ACTION
 	 */
 	@SuppressWarnings("JavaDoc")
-	String HBM2DDL_SCRIPTS_DROP_TARGET = "javax.persistence.schema-generation.scripts.drop-target";
+	String HBM2DDL_SCRIPTS_DROP_TARGET = "jakarta.persistence.schema-generation.scripts.drop-target";
 
 	/**
 	 * Comma-separated names of the optional files containing SQL DML statements executed
@@ -1433,7 +1433,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * <p/>
 	 * A "SQL load script" is a script that performs some database initialization (INSERT, etc).
 	 */
-	String HBM2DDL_LOAD_SCRIPT_SOURCE = "javax.persistence.sql-load-script-source";
+	String HBM2DDL_LOAD_SCRIPT_SOURCE = "jakarta.persistence.sql-load-script-source";
 
 	/**
 	 * Reference to the {@link org.hibernate.tool.hbm2ddl.ImportSqlCommandExtractor} implementation class
@@ -1476,7 +1476,7 @@ public interface AvailableSettings extends org.hibernate.jpa.AvailableSettings {
 	 * contains "CREATE SCHEMA" commands.  If this property is not supplied (or is explicitly {@code false}), the
 	 * provider should not attempt to create database schemas.
 	 */
-	String HBM2DDL_CREATE_SCHEMAS = "javax.persistence.create-database-schemas";
+	String HBM2DDL_CREATE_SCHEMAS = "jakarta.persistence.create-database-schemas";
 
 	/**
 	 * @deprecated Use {@link #HBM2DDL_CREATE_SCHEMAS} instead: this variable name had a typo.

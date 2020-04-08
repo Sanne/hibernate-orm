@@ -142,7 +142,7 @@ public class QueryHintDefinition {
 
 	public LockOptions determineLockOptions(NamedQuery namedQueryAnnotation) {
 		LockModeType lockModeType = namedQueryAnnotation.lockMode();
-		Integer lockTimeoutHint = getInteger( namedQueryAnnotation.name(), "javax.persistence.lock.timeout" );
+		Integer lockTimeoutHint = getInteger( namedQueryAnnotation.name(), "jakarta.persistence.lock.timeout" );
 		Boolean followOnLocking = getBoolean( namedQueryAnnotation.name(), QueryHints.FOLLOW_ON_LOCKING );
 
 		return determineLockOptions(lockModeType, lockTimeoutHint, followOnLocking);

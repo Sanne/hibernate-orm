@@ -84,14 +84,14 @@ public class LoadGraphFindByIdTest extends BaseEntityManagerFunctionalTestCase {
 
 		cq.where( cb.equal( root.get( "id" ), 1L ) );
 		TypedQuery<User> tq = em.createQuery( cq );
-		tq.setHint( "javax.persistence.loadgraph", createEntityGraph( em ) );
+		tq.setHint( "jakarta.persistence.loadgraph", createEntityGraph( em ) );
 		return tq;
 	}
 
 	private Map<String, Object> createProperties(EntityManager em) {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put(
-				"javax.persistence.loadgraph",
+				"jakarta.persistence.loadgraph",
 				createEntityGraph( em )
 		);
 		return properties;

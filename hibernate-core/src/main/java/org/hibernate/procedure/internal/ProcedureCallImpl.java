@@ -637,7 +637,7 @@ public class ProcedureCallImpl<R>
 	@Override
 	public int executeUpdate() {
 		getProducer().checkTransactionNeededForUpdateOperation(
-				"javax.persistence.Query.executeUpdate requires active transaction" );
+				"jakarta.persistence.Query.executeUpdate requires active transaction" );
 
 		// the expectation is that there is just one Output, of type UpdateCountOutput
 		try {
@@ -776,12 +776,12 @@ public class ProcedureCallImpl<R>
 
 	@Override
 	public ProcedureCallImplementor<R> setLockMode(LockModeType lockMode) {
-		throw new IllegalStateException( "javax.persistence.Query.setLockMode not valid on javax.persistence.StoredProcedureQuery" );
+		throw new IllegalStateException( "jakarta.persistence.Query.setLockMode not valid on javax.persistence.StoredProcedureQuery" );
 	}
 
 	@Override
 	public LockModeType getLockMode() {
-		throw new IllegalStateException( "javax.persistence.Query.getHibernateFlushMode not valid on javax.persistence.StoredProcedureQuery" );
+		throw new IllegalStateException( "jakarta.persistence.Query.getHibernateFlushMode not valid on javax.persistence.StoredProcedureQuery" );
 	}
 
 	@Override

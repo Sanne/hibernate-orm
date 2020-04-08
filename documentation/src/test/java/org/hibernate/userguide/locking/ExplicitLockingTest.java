@@ -60,7 +60,7 @@ public class ExplicitLockingTest extends BaseEntityManagerFunctionalTestCase {
 			//tag::locking-jpa-query-hints-timeout-example[]
 			entityManager.find(
 				Person.class, id, LockModeType.PESSIMISTIC_WRITE,
-				Collections.singletonMap( "javax.persistence.lock.timeout", 200 )
+				Collections.singletonMap( "jakarta.persistence.lock.timeout", 200 )
 			);
 			//end::locking-jpa-query-hints-timeout-example[]
 		} );
@@ -84,7 +84,7 @@ public class ExplicitLockingTest extends BaseEntityManagerFunctionalTestCase {
 			Person person = entityManager.find(
 				Person.class, id, LockModeType.PESSIMISTIC_WRITE,
 				Collections.singletonMap(
-					"javax.persistence.lock.scope",
+					"jakarta.persistence.lock.scope",
 					PessimisticLockScope.EXTENDED )
 			);
 			//end::locking-jpa-query-hints-scope-example[]

@@ -79,7 +79,7 @@ public class EntityGraphUsingFetchGraphForLazyTest extends BaseEntityManagerFunc
 			addressGraph.addAttributeNodes( "shippingAddress" );
 
 			Map<String, Object> properties = new HashMap<>();
-			properties.put( "javax.persistence.fetchgraph", addressGraph );
+			properties.put( "jakarta.persistence.fetchgraph", addressGraph );
 
 			CustomerOrder _customerOrder = em.find( CustomerOrder.class, customerOrder.id, properties );
 
@@ -94,7 +94,7 @@ public class EntityGraphUsingFetchGraphForLazyTest extends BaseEntityManagerFunc
 			addressAndPositionGraph.addAttributeNodes( "orderPosition" );
 
 			properties = new HashMap<>();
-			properties.put( "javax.persistence.fetchgraph", addressAndPositionGraph );
+			properties.put( "jakarta.persistence.fetchgraph", addressAndPositionGraph );
 
 			_customerOrder = em.find( CustomerOrder.class, customerOrder.id, properties );
 
@@ -112,7 +112,7 @@ public class EntityGraphUsingFetchGraphForLazyTest extends BaseEntityManagerFunc
 					.addAttributeNodes( "product" );
 
 			properties = new HashMap<>();
-			properties.put( "javax.persistence.fetchgraph", addressAndPositionAndProductGraph );
+			properties.put( "jakarta.persistence.fetchgraph", addressAndPositionAndProductGraph );
 
 			_customerOrder = em.find( CustomerOrder.class, customerOrder.id, properties );
 

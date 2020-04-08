@@ -23,7 +23,7 @@ import jakarta.persistence.Version;
 		name="AllLocks",
 		query="from Lock_",
 		lockMode = LockModeType.PESSIMISTIC_WRITE,
-		hints = { @QueryHint( name = "javax.persistence.lock.timeout", value = "0")}
+		hints = { @QueryHint( name = "jakarta.persistence.lock.timeout", value = "0")}
 )
 public class Lock {
 	private Integer id;

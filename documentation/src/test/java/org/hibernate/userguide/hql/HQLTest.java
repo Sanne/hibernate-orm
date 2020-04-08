@@ -607,7 +607,7 @@ public class HQLTest extends BaseEntityManagerFunctionalTestCase {
 				"from Person p " +
 				"where p.name like :name" )
 			// timeout - in milliseconds
-			.setHint( "javax.persistence.query.timeout", 2000 )
+			.setHint( "jakarta.persistence.query.timeout", 2000 )
 			// flush only at commit time
 			.setFlushMode( FlushModeType.COMMIT );
 			//end::jpql-api-basic-usage-example[]

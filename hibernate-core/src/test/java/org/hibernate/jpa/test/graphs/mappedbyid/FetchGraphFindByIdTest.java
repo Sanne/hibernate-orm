@@ -36,7 +36,7 @@ public class FetchGraphFindByIdTest extends BaseEntityManagerFunctionalTestCase 
 		entityGraph.addAttributeNodes( "location" );
 		entityGraph.addAttributeNodes( "markets" );
 
-		Map<String, Object> properties = Collections.singletonMap( "javax.persistence.fetchgraph", entityGraph );
+		Map<String, Object> properties = Collections.singletonMap( "jakarta.persistence.fetchgraph", entityGraph );
 
 		Company company = entityManager.find( Company.class, companyId, properties );
 
@@ -102,7 +102,7 @@ public class FetchGraphFindByIdTest extends BaseEntityManagerFunctionalTestCase 
 		EntityGraph<CompanyFetchProfile> entityGraph = entityManager.createEntityGraph( CompanyFetchProfile.class );
 		entityGraph.addAttributeNodes( "markets" );
 
-		Map<String, Object> properties = Collections.singletonMap( "javax.persistence.fetchgraph", entityGraph );
+		Map<String, Object> properties = Collections.singletonMap( "jakarta.persistence.fetchgraph", entityGraph );
 
 		CompanyFetchProfile company = entityManager.find( CompanyFetchProfile.class, companyWithFetchProfileId, properties );
 

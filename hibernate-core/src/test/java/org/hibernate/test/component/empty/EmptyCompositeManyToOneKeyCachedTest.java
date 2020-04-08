@@ -50,7 +50,7 @@ public class EmptyCompositeManyToOneKeyCachedTest extends BaseCoreFunctionalTest
 		configuration.getProperties().put( Environment.USE_QUERY_CACHE, "true" );
 		configuration.getProperties().put( Environment.GENERATE_STATISTICS, "true" );
 		configuration.getProperties().put( Environment.CACHE_REGION_PREFIX, "" );
-		configuration.getProperties().put( "javax.persistence.sharedCache.mode", SharedCacheMode.ALL );
+		configuration.getProperties().put( "jakarta.persistence.sharedCache.mode", SharedCacheMode.ALL );
 	}
 
 	@Test

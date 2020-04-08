@@ -89,7 +89,7 @@ public class GraphFetchingTest extends BaseEntityManagerFunctionalTestCase {
 				Employee.class,
 				userId,
 				Collections.singletonMap(
-					"javax.persistence.fetchgraph",
+					"jakarta.persistence.fetchgraph",
 					entityManager.getEntityGraph( "employee.projects" )
 				)
 			);
@@ -103,7 +103,7 @@ public class GraphFetchingTest extends BaseEntityManagerFunctionalTestCase {
 				Project.class,
 				1L,
 				Collections.singletonMap(
-					"javax.persistence.fetchgraph",
+					"jakarta.persistence.fetchgraph",
 					entityManager.getEntityGraph( "project.employees" )
 				)
 			);

@@ -652,7 +652,7 @@ public class MetadataBuilderImpl implements MetadataBuilderImplementor, TypeCont
 			);
 
 			this.sharedCacheMode = configService.getSetting(
-					"javax.persistence.sharedCache.mode",
+					"jakarta.persistence.sharedCache.mode",
 					new ConfigurationService.Converter<SharedCacheMode>() {
 						@Override
 						public SharedCacheMode convert(Object value) {
