@@ -83,11 +83,11 @@ public class UpgradeLockTest extends BaseEntityManagerFunctionalTestCase {
 			}
 			catch (Throwable expectedToFail) {
 				while(expectedToFail != null &&
-					!(expectedToFail instanceof javax.persistence.OptimisticLockException)) {
+					!(expectedToFail instanceof jakarta.persistence.OptimisticLockException)) {
 					expectedToFail = expectedToFail.getCause();
 				}
 				assertTrue("upgrade to OPTIMISTIC_FORCE_INCREMENT is expected to fail at end of transaction1 since tranaction2 already updated the entity",
-						expectedToFail instanceof javax.persistence.OptimisticLockException);
+						expectedToFail instanceof jakarta.persistence.OptimisticLockException);
 			}
 		}
 		finally {
