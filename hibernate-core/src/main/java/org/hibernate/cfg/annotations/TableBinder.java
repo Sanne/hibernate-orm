@@ -740,7 +740,7 @@ public class TableBinder {
 		}
 	}
 
-	public static void addIndexes(Table hibTable, javax.persistence.Index[] indexes, MetadataBuildingContext buildingContext) {
+	public static void addIndexes(Table hibTable, jakarta.persistence.Index[] indexes, MetadataBuildingContext buildingContext) {
 		buildingContext.getMetadataCollector().addJpaIndexHolders( hibTable, buildJpaIndexHolder( indexes ) );
 	}
 

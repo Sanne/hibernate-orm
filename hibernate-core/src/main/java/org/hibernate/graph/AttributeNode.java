@@ -17,7 +17,7 @@ import jakarta.persistence.metamodel.Attribute;
  * @author Steve Ebersole
  * @author Andrea Boriero
  */
-public interface AttributeNode<J> extends GraphNode<J>, javax.persistence.AttributeNode<J> {
+public interface AttributeNode<J> extends GraphNode<J>, jakarta.persistence.AttributeNode<J> {
 	Attribute<?, J> getAttributeDescriptor();
 
 	Map<Class<? extends J>, SubGraph<? extends J>> getSubGraphs();

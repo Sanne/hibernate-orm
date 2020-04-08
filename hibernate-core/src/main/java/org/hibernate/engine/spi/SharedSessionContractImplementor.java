@@ -499,7 +499,7 @@ public interface SharedSessionContractImplementor
 
 	/**
 	 * @deprecated (since 5.2) - see deprecation note on
-	 * org.hibernate.jpa.spi.HibernateEntityManagerImplementor#createQuery(java.lang.String, java.lang.Class, javax.persistence.criteria.Selection, org.hibernate.jpa.spi.HibernateEntityManagerImplementor.QueryOptions)
+	 * org.hibernate.jpa.spi.HibernateEntityManagerImplementor#createQuery(java.lang.String, java.lang.Class, jakarta.persistence.criteria.Selection, org.hibernate.jpa.spi.HibernateEntityManagerImplementor.QueryOptions)
 	 * @return The typed query
 	 */
 	@Deprecated

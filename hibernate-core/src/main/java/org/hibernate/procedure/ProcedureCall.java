@@ -51,7 +51,7 @@ public interface ProcedureCall extends BasicQueryContract<CommonQueryContract>, 
 	<T> ParameterRegistration<T> registerParameter(int position, Class<T> type, ParameterMode mode);
 
 	/**
-	 * Chained form of {@link #registerParameter(int, Class, javax.persistence.ParameterMode)}
+	 * Chained form of {@link #registerParameter(int, Class, jakarta.persistence.ParameterMode)}
 	 *
 	 * @param position The position
 	 * @param type The Java type of the parameter
