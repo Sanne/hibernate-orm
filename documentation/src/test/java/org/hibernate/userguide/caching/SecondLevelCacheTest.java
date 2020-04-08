@@ -162,7 +162,7 @@ public class SecondLevelCacheTest extends BaseEntityManagerFunctionalTestCase {
 			.setParameter( "id", 0L)
 			.setHint( QueryHints.HINT_CACHEABLE, "true")
 			.setHint( QueryHints.HINT_CACHE_REGION, "query.cache.person" )
-			.setHint( "javax.persistence.cache.storeMode", CacheStoreMode.REFRESH )
+			.setHint( "jakarta.persistence.cache.storeMode", CacheStoreMode.REFRESH )
 			.getResultList();
 			//end::caching-query-region-store-mode-jpa-example[]
 		});
@@ -206,8 +206,8 @@ public class SecondLevelCacheTest extends BaseEntityManagerFunctionalTestCase {
 		doInJPA( this::entityManagerFactory, entityManager -> {
 			//tag::caching-management-cache-mode-entity-jpa-example[]
 			Map<String, Object> hints = new HashMap<>(  );
-			hints.put( "javax.persistence.cache.retrieveMode " , CacheRetrieveMode.USE );
-			hints.put( "javax.persistence.cache.storeMode" , CacheStoreMode.REFRESH );
+			hints.put( "jakarta.persistence.cache.retrieveMode " , CacheRetrieveMode.USE );
+			hints.put( "jakarta.persistence.cache.storeMode" , CacheStoreMode.REFRESH );
 			Person person = entityManager.find( Person.class, 1L , hints);
 			//end::caching-management-cache-mode-entity-jpa-example[]
 		});
@@ -225,8 +225,8 @@ public class SecondLevelCacheTest extends BaseEntityManagerFunctionalTestCase {
 			List<Person> persons = entityManager.createQuery(
 				"select p from Person p", Person.class)
 			.setHint( QueryHints.HINT_CACHEABLE, "true")
-			.setHint( "javax.persistence.cache.retrieveMode " , CacheRetrieveMode.USE )
-			.setHint( "javax.persistence.cache.storeMode" , CacheStoreMode.REFRESH )
+			.setHint( "jakarta.persistence.cache.retrieveMode " , CacheRetrieveMode.USE )
+			.setHint( "jakarta.persistence.cache.storeMode" , CacheStoreMode.REFRESH )
 			.getResultList();
 			//end::caching-management-cache-mode-query-jpa-example[]
 
