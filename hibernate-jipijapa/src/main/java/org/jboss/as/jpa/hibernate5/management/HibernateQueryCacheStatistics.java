@@ -11,7 +11,7 @@ package org.jboss.as.jpa.hibernate5.management;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 
 import org.hibernate.SessionFactory;
 

@@ -6,7 +6,7 @@
  */
 package org.hibernate.jpa.test.pack.war;
 
-import javax.persistence.ExcludeDefaultListeners;
+import jakarta.persistence.ExcludeDefaultListeners;
 
 /**
  * @author Emmanuel Bernard
