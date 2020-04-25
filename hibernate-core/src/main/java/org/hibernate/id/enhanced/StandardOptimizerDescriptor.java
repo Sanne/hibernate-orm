@@ -21,6 +21,11 @@ public enum StandardOptimizerDescriptor {
 	 */
 	NONE( "none" ) {
 		@Override
+		public Class<? extends Optimizer> getOptimizerClass() {
+			return NoopOptimizer.class;
+		}
+
+		@Override
 		public Optimizer constructInstance(Class returnClass, int incrementSize) {
 			return new NoopOptimizer( returnClass, incrementSize );
 		}
@@ -29,6 +34,11 @@ public enum StandardOptimizerDescriptor {
 	 * Describes the optimizer for using a custom "hilo" algorithm optimization
 	 */
 	HILO( "hilo" ) {
+		@Override
+		public Class<? extends Optimizer> getOptimizerClass() {
+			return HiLoOptimizer.class;
+		}
+
 		@Override
 		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
 			return new HiLoOptimizer( returnClass, incrementSize );
@@ -40,6 +50,11 @@ public enum StandardOptimizerDescriptor {
 	 */
 	LEGACY_HILO( "legacy-hilo" ) {
 		@Override
+		public Class<? extends Optimizer> getOptimizerClass() {
+			return LegacyHiLoAlgorithmOptimizer.class;
+		}
+
+		@Override
 		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
 			return new LegacyHiLoAlgorithmOptimizer( returnClass, incrementSize );
 		}
@@ -49,6 +64,11 @@ public enum StandardOptimizerDescriptor {
 	 * hi value is stored in the database.
 	 */
 	POOLED( "pooled", true ) {
+		@Override
+		public Class<? extends Optimizer> getOptimizerClass() {
+			return PooledOptimizer.class;
+		}
+
 		@Override
 		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
 			return new PooledOptimizer( returnClass, incrementSize );
@@ -60,6 +80,11 @@ public enum StandardOptimizerDescriptor {
 	 */
 	POOLED_LO( "pooled-lo", true ) {
 		@Override
+		public Class<? extends Optimizer> getOptimizerClass() {
+			return PooledLoOptimizer.class;
+		}
+
+		@Override
 		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
 			return new PooledLoOptimizer( returnClass, incrementSize );
 		}
@@ -69,6 +94,11 @@ public enum StandardOptimizerDescriptor {
 	 * lo value is stored in the database and ThreadLocal used to cache the generation state.
 	 */
 	POOLED_LOTL( "pooled-lotl", true ) {
+		@Override
+		public Class<? extends Optimizer> getOptimizerClass() {
+			return PooledLoThreadLocalOptimizer.class;
+		}
+
 		@Override
 		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
 			return new PooledLoThreadLocalOptimizer( returnClass, incrementSize );
@@ -93,9 +123,8 @@ public enum StandardOptimizerDescriptor {
 		return externalName;
 	}
 
-//	public Class<? extends Optimizer> getOptimizerClass() {
-//		return optimizerClass;
-//	}
+	@Deprecated
+	public abstract Class<? extends Optimizer> getOptimizerClass();
 
 	public abstract Optimizer constructInstance(Class returnClass, int incrementSize);
 
