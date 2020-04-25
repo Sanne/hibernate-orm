@@ -59,7 +59,7 @@ public class OptimizerFactory {
 
 		final StandardOptimizerDescriptor standardDescriptor = StandardOptimizerDescriptor.fromExternalName( type );
 		if ( standardDescriptor != null ) {
-			optimizerClass = standardDescriptor.getOptimizerClass();
+			return standardDescriptor.constructInstance( returnClass, incrementSize );
 		}
 		else {
 			try {

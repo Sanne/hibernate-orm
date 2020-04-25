@@ -19,45 +19,73 @@ public enum StandardOptimizerDescriptor {
 	/**
 	 * Describes the optimizer for no optimization
 	 */
-	NONE( "none", NoopOptimizer.class ),
+	NONE( "none" ) {
+		@Override
+		public Optimizer constructInstance(Class returnClass, int incrementSize) {
+			return new NoopOptimizer( returnClass, incrementSize );
+		}
+	},
 	/**
 	 * Describes the optimizer for using a custom "hilo" algorithm optimization
 	 */
-	HILO( "hilo", HiLoOptimizer.class ),
+	HILO( "hilo" ) {
+		@Override
+		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
+			return new HiLoOptimizer( returnClass, incrementSize );
+		}
+	},
 	/**
 	 * Describes the optimizer for using a custom "hilo" algorithm optimization, following the legacy
 	 * Hibernate hilo algorithm
 	 */
-	LEGACY_HILO( "legacy-hilo", LegacyHiLoAlgorithmOptimizer.class ),
+	LEGACY_HILO( "legacy-hilo" ) {
+		@Override
+		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
+			return new LegacyHiLoAlgorithmOptimizer( returnClass, incrementSize );
+		}
+	},
 	/**
 	 * Describes the optimizer for use with tables/sequences that store the chunk information.  Here, specifically the
 	 * hi value is stored in the database.
 	 */
-	POOLED( "pooled", PooledOptimizer.class, true ),
+	POOLED( "pooled", true ) {
+		@Override
+		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
+			return new PooledOptimizer( returnClass, incrementSize );
+		}
+	},
 	/**
 	 * Describes the optimizer for use with tables/sequences that store the chunk information.  Here, specifically the
 	 * lo value is stored in the database.
 	 */
-	POOLED_LO( "pooled-lo", PooledLoOptimizer.class, true ),
+	POOLED_LO( "pooled-lo", true ) {
+		@Override
+		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
+			return new PooledLoOptimizer( returnClass, incrementSize );
+		}
+	},
 	/**
 	 * Describes the optimizer for use with tables/sequences that store the chunk information.  Here, specifically the
 	 * lo value is stored in the database and ThreadLocal used to cache the generation state.
 	 */
-	POOLED_LOTL( "pooled-lotl", PooledLoThreadLocalOptimizer.class, true );
+	POOLED_LOTL( "pooled-lotl", true ) {
+		@Override
+		public Optimizer constructInstance(final Class returnClass, final int incrementSize) {
+			return new PooledLoThreadLocalOptimizer( returnClass, incrementSize );
+		}
+	};
 
 	private static final Logger log = Logger.getLogger( StandardOptimizerDescriptor.class );
 
 	private final String externalName;
-	private final Class<? extends Optimizer> optimizerClass;
 	private final boolean isPooled;
 
-	StandardOptimizerDescriptor(String externalName, Class<? extends Optimizer> optimizerClass) {
-		this( externalName, optimizerClass, false );
+	StandardOptimizerDescriptor(String externalName) {
+		this( externalName, false );
 	}
 
-	StandardOptimizerDescriptor(String externalName, Class<? extends Optimizer> optimizerClass, boolean pooled) {
+	StandardOptimizerDescriptor(String externalName, boolean pooled) {
 		this.externalName = externalName;
-		this.optimizerClass = optimizerClass;
 		this.isPooled = pooled;
 	}
 
@@ -65,9 +93,11 @@ public enum StandardOptimizerDescriptor {
 		return externalName;
 	}
 
-	public Class<? extends Optimizer> getOptimizerClass() {
-		return optimizerClass;
-	}
+//	public Class<? extends Optimizer> getOptimizerClass() {
+//		return optimizerClass;
+//	}
+
+	public abstract Optimizer constructInstance(Class returnClass, int incrementSize);
 
 	public boolean isPooled() {
 		return isPooled;
