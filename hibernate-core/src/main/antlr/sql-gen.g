@@ -195,9 +195,11 @@ orderExprs { String ordExp = null; String ordDir = null; String ordNul = null; }
 	// TODO: remove goofy space before the comma when we don't have to regression test anymore.
 	// Dialect is provided a hook to render each ORDER BY element, so the expression is being captured instead of
 	// printing to the SQL output directly. See Dialect#renderOrderByElement(String, String, String, NullPrecedence).
-	: { captureExpressionStart(); } ( expr ) { captureExpressionFinish(); ordExp = resetCapture(); }
+	: { captureExpressionStart(); } ( e:expr ) { captureExpressionFinish(); ordExp = resetCapture(); }
 	    (dir:orderDirection { ordDir = #dir.getText(); })? (ordNul=nullOrdering)?
-	        { out( renderOrderByElement( ordExp, ordDir, ordNul ) ); }
+	    // SQL Tokens without a direction and null ordering can be passed through as-is.
+	    // These tokens could be mapping defined order by fragments which are already rendered via the dialect hook
+	        { out( #e.getType() == SQL_TOKEN && ordDir == null && ordNul == null ? ordExp : renderOrderByElement( ordExp, ordDir, ordNul ) ); }
 	    ( {out(", "); } orderExprs )?
 	;
 
