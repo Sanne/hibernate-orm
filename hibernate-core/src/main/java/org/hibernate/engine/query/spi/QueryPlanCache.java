@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import org.hibernate.Filter;
 import org.hibernate.MappingException;
 import org.hibernate.QueryException;
+import org.hibernate.cache.spi.RegionFactory;
 import org.hibernate.cfg.Environment;
 import org.hibernate.engine.query.spi.sql.NativeSQLQuerySpecification;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -110,12 +111,15 @@ public class QueryPlanCache implements Serializable {
 			);
 		}
 
-		queryPlanCache = new BoundedConcurrentHashMap( maxQueryPlanCount, 20, BoundedConcurrentHashMap.Eviction.LIRS );
-		parameterMetadataCache = new BoundedConcurrentHashMap<>(
-				maxParameterMetadataCount,
-				20,
-				BoundedConcurrentHashMap.Eviction.LIRS
-		);
+		final RegionFactory cacheFactory = factory.getServiceRegistry().getService( RegionFactory.class );
+		queryPlanCache = cacheFactory.createBoundedMap( maxQueryPlanCount );
+		parameterMetadataCache = cacheFactory.createBoundedMap( maxParameterMetadataCount );
+//		queryPlanCache = new BoundedConcurrentHashMap( maxQueryPlanCount, 20, BoundedConcurrentHashMap.Eviction.LIRS );
+//		parameterMetadataCache = new BoundedConcurrentHashMap<>(
+//				maxParameterMetadataCount,
+//				20,
+//				BoundedConcurrentHashMap.Eviction.LIRS
+//		);
 
 		nativeQueryInterpreter = factory.getServiceRegistry().getService( NativeQueryInterpreter.class );
 	}
