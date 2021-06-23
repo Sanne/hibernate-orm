@@ -17,7 +17,9 @@ import java.util.function.Function;
 
 import org.hibernate.HibernateException;
 import org.hibernate.bytecode.internal.bytebuddy.ByteBuddyState;
+import org.hibernate.bytecode.internal.bytebuddy.CacheHelpers;
 import org.hibernate.cfg.Environment;
+import org.hibernate.engine.internal.CacheHelper;
 import org.hibernate.internal.CoreMessageLogger;
 import org.hibernate.internal.util.ReflectHelper;
 import org.hibernate.proxy.HibernateProxy;
@@ -46,13 +48,8 @@ public class ByteBuddyProxyHelper implements Serializable {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Class buildProxy(final Class persistentClass, final Class[] interfaces) {
-		Set<Class<?>> key = new HashSet<Class<?>>();
-		if ( interfaces.length == 1 ) {
-			key.add( persistentClass );
-		}
-		key.addAll( Arrays.<Class<?>>asList( interfaces ) );
-
-		return byteBuddyState.loadProxy( persistentClass, new TypeCache.SimpleKey( key ), proxyBuilder( persistentClass, interfaces ) );
+		final TypeCache.SimpleKey cacheKey = CacheHelpers.getCacheKey( persistentClass, interfaces );
+		return byteBuddyState.loadProxy( persistentClass, cacheKey, proxyBuilder( persistentClass, interfaces ) );
 	}
 
 	/**

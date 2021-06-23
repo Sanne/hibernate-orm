@@ -7,9 +7,6 @@
 package org.hibernate.bytecode.internal.bytebuddy;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.HibernateException;
