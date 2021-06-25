@@ -6,6 +6,8 @@
  */
 package org.hibernate.test.bytecode.enhancement.classcache;
 
+import java.util.Map;
+
 import org.hibernate.bytecode.internal.SessionFactoryObserverForBytecodeEnhancer;
 import org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl;
 import org.hibernate.bytecode.spi.BasicProxyFactory;
@@ -27,15 +29,19 @@ public class MetadataLeakTest {
 		Object beanProxy2 = orm1.createBasicProxy( Bean.class );
 		Assert.assertNotSame( beanProxy1, beanProxy2 );
 		Assert.assertSame( beanProxy1.getClass(), beanProxy2.getClass() );
+		//We now made the proxy name stable (predictable) by removing the random postfix:
+		Assert.assertEquals( "org.hibernate.test.bytecode.Bean$HibernateBasicProxy", beanProxy1.getClass().getName() );
 
 		//Of course a proxy of a different type should not share the Class (obvious?):
 		Object carProxy1 = orm1.createBasicProxy( Car.class );
 		Assert.assertNotSame( beanProxy1, carProxy1 );
 		Assert.assertNotSame( beanProxy1.getClass(), carProxy1.getClass() );
+		Assert.assertEquals( "org.hibernate.test.id.Car$HibernateBasicProxy", carProxy1.getClass().getName() );
 
 		//The above is assumed to have been run during SessionFactory creation (before start);
 		// now let's start orm1 :
 		orm1.transitionToStarted();
+
 
 		Object beanProxy3 = orm1.createBasicProxy( Bean.class );
 		Assert.assertNotSame( beanProxy1, beanProxy3 );
@@ -60,12 +66,59 @@ public class MetadataLeakTest {
 
 	}
 
+	@Test
+	public void metadataLeak() {
+
+		OrmLifecycleMock orm1 = new OrmLifecycleMock();
+//		JavaSE
+		for (int i=0; i<1000000; i++) {
+
+			Object proxy1 = orm1.createBasicProxy( Bean.class );
+			orm1.transitionToStarted();
+			Object proxy2 = orm1.createBasicProxy( Bean.class );
+			Assert.assertSame( proxy1.getClass(), proxy2.getClass() );
+		}
+	}
+/*
+	public void classMultiplePUReuse() {
+
+		SharedMetadata s = new SharedMetadata();
+
+		OrmLifecycleMock orm1 = new OrmLifecycleMock();
+		orm1.transitionToStarted(); // Bean.class
+
+		OrmLifecycleMock orm2 = new OrmLifecycleMock( s );
+		orm2.transitionToStarted(); // Car.classIdentifierHelperBuilde
+
+		//,,.
+		OrmLifecycleMock ormN = new OrmLifecycleMock( s );
+		ormN.transitionToStarted(); // Animals.class
+
+		s.nukeCaches();
+//		orm1.reallyClearCaches();
+//		orm2.reallyClearCaches();
+//		// ...
+//		ormN.reallyClearCaches();
+
+	}*/
+
 	private static class OrmLifecycleMock {
 		final BytecodeProviderImpl bytecodeProvider = new BytecodeProviderImpl();
 		final SessionFactoryObserverForBytecodeEnhancer sessionFactoryLifecycle = new SessionFactoryObserverForBytecodeEnhancer( bytecodeProvider );
+//
+//		final ClassValue proxyCache = new ClassValue() {
+//			@Override
+//			protected Object computeValue(Class type) {
+//				return createBasicProxy( type );
+//			}
+//		};
+//
+//		public Object createClassValueCachedBasicProxy(final Class<?> beanClass) {
+//			return proxyCache.get( beanClass );
+//		}
 
 		public Object createBasicProxy(final Class<?> beanClass) {
-			final BasicProxyFactory basicProxyFactory = bytecodeProvider.getProxyFactoryFactory().buildBasicProxyFactory( beanClass, null );
+			final BasicProxyFactory basicProxyFactory = bytecodeProvider.getProxyFactoryFactory().buildBasicProxyFactory( beanClass );
 			final Object instantiatedProxy = basicProxyFactory.getProxy();
 			//A couple of essential assertions
 			Assert.assertTrue( instantiatedProxy instanceof ProxyConfiguration );
