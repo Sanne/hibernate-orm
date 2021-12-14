@@ -15,13 +15,14 @@ public final class Alias {
 
 	private final int length;
 	private final String suffix;
+	private final int suffixLength;
 
 	/**
 	 * Constructor for Alias.
 	 */
 	public Alias(int length, String suffix) {
-		super();
-		this.length = (suffix==null) ? length : length - suffix.length();
+		this.suffixLength = ( suffix == null ) ? 0 : suffix.length();
+		this.length = length - suffixLength;
 		this.suffix = suffix;
 	}
 
@@ -29,9 +30,9 @@ public final class Alias {
 	 * Constructor for Alias.
 	 */
 	public Alias(String suffix) {
-		super();
 		this.length = Integer.MAX_VALUE;
 		this.suffix = suffix;
+		this.suffixLength = ( suffix == null ) ? 0 : suffix.length();
 	}
 
 	public String toAliasString(String sqlIdentifier) {
@@ -57,17 +58,19 @@ public final class Alias {
 		return getUnquotedAliasString(sqlIdentifier, quoteType);
 	}
 
-	private String getUnquotedAliasString(String sqlIdentifier, int quoteType) {
-		String unquoted = sqlIdentifier;
-		if ( quoteType >= 0 ) {
-			//if the identifier is quoted, remove the quotes
-			unquoted = unquoted.substring( 1, unquoted.length()-1 );
+	private String getUnquotedAliasString(final String sqlIdentifier, final int quoteType) {
+		if ( quoteType < 0 && this.suffixLength == 0 ) {
+			//shortcut:
+			return sqlIdentifier;
 		}
-		if ( unquoted.length() > length ) {
-			//truncate the identifier to the max alias length, less the suffix length
-			unquoted = unquoted.substring(0, length);
+		final int startIdx = quoteType >= 0 ? 1 : 0;
+		final int endIdx = quoteType >= 0 ? Math.min( sqlIdentifier.length() - 1, length ) : Math.min( sqlIdentifier.length(), length );
+		StringBuilder sb = new StringBuilder( this.suffixLength + endIdx );
+		if ( suffix != null ) {
+			sb.append( suffix );
 		}
-		return ( suffix == null ) ? unquoted : unquoted + suffix;
+		sb.append( sqlIdentifier, startIdx, endIdx );
+		return sb.toString();
 	}
 
 	public String[] toUnquotedAliasStrings(String[] sqlIdentifiers) {
