@@ -490,7 +490,8 @@ public final class ReflectHelper {
 	}
 
 	private static Method getGetterOrNull(Class containerClass, String propertyName) {
-		for ( Method method : containerClass.getDeclaredMethods() ) {
+		Method[] declaredMethods = containerClass.getDeclaredMethods();
+		for ( Method method : declaredMethods) {
 			// if the method has parameters, skip it
 			if ( method.getParameterCount() != 0 ) {
 				continue;
@@ -516,7 +517,7 @@ public final class ReflectHelper {
 				final String stemName = methodName.substring( 3 );
 				final String decapitalizedStemName = Introspector.decapitalize( stemName );
 				if ( stemName.equals( propertyName ) || decapitalizedStemName.equals( propertyName ) ) {
-					verifyNoIsVariantExists( containerClass, propertyName, method, stemName );
+					verifyNoIsVariantExists( containerClass, propertyName, method, stemName, declaredMethods);
 					return method;
 				}
 
@@ -527,7 +528,7 @@ public final class ReflectHelper {
 				final String stemName = methodName.substring( 2 );
 				String decapitalizedStemName = Introspector.decapitalize( stemName );
 				if ( stemName.equals( propertyName ) || decapitalizedStemName.equals( propertyName ) ) {
-					verifyNoGetVariantExists( containerClass, propertyName, method, stemName );
+					verifyNoGetVariantExists( containerClass, propertyName, method, stemName, declaredMethods);
 					return method;
 				}
 			}
@@ -536,21 +537,30 @@ public final class ReflectHelper {
 		return null;
 	}
 
+	private static Method findAnyMatch(String name, Method[] methods) {
+		for (Method method : methods) {
+			if (method.getName().equals(name)) {
+				return method;
+			}
+		}
+		return null;
+	}
+
 	private static void verifyNoIsVariantExists(
 			Class containerClass,
 			String propertyName,
 			Method getMethod,
-			String stemName) {
-		// verify that the Class does not also define a method with the same stem name with 'is'
-		try {
-			final Method isMethod = containerClass.getDeclaredMethod( "is" + stemName );
-			if ( !Modifier.isStatic( isMethod.getModifiers() ) && isMethod.getAnnotation( Transient.class ) == null ) {
-				// No such method should throw the caught exception.  So if we get here, there was
-				// such a method.
-				checkGetAndIsVariants( containerClass, propertyName, getMethod, isMethod );
-			}
+			String stemName,
+			Method[] declaredMethods) {
+
+		Method isMethod = findAnyMatch( "is" + stemName, declaredMethods);
+		if (isMethod == null) {
+			return;
 		}
-		catch (NoSuchMethodException ignore) {
+
+		// verify that the Class does not also define a method with the same stem name with 'is'
+		if ( !Modifier.isStatic( isMethod.getModifiers() ) && isMethod.getAnnotation( Transient.class ) == null ) {
+			checkGetAndIsVariants( containerClass, propertyName, getMethod, isMethod );
 		}
 	}
 
@@ -580,17 +590,15 @@ public final class ReflectHelper {
 			Class containerClass,
 			String propertyName,
 			Method isMethod,
-			String stemName) {
-		// verify that the Class does not also define a method with the same stem name with 'is'
-		try {
-			final Method getMethod = containerClass.getDeclaredMethod( "get" + stemName );
-			// No such method should throw the caught exception.  So if we get here, there was
-			// such a method.
-			if ( !Modifier.isStatic( getMethod.getModifiers() ) && getMethod.getAnnotation( Transient.class ) == null ) {
-				checkGetAndIsVariants( containerClass, propertyName, getMethod, isMethod );
-			}
+			String stemName,
+			Method[] declaredMethods) {
+		Method getMethod = findAnyMatch( "get" + stemName, declaredMethods);
+		if (getMethod == null) {
+			return;
 		}
-		catch (NoSuchMethodException ignore) {
+		// verify that the Class does not also define a method with the same stem name with 'get'
+		if ( !Modifier.isStatic( getMethod.getModifiers() ) && getMethod.getAnnotation( Transient.class ) == null ) {
+			checkGetAndIsVariants( containerClass, propertyName, getMethod, isMethod );
 		}
 	}
 
