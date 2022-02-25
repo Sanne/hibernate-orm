@@ -197,17 +197,18 @@ public class BytecodeProviderImpl implements BytecodeProvider {
 				methodVisitor.visitVarInsn( Opcodes.ALOAD, 2 );
 				methodVisitor.visitLdcInsn( index++ );
 				methodVisitor.visitInsn( Opcodes.AALOAD );
-				if ( setter.getParameterTypes()[0].isPrimitive() ) {
+				Class<?> firstParameterType = setter.getParameterTypes()[0];
+				if ( firstParameterType.isPrimitive() ) {
 					PrimitiveUnboxingDelegate.forReferenceType( TypeDescription.Generic.OBJECT )
 							.assignUnboxedTo(
-									new TypeDescription.Generic.OfNonGenericType.ForLoadedType( setter.getParameterTypes()[0] ),
+									new TypeDescription.Generic.OfNonGenericType.ForLoadedType( firstParameterType ),
 									ReferenceTypeAwareAssigner.INSTANCE,
 									Assigner.Typing.DYNAMIC
 							)
 							.apply( methodVisitor, implementationContext );
 				}
 				else {
-					methodVisitor.visitTypeInsn( Opcodes.CHECKCAST, Type.getInternalName( setter.getParameterTypes()[0] ) );
+					methodVisitor.visitTypeInsn( Opcodes.CHECKCAST, Type.getInternalName( firstParameterType ) );
 				}
 				methodVisitor.visitMethodInsn(
 						Opcodes.INVOKEVIRTUAL,
