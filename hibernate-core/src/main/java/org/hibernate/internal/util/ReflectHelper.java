@@ -423,16 +423,14 @@ public final class ReflectHelper {
 			return null;
 		}
 
-		try {
-			Field field = clazz.getDeclaredField( propertyName );
-			if ( !isStaticField( field ) ) {
-				return field;
-			}
+		Field field = findField(propertyName, clazz.getDeclaredFields());
+		if (field == null) {
 			return locateField( clazz.getSuperclass(), propertyName );
 		}
-		catch ( NoSuchFieldException nsfe ) {
-			return locateField( clazz.getSuperclass(), propertyName );
+		if ( !isStaticField( field ) ) {
+			return field;
 		}
+		return locateField( clazz.getSuperclass(), propertyName );
 	}
 
 	public static boolean isStaticField(Field field) {
@@ -541,6 +539,15 @@ public final class ReflectHelper {
 		for (Method method : methods) {
 			if (method.getName().equals(name)) {
 				return method;
+			}
+		}
+		return null;
+	}
+
+	private static Field findField(String name, Field[] methods) {
+		for (Field field : methods) {
+			if (field.getName().equals(name)) {
+				return field;
 			}
 		}
 		return null;
