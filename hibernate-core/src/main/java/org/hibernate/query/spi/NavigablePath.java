@@ -9,6 +9,7 @@ package org.hibernate.query.spi;
 import java.io.Serializable;
 
 import org.hibernate.internal.util.StringHelper;
+import org.hibernate.query.internal.FullPath;
 import org.hibernate.spi.DotIdentifierSequence;
 import org.hibernate.query.sqm.spi.EntityIdentifierNavigablePath;
 
@@ -22,9 +23,9 @@ public class NavigablePath implements DotIdentifierSequence, Serializable {
 	public static final String IDENTIFIER_MAPPER_PROPERTY = "_identifierMapper";
 
 	private final NavigablePath parent;
-	private final String fullPath;
+	private final FullPath fullPath;
 	private final String unaliasedLocalName;
-	private final String identifierForTableGroup;
+	private final FullPath identifierForTableGroup;
 
 	public NavigablePath(NavigablePath parent, String navigableName) {
 		this.parent = parent;
@@ -61,7 +62,8 @@ public class NavigablePath implements DotIdentifierSequence, Serializable {
 
 	public NavigablePath(String rootName, String alias) {
 		this.parent = null;
-		this.fullPath = alias == null ? rootName : rootName + "(" + alias + ")";
+		//TODO deal with aliases stored in FullPath
+		this.fullPath = //alias == null ? rootName : rootName + "(" + alias + ")";
 		this.unaliasedLocalName = StringHelper.unqualify( rootName );
 		identifierForTableGroup = rootName;
 	}
@@ -84,17 +86,17 @@ public class NavigablePath implements DotIdentifierSequence, Serializable {
 		else {
 			this.unaliasedLocalName = property;
 			if ( parent != null ) {
-				final String parentFullPath = parent.getFullPath();
-				this.fullPath = StringHelper.isEmpty( parentFullPath )
-						? navigableName
-						: parentFullPath + "." + navigableName;
-				this.identifierForTableGroup = StringHelper.isEmpty( parent.getIdentifierForTableGroup() )
-						? navigableName
-						: parent.getIdentifierForTableGroup() + "." + property;
+				final FullPath parentFullPath = parent.getFullPath();
+				this.fullPath = FullPath.isEmpty( parentFullPath )
+						? new FullPath( navigableName )
+						: new FullPath(parentFullPath, navigableName);
+				this.identifierForTableGroup =  FullPath.isEmpty( parent.getIdentifierForTableGroup() )
+						? new FullPath( navigableName ) //TODO same as above - could be reused?
+						: new FullPath( parent.getIdentifierForTableGroup(), navigableName);
 			}
 			else {
-				this.fullPath = navigableName;
-				this.identifierForTableGroup = property;
+				this.fullPath = new FullPath( navigableName );
+				this.identifierForTableGroup = new FullPath( property );
 			}
 		}
 	}
@@ -105,7 +107,7 @@ public class NavigablePath implements DotIdentifierSequence, Serializable {
 
 	public NavigablePath(
 			NavigablePath parent,
-			String fullPath,
+			FullPath fullPath,
 			String unaliasedLocalName,
 			String identifierForTableGroup) {
 		this.parent = parent;
@@ -146,11 +148,11 @@ public class NavigablePath implements DotIdentifierSequence, Serializable {
 		return unaliasedLocalName;
 	}
 
-	public String getFullPath() {
+	public FullPath getFullPath() {
 		return fullPath;
 	}
 
-	public String getIdentifierForTableGroup() {
+	public FullPath getIdentifierForTableGroup() {
 		if ( parent == null ) {
 			return fullPath;
 		}
@@ -169,7 +171,7 @@ public class NavigablePath implements DotIdentifierSequence, Serializable {
 
 	@Override
 	public String toString() {
-		return fullPath;
+		return fullPath.toString();
 	}
 
 	@Override

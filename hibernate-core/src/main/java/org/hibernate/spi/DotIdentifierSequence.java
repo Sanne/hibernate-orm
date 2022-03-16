@@ -8,6 +8,8 @@ package org.hibernate.spi;
 
 import java.util.function.BiFunction;
 
+import org.hibernate.query.internal.FullPath;
+
 /**
  * Hibernate often deals with compound names/paths.  This interface defines a
  * standard way of interacting with them
@@ -31,7 +33,7 @@ public interface DotIdentifierSequence {
 	 * The full sequence text.  E.g., given the sequence `a.b.c`,
 	 * this returns `a.b.c`
 	 */
-	String getFullPath();
+	FullPath getFullPath();
 
 	/**
 	 * Add a new part to the end of this sequence, returning the new

@@ -10,6 +10,7 @@ package org.hibernate.query.sqm.sql;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.query.internal.FullPath;
 import org.hibernate.query.spi.NavigablePath;
 import org.hibernate.query.sqm.tree.domain.SqmPath;
 import org.hibernate.query.sqm.tree.from.SqmAttributeJoin;
@@ -32,7 +33,7 @@ public class FromClauseIndex extends SimpleFromClauseAccessImpl {
 	/**
 	 * Holds *explicitly* fetched joins
 	 */
-	private Map<String, SqmAttributeJoin> fetchesByPath;
+	private Map<FullPath, SqmAttributeJoin> fetchesByPath;
 
 	public FromClauseIndex(FromClauseIndex parent) {
 		super( parent );
