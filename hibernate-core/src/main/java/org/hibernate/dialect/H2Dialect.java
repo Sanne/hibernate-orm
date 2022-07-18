@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
+import org.hibernate.HibernateError;
 import org.hibernate.PessimisticLockException;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.dialect.function.CommonFunctionFactory;
@@ -113,6 +114,7 @@ public class H2Dialect extends Dialect {
 
 	public H2Dialect() {
 		this( SimpleDatabaseVersion.ZERO_VERSION );
+		throw new HibernateError("The H2 Dialect requires DB metadata to be available at initialization time - ensure DialectResolutionInfo is provided, or pass an explicit version");
 	}
 
 	public H2Dialect(DatabaseVersion version) {
