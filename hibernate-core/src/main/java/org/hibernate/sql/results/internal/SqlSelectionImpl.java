@@ -57,7 +57,7 @@ public class SqlSelectionImpl implements SqlSelection, SqlExpressionAccess {
 
 	@Override
 	public ValueExtractor getJdbcValueExtractor() {
-		return ( (SqlExpressible) sqlExpression.getExpressionType() ).getJdbcMapping().getJdbcValueExtractor();
+		return TypeCastHelper.toSqlExpressible( sqlExpression.getExpressionType() ).getJdbcMapping().getJdbcValueExtractor();
 	}
 
 	@Override

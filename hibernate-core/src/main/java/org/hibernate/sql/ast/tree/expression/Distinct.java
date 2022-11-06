@@ -12,6 +12,7 @@ import org.hibernate.metamodel.mapping.JdbcMappingContainer;
 import org.hibernate.metamodel.mapping.SqlExpressible;
 import org.hibernate.sql.ast.SqlAstWalker;
 import org.hibernate.sql.ast.tree.SqlAstNode;
+import org.hibernate.sql.results.internal.TypeCastHelper;
 
 /**
  * @author Gavin King
@@ -33,13 +34,14 @@ public class Distinct implements Expression, SqlExpressible, SqlAstNode {
 			return ( (SqlExpressible) expression ).getJdbcMapping();
 		}
 
-		if ( getExpressionType() instanceof SqlExpressible) {
-			return ( (SqlExpressible) getExpressionType() ).getJdbcMapping();
+		final JdbcMappingContainer expressionType = getExpressionType();
+		if ( TypeCastHelper.isSqlExpressible( expressionType ) ) {
+			return TypeCastHelper.toSqlExpressible( expressionType ).getJdbcMapping();
 		}
 
-		if ( getExpressionType() != null ) {
-			assert getExpressionType().getJdbcTypeCount() == 1;
-			return getExpressionType().getJdbcMappings().get( 0 );
+		if ( expressionType != null ) {
+			assert expressionType.getJdbcTypeCount() == 1;
+			return expressionType.getJdbcMappings().get( 0 );
 		}
 
 		return null;

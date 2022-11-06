@@ -32,6 +32,7 @@ import org.hibernate.sql.results.graph.DomainResult;
 import org.hibernate.sql.results.graph.DomainResultCreationState;
 import org.hibernate.sql.results.graph.basic.BasicResult;
 import org.hibernate.sql.results.internal.SqlSelectionImpl;
+import org.hibernate.sql.results.internal.TypeCastHelper;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.spi.TypeConfiguration;
 
@@ -185,7 +186,7 @@ public class SelfRenderingFunctionSqlAstExpression
 			return ( (SqlExpressible) type ).getJdbcMapping();
 		}
 		else {
-			return ( (SqlExpressible) expressible).getJdbcMapping();
+			return TypeCastHelper.toSqlExpressible( expressible ).getJdbcMapping();
 		}
 	}
 
