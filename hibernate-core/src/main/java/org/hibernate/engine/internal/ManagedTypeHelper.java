@@ -14,6 +14,7 @@ import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.ManagedMappedSuperclass;
 import org.hibernate.engine.spi.PersistentAttributeInterceptable;
 import org.hibernate.engine.spi.SelfDirtinessTracker;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -102,6 +103,18 @@ public final class ManagedTypeHelper {
 		if ( entity instanceof PrimeAmongSecondarySupertypes ) {
 			PrimeAmongSecondarySupertypes t = (PrimeAmongSecondarySupertypes) entity;
 			return t.asManagedEntity() != null;
+		}
+		return false;
+	}
+
+	/**
+	 * @param entity
+	 * @return true if and only if the entity implements {@see HibernateProxy}
+	 */
+	public static boolean isHibernateProxy(final Object entity) {
+		if ( entity instanceof PrimeAmongSecondarySupertypes ) {
+			PrimeAmongSecondarySupertypes t = (PrimeAmongSecondarySupertypes) entity;
+			return t.asHibernateProxy() != null;
 		}
 		return false;
 	}
@@ -233,6 +246,26 @@ public final class ManagedTypeHelper {
 			}
 		}
 		throw new ClassCastException( "Object of type '" + entity.getClass() + "' can't be cast to PersistentAttributeInterceptable" );
+	}
+
+
+	/**
+	 * Cast the object to HibernateProxy
+	 * (using this is highly preferrable over a direct cast)
+	 * @param entity the entity to cast
+	 * @return the same instance after casting
+	 * @throws ClassCastException if it's not of the right type
+	 */
+	public static HibernateProxy asHibernateProxy(final Object entity) {
+		Objects.requireNonNull( entity );
+		if ( entity instanceof PrimeAmongSecondarySupertypes ) {
+			PrimeAmongSecondarySupertypes t = (PrimeAmongSecondarySupertypes) entity;
+			final HibernateProxy e = t.asHibernateProxy();
+			if ( e != null ) {
+				return e;
+			}
+		}
+		throw new ClassCastException( "Object of type '" + entity.getClass() + "' can't be cast to HibernateProxy" );
 	}
 
 	/**
