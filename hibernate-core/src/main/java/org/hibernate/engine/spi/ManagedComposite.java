@@ -12,4 +12,9 @@ package org.hibernate.engine.spi;
  * @author Steve Ebersole
  */
 public interface ManagedComposite extends Managed {
+
+	default ManagedComposite asManagedComposite() {
+		return this;
+	}
+
 }

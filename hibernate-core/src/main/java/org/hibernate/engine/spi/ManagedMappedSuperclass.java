@@ -12,4 +12,9 @@ package org.hibernate.engine.spi;
  * @author Luis Barreiro
  */
 public interface ManagedMappedSuperclass extends Managed {
+
+	default ManagedMappedSuperclass asManagedMappedSuperclass() {
+		return this;
+	}
+
 }

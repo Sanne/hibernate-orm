@@ -9,7 +9,13 @@ package org.hibernate.engine.spi;
 /**
  * @author Steve Ebersole
  */
-public interface PersistentAttributeInterceptable {
+public interface PersistentAttributeInterceptable extends BytecodeEnhancementVirtualType {
 	PersistentAttributeInterceptor $$_hibernate_getInterceptor();
 	void $$_hibernate_setInterceptor(PersistentAttributeInterceptor interceptor);
+
+	@Override
+	default PersistentAttributeInterceptable asPersistentAttributeInterceptable() {
+		return this;
+	}
+
 }

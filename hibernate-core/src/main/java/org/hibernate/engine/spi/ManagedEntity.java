@@ -79,4 +79,9 @@ public interface ManagedEntity extends Managed {
 	 * @param next The next entry
 	 */
 	void $$_hibernate_setNextManagedEntity(ManagedEntity next);
+
+	default ManagedEntity asManagedEntity() {
+		return this;
+	}
+
 }

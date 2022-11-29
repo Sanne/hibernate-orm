@@ -22,5 +22,11 @@ package org.hibernate.engine.spi;
  *
  * @author Steve Ebersole
  */
-public interface Managed {
+public interface Managed extends BytecodeEnhancementVirtualType {
+
+	@Override
+	default Managed asManaged() {
+		return this;
+	}
+
 }

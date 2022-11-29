@@ -6,12 +6,13 @@
  */
 package org.hibernate.engine.internal;
 
-import org.hibernate.engine.spi.EnhancedEntity;
+import org.hibernate.engine.spi.BytecodeEnhancementVirtualType;
 import org.hibernate.engine.spi.Managed;
 import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.PersistentAttributeInterceptable;
 import org.hibernate.engine.spi.SelfDirtinessTracker;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -48,44 +49,19 @@ import java.util.function.Consumer;
  */
 public final class ManagedTypeHelper {
 
+	private static final ClassValue<TypeMeta> typeMetaCache = new ClassValue<>() {
+		@Override
+		protected TypeMeta computeValue(Class<?> type) {
+			return new TypeMeta(type);
+		}
+	};
+
 	/**
 	 * @param type
 	 * @return true if and only if the type is assignable to a {@see Managed} type.
 	 */
 	public static boolean isManagedType(final Class type) {
-		return EnhancedEntity.class.isAssignableFrom( type ) || Managed.class.isAssignableFrom( type );
-	}
-
-	/**
-	 * @param entity
-	 * @return true if and only if the entity implements {@see ManagedEntity}
-	 */
-	public static boolean isManagedEntity(final Object entity) {
-		return entity instanceof EnhancedEntity || entity instanceof ManagedEntity;
-	}
-
-	/**
-	 * @param type
-	 * @return true if and only if the type is assignable to a {@see PersistentAttributeInterceptable} type.
-	 */
-	public static boolean isPersistentAttributeInterceptableType(final Class type) {
-		return EnhancedEntity.class.isAssignableFrom( type ) || PersistentAttributeInterceptable.class.isAssignableFrom( type );
-	}
-
-	/**
-	 * @param entity
-	 * @return true if and only if the entity implements {@see PersistentAttributeInterceptable}
-	 */
-	public static boolean isPersistentAttributeInterceptable(final Object entity) {
-		return entity instanceof EnhancedEntity || entity instanceof PersistentAttributeInterceptable;
-	}
-
-	/**
-	 * @param entity
-	 * @return true if and only if the entity implements {@see SelfDirtinessTracker}
-	 */
-	public static boolean isSelfDirtinessTracker(final Object entity) {
-		return entity instanceof EnhancedEntity || entity instanceof SelfDirtinessTracker;
+		return typeMetaCache.get( type ).isManagedType;
 	}
 
 	/**
@@ -93,8 +69,53 @@ public final class ManagedTypeHelper {
 	 * @return true if and only if the type is assignable to a {@see SelfDirtinessTracker} type.
 	 */
 	public static boolean isSelfDirtinessTrackerType(final Class type) {
-		return EnhancedEntity.class.isAssignableFrom( type ) || SelfDirtinessTracker.class.isAssignableFrom( type );
+		return typeMetaCache.get( type ).isSelfDirtinessTrackerType;
 	}
+
+	/**
+	 * @param type
+	 * @return true if and only if the type is assignable to a {@see PersistentAttributeInterceptable} type.
+	 */
+	public static boolean isPersistentAttributeInterceptableType(final Class type) {
+		return typeMetaCache.get( type ).isPersistentAttributeInterceptable;
+	}
+
+	/**
+	 * @param entity
+	 * @return true if and only if the entity implements {@see ManagedEntity}
+	 */
+	public static boolean isManagedEntity(final Object entity) {
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			return t.asManagedEntity() != null;
+		}
+		return false;
+	}
+
+	/**
+	 * @param entity
+	 * @return true if and only if the entity implements {@see PersistentAttributeInterceptable}
+	 */
+	public static boolean isPersistentAttributeInterceptable(final Object entity) {
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			return t.asPersistentAttributeInterceptable() != null;
+		}
+		return false;
+	}
+
+	/**
+	 * @param entity
+	 * @return true if and only if the entity implements {@see SelfDirtinessTracker}
+	 */
+	public static boolean isSelfDirtinessTracker(final Object entity) {
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			return t.asSelfDirtinessTracker() != null;
+		}
+		return false;
+	}
+
 
 	/**
 	 * Helper to execute an action on an entity, but exclusively if it's implementing the {@see PersistentAttributeInterceptable}
@@ -109,13 +130,12 @@ public final class ManagedTypeHelper {
 			final Object entity,
 			final BiConsumer<PersistentAttributeInterceptable, T> action,
 			final T optionalParam) {
-		if ( entity instanceof EnhancedEntity ) {
-			EnhancedEntity e = (EnhancedEntity) entity;
-			action.accept( e, optionalParam );
-		}
-		else if ( entity instanceof PersistentAttributeInterceptable ) {
-			PersistentAttributeInterceptable e = (PersistentAttributeInterceptable) entity;
-			action.accept( e, optionalParam );
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			final BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			final PersistentAttributeInterceptable e = t.asPersistentAttributeInterceptable();
+			if ( e != null ) {
+				action.accept( e, optionalParam );
+			}
 		}
 	}
 
@@ -127,13 +147,12 @@ public final class ManagedTypeHelper {
 	 * @param action
 	 */
 	public static void processIfSelfDirtinessTracker(final Object entity, final Consumer<SelfDirtinessTracker> action) {
-		if ( entity instanceof EnhancedEntity ) {
-			EnhancedEntity e = (EnhancedEntity) entity;
-			action.accept( e );
-		}
-		else if ( entity instanceof SelfDirtinessTracker ) {
-			SelfDirtinessTracker e = (SelfDirtinessTracker) entity;
-			action.accept( e );
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			final BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			final SelfDirtinessTracker e = t.asSelfDirtinessTracker();
+			if ( e != null ) {
+				action.accept( e );
+			}
 		}
 	}
 
@@ -151,13 +170,12 @@ public final class ManagedTypeHelper {
 			final Object entity,
 			final BiConsumer<SelfDirtinessTracker, T> action,
 			final T optionalParam) {
-		if ( entity instanceof EnhancedEntity ) {
-			EnhancedEntity e = (EnhancedEntity) entity;
-			action.accept( e, optionalParam );
-		}
-		else if ( entity instanceof SelfDirtinessTracker ) {
-			SelfDirtinessTracker e = (SelfDirtinessTracker) entity;
-			action.accept( e, optionalParam );
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			final BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			final SelfDirtinessTracker e = t.asSelfDirtinessTracker();
+			if ( e != null ) {
+				action.accept( e, optionalParam );
+			}
 		}
 	}
 
@@ -169,12 +187,15 @@ public final class ManagedTypeHelper {
 	 * @throws ClassCastException if it's not of the right type
 	 */
 	public static PersistentAttributeInterceptable asPersistentAttributeInterceptable(final Object entity) {
-		if ( entity instanceof EnhancedEntity ) {
-			return (EnhancedEntity) entity;
+		Objects.requireNonNull( entity );
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			final PersistentAttributeInterceptable e = t.asPersistentAttributeInterceptable();
+			if ( e != null ) {
+				return e;
+			}
 		}
-		else {
-			return (PersistentAttributeInterceptable) entity;
-		}
+		throw new ClassCastException( "Object of type '" + entity.getClass() + "' can't be cast to PersistentAttributeInterceptable" );
 	}
 
 	/**
@@ -185,12 +206,15 @@ public final class ManagedTypeHelper {
 	 * @throws ClassCastException if it's not of the right type
 	 */
 	public static ManagedEntity asManagedEntity(final Object entity) {
-		if ( entity instanceof EnhancedEntity ) {
-			return (EnhancedEntity) entity;
+		Objects.requireNonNull( entity );
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			final ManagedEntity e = t.asManagedEntity();
+			if ( e != null ) {
+				return e;
+			}
 		}
-		else {
-			return (ManagedEntity) entity;
-		}
+		throw new ClassCastException( "Object of type '" + entity.getClass() + "' can't be cast to ManagedEntity" );
 	}
 
 	/**
@@ -201,12 +225,27 @@ public final class ManagedTypeHelper {
 	 * @throws ClassCastException if it's not of the right type
 	 */
 	public static SelfDirtinessTracker asSelfDirtinessTracker(final Object entity) {
-		if ( entity instanceof EnhancedEntity ) {
-			return (EnhancedEntity) entity;
+		Objects.requireNonNull( entity );
+		if ( entity instanceof BytecodeEnhancementVirtualType ) {
+			BytecodeEnhancementVirtualType t = (BytecodeEnhancementVirtualType) entity;
+			final SelfDirtinessTracker e = t.asSelfDirtinessTracker();
+			if ( e != null ) {
+				return e;
+			}
 		}
-		else {
-			return (SelfDirtinessTracker) entity;
-		}
+		throw new ClassCastException( "Object of type '" + entity.getClass() + "' can't be cast to SelfDirtinessTracker" );
 	}
 
+	private static final class TypeMeta {
+		final boolean isManagedType;
+		final boolean isSelfDirtinessTrackerType;
+		final boolean isPersistentAttributeInterceptable;
+
+		TypeMeta(final Class<?> type) {
+			Objects.requireNonNull( type );
+			this.isManagedType = Managed.class.isAssignableFrom( type );
+			this.isSelfDirtinessTrackerType = SelfDirtinessTracker.class.isAssignableFrom( type );
+			this.isPersistentAttributeInterceptable = PersistentAttributeInterceptable.class.isAssignableFrom( type );
+		}
+	}
 }
