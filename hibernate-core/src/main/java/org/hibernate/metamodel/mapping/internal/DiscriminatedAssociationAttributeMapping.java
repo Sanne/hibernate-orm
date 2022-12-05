@@ -319,13 +319,13 @@ public class DiscriminatedAssociationAttributeMapping
 	}
 
 	@Override
-	public void visitFetchables(Consumer<Fetchable> fetchableConsumer, EntityMappingType treatTargetType) {
+	public void visitFetchables(Consumer<? super Fetchable> fetchableConsumer, EntityMappingType treatTargetType) {
 		fetchableConsumer.accept( getDiscriminatorPart() );
 		fetchableConsumer.accept( getKeyPart() );
 	}
 
 	@Override
-	public void visitFetchables(IndexedConsumer<Fetchable> fetchableConsumer, EntityMappingType treatTargetType) {
+	public void visitFetchables(IndexedConsumer<? super Fetchable> fetchableConsumer, EntityMappingType treatTargetType) {
 		fetchableConsumer.accept( 0, getDiscriminatorPart() );
 		fetchableConsumer.accept( 1, getKeyPart() );
 	}
