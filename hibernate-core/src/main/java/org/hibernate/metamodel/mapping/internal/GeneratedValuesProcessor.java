@@ -176,8 +176,7 @@ public class GeneratedValuesProcessor {
 			final GeneratedValueDescriptor descriptor = valueDescriptors.get( i );
 			final Object generatedValue = descriptor.resolver.resolveGeneratedValue( dbSelectionResults, entity, session );
 			state[ descriptor.attribute.getStateArrayPosition() ] = generatedValue;
-			descriptor.attribute.getAttributeMetadataAccess()
-					.resolveAttributeMetadata( entityDescriptor )
+			descriptor.attribute.getAttributeMetadata()
 					.getPropertyAccess()
 					.getSetter()
 					.set( entity, generatedValue );

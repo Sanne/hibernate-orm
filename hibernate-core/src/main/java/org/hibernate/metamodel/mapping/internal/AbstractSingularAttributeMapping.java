@@ -8,7 +8,7 @@ package org.hibernate.metamodel.mapping.internal;
 
 import org.hibernate.engine.FetchStyle;
 import org.hibernate.engine.FetchTiming;
-import org.hibernate.metamodel.mapping.AttributeMetadataAccess;
+import org.hibernate.metamodel.mapping.AttributeMetadata;
 import org.hibernate.metamodel.mapping.ManagedMappingType;
 import org.hibernate.metamodel.mapping.SingularAttributeMapping;
 import org.hibernate.property.access.spi.PropertyAccess;
@@ -28,12 +28,12 @@ public abstract class AbstractSingularAttributeMapping
 	public AbstractSingularAttributeMapping(
 			String name,
 			int stateArrayPosition,
-			AttributeMetadataAccess attributeMetadataAccess,
+			AttributeMetadata attributeMetadata,
 			FetchOptions mappedFetchOptions,
 			ManagedMappingType declaringType,
 			PropertyAccess propertyAccess,
 			ValueGeneration valueGeneration) {
-		super( name, attributeMetadataAccess, mappedFetchOptions, stateArrayPosition, declaringType );
+		super( name, attributeMetadata, mappedFetchOptions, stateArrayPosition, declaringType );
 		this.propertyAccess = propertyAccess;
 		this.valueGeneration = valueGeneration != null
 				? valueGeneration
@@ -43,13 +43,13 @@ public abstract class AbstractSingularAttributeMapping
 	public AbstractSingularAttributeMapping(
 			String name,
 			int stateArrayPosition,
-			AttributeMetadataAccess attributeMetadataAccess,
+			AttributeMetadata attributeMetadata,
 			FetchTiming fetchTiming,
 			FetchStyle fetchStyle,
 			ManagedMappingType declaringType,
 			PropertyAccess propertyAccess,
 			ValueGeneration valueGeneration) {
-		super( name, attributeMetadataAccess, fetchTiming, fetchStyle, stateArrayPosition, declaringType );
+		super( name, attributeMetadata, fetchTiming, fetchStyle, stateArrayPosition, declaringType );
 		this.propertyAccess = propertyAccess;
 		this.valueGeneration = valueGeneration != null
 				? valueGeneration

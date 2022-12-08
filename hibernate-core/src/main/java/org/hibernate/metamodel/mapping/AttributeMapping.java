@@ -38,7 +38,7 @@ public interface AttributeMapping
 	/**
 	 * Access to AttributeMetadata
 	 */
-	AttributeMetadataAccess getAttributeMetadataAccess();
+	AttributeMetadata getAttributeMetadata();
 
 	/**
 	 * The managed type that declares this attribute
@@ -78,7 +78,7 @@ public interface AttributeMapping
 
 	@Override
 	default MutabilityPlan<?> getExposedMutabilityPlan() {
-		return getAttributeMetadataAccess().resolveAttributeMetadata( null ).getMutabilityPlan();
+		return getAttributeMetadata().getMutabilityPlan();
 	}
 
 	@Override //Overrides multiple interfaces!

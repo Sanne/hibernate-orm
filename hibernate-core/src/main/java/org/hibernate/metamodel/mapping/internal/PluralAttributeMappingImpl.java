@@ -22,7 +22,7 @@ import org.hibernate.mapping.IndexedConsumer;
 import org.hibernate.mapping.List;
 import org.hibernate.mapping.Map;
 import org.hibernate.mapping.Property;
-import org.hibernate.metamodel.mapping.AttributeMetadataAccess;
+import org.hibernate.metamodel.mapping.AttributeMetadata;
 import org.hibernate.metamodel.mapping.CollectionIdentifierDescriptor;
 import org.hibernate.metamodel.mapping.CollectionMappingType;
 import org.hibernate.metamodel.mapping.CollectionPart;
@@ -88,7 +88,7 @@ public class PluralAttributeMappingImpl
 	private final CollectionMappingType collectionMappingType;
 	private final int stateArrayPosition;
 	private final PropertyAccess propertyAccess;
-	private final AttributeMetadataAccess attributeMetadataAccess;
+	private final AttributeMetadata attributeMetadata;
 	private final String referencedPropertyName;
 	private final String mapKeyPropertyName;
 
@@ -116,7 +116,7 @@ public class PluralAttributeMappingImpl
 			String attributeName,
 			Collection bootDescriptor,
 			PropertyAccess propertyAccess,
-			AttributeMetadataAccess attributeMetadataAccess,
+			AttributeMetadata attributeMetadata,
 			CollectionMappingType<?> collectionMappingType,
 			int stateArrayPosition,
 			CollectionPart elementDescriptor,
@@ -129,7 +129,7 @@ public class PluralAttributeMappingImpl
 			CollectionPersister collectionDescriptor) {
 		super( attributeName, declaringType );
 		this.propertyAccess = propertyAccess;
-		this.attributeMetadataAccess = attributeMetadataAccess;
+		this.attributeMetadata = attributeMetadata;
 		this.collectionMappingType = collectionMappingType;
 		this.stateArrayPosition = stateArrayPosition;
 		this.elementDescriptor = elementDescriptor;
@@ -315,8 +315,8 @@ public class PluralAttributeMappingImpl
 	}
 
 	@Override
-	public AttributeMetadataAccess getAttributeMetadataAccess() {
-		return attributeMetadataAccess;
+	public AttributeMetadata getAttributeMetadata() {
+		return attributeMetadata;
 	}
 
 	@Override

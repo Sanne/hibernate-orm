@@ -18,7 +18,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.mapping.Any;
 import org.hibernate.mapping.IndexedConsumer;
 import org.hibernate.mapping.Property;
-import org.hibernate.metamodel.mapping.AttributeMetadataAccess;
+import org.hibernate.metamodel.mapping.AttributeMetadata;
 import org.hibernate.metamodel.mapping.BasicValuedModelPart;
 import org.hibernate.metamodel.mapping.DiscriminatedAssociationModelPart;
 import org.hibernate.metamodel.mapping.EntityIdentifierMapping;
@@ -70,7 +70,7 @@ public class DiscriminatedAssociationAttributeMapping
 			JavaType<?> baseAssociationJtd,
 			ManagedMappingType declaringType,
 			int stateArrayPosition,
-			AttributeMetadataAccess attributeMetadataAccess,
+			AttributeMetadata attributeMetadata,
 			FetchTiming fetchTiming,
 			PropertyAccess propertyAccess,
 			Property bootProperty,
@@ -80,7 +80,7 @@ public class DiscriminatedAssociationAttributeMapping
 		super(
 				bootProperty.getName(),
 				stateArrayPosition,
-				attributeMetadataAccess,
+				attributeMetadata,
 				fetchTiming,
 				FetchStyle.SELECT,
 				declaringType,

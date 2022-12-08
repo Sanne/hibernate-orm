@@ -12,7 +12,7 @@ import org.hibernate.engine.FetchStyle;
 import org.hibernate.engine.FetchTiming;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.mapping.IndexedConsumer;
-import org.hibernate.metamodel.mapping.AttributeMetadataAccess;
+import org.hibernate.metamodel.mapping.AttributeMetadata;
 import org.hibernate.metamodel.mapping.BasicValuedModelPart;
 import org.hibernate.metamodel.mapping.EntityMappingType;
 import org.hibernate.metamodel.mapping.JdbcMapping;
@@ -21,7 +21,6 @@ import org.hibernate.metamodel.mapping.MappingType;
 import org.hibernate.metamodel.mapping.SelectableConsumer;
 import org.hibernate.metamodel.mapping.SelectableMapping;
 import org.hibernate.metamodel.mapping.SingularAttributeMapping;
-import org.hibernate.metamodel.model.convert.spi.BasicValueConverter;
 import org.hibernate.metamodel.model.domain.NavigableRole;
 import org.hibernate.property.access.spi.PropertyAccess;
 import org.hibernate.spi.NavigablePath;
@@ -69,7 +68,7 @@ public class BasicAttributeMapping
 			String attributeName,
 			NavigableRole navigableRole,
 			int stateArrayPosition,
-			AttributeMetadataAccess attributeMetadataAccess,
+			AttributeMetadata attributeMetadata,
 			FetchTiming mappedFetchTiming,
 			FetchStyle mappedFetchStyle,
 			String tableExpression,
@@ -88,7 +87,7 @@ public class BasicAttributeMapping
 		super(
 				attributeName,
 				stateArrayPosition,
-				attributeMetadataAccess,
+				attributeMetadata,
 				mappedFetchTiming,
 				mappedFetchStyle,
 				declaringType,
@@ -124,23 +123,23 @@ public class BasicAttributeMapping
 			SelectableMapping selectableMapping) {
 		String attributeName = null;
 		int stateArrayPosition = 0;
-		AttributeMetadataAccess attributeMetadataAccess = null;
+		AttributeMetadata attributeMetadata = null;
 		if ( original instanceof SingleAttributeIdentifierMapping ) {
 			final SingleAttributeIdentifierMapping mapping = (SingleAttributeIdentifierMapping) original;
 			attributeName = mapping.getAttributeName();
-			attributeMetadataAccess = null;
+			attributeMetadata = null;
 		}
 		else if ( original instanceof SingularAttributeMapping ) {
 			final SingularAttributeMapping mapping = (SingularAttributeMapping) original;
 			attributeName = mapping.getAttributeName();
 			stateArrayPosition = mapping.getStateArrayPosition();
-			attributeMetadataAccess = mapping.getAttributeMetadataAccess();
+			attributeMetadata = mapping.getAttributeMetadata();
 		}
 		return new BasicAttributeMapping(
 				attributeName,
 				original.getNavigableRole(),
 				stateArrayPosition,
-				attributeMetadataAccess,
+				attributeMetadata,
 				FetchTiming.IMMEDIATE,
 				FetchStyle.JOIN,
 				selectableMapping.getContainingTableExpression(),

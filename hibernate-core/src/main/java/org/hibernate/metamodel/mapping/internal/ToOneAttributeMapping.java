@@ -33,7 +33,7 @@ import org.hibernate.mapping.Selectable;
 import org.hibernate.mapping.ToOne;
 import org.hibernate.mapping.Value;
 import org.hibernate.metamodel.mapping.AssociationKey;
-import org.hibernate.metamodel.mapping.AttributeMetadataAccess;
+import org.hibernate.metamodel.mapping.AttributeMetadata;
 import org.hibernate.metamodel.mapping.CollectionPart;
 import org.hibernate.metamodel.mapping.EmbeddableValuedModelPart;
 import org.hibernate.metamodel.mapping.EntityAssociationMapping;
@@ -160,7 +160,7 @@ public class ToOneAttributeMapping
 			NavigableRole navigableRole,
 			int stateArrayPosition,
 			ToOne bootValue,
-			AttributeMetadataAccess attributeMetadataAccess,
+			AttributeMetadata attributeMetadata,
 			FetchOptions mappedFetchOptions,
 			EntityMappingType entityMappingType,
 			ManagedMappingType declaringType,
@@ -171,7 +171,7 @@ public class ToOneAttributeMapping
 				navigableRole,
 				stateArrayPosition,
 				bootValue,
-				attributeMetadataAccess,
+				attributeMetadata,
 				mappedFetchOptions.getTiming(),
 				mappedFetchOptions.getStyle(),
 				entityMappingType,
@@ -186,7 +186,7 @@ public class ToOneAttributeMapping
 			NavigableRole navigableRole,
 			int stateArrayPosition,
 			ToOne bootValue,
-			AttributeMetadataAccess attributeMetadataAccess,
+			AttributeMetadata attributeMetadata,
 			FetchTiming mappedFetchTiming,
 			FetchStyle mappedFetchStyle,
 			EntityMappingType entityMappingType,
@@ -196,7 +196,7 @@ public class ToOneAttributeMapping
 		super(
 				name,
 				stateArrayPosition,
-				attributeMetadataAccess,
+				attributeMetadata,
 				adjustFetchTiming( mappedFetchTiming, bootValue ),
 				mappedFetchStyle,
 				declaringType,
@@ -548,7 +548,7 @@ public class ToOneAttributeMapping
 		super(
 				original.getAttributeName(),
 				original.getStateArrayPosition(),
-				original.getAttributeMetadataAccess(),
+				original.getAttributeMetadata(),
 				original,
 				declaringType,
 				original.getPropertyAccess(),
