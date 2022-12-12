@@ -9,11 +9,12 @@ package org.hibernate.id;
 import java.util.Properties;
 
 import org.hibernate.MappingException;
-import org.hibernate.Session;
 import org.hibernate.TransientObjectException;
+import org.hibernate.engine.internal.ForeignKeys;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.factory.spi.StandardGenerator;
 import org.hibernate.internal.CoreMessageLogger;
+import org.hibernate.loader.PropertyPath;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.EntityType;

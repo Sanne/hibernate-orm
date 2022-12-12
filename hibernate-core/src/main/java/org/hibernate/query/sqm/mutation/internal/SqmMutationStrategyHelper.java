@@ -9,8 +9,10 @@ package org.hibernate.query.sqm.mutation.internal;
 import java.util.function.BiFunction;
 
 import org.hibernate.boot.spi.SessionFactoryOptions;
+import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.internal.FastSessionServices;
 import org.hibernate.mapping.RootClass;
 import org.hibernate.metamodel.mapping.EntityMappingType;
 import org.hibernate.metamodel.mapping.PluralAttributeMapping;
@@ -56,7 +58,7 @@ public class SqmMutationStrategyHelper {
 
 		// todo (6.0) : add capability define strategy per-hierarchy
 
-		return sessionFactory.getServiceRegistry().getService( JdbcServices.class )
+		return sessionFactory.getJdbcServices()
 				.getJdbcEnvironment()
 				.getDialect()
 				.getFallbackSqmMutationStrategy( rootEntityDescriptor, creationContext );
@@ -80,11 +82,7 @@ public class SqmMutationStrategyHelper {
 		}
 
 		// todo (6.0) : add capability define strategy per-hierarchy
-
-		return sessionFactory.getServiceRegistry().getService( JdbcServices.class )
-				.getJdbcEnvironment()
-				.getDialect()
-				.getFallbackSqmInsertStrategy( rootEntityDescriptor, creationContext );
+		return sessionFactory.getJdbcServices().getDialect().getFallbackSqmInsertStrategy( rootEntityDescriptor, creationContext );
 	}
 
 	public static void cleanUpCollectionTables(

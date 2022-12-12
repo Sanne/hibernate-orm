@@ -31,8 +31,11 @@ import org.hibernate.sql.exec.spi.JdbcOperation;
  */
 public class TiDBSqlAstTranslator<T extends JdbcOperation> extends AbstractSqlAstTranslator<T> {
 
+	private final TiDBDialect dialect;
+
 	public TiDBSqlAstTranslator(SessionFactoryImplementor sessionFactory, Statement statement) {
 		super( sessionFactory, statement );
+		this.dialect = (TiDBDialect) super.getDialect();
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class TiDBSqlAstTranslator<T extends JdbcOperation> extends AbstractSqlAs
 	protected boolean shouldEmulateFetchClause(QueryPart queryPart) {
 		// Check if current query part is already row numbering to avoid infinite recursion
 		return useOffsetFetchClause( queryPart ) && getQueryPartForRowNumbering() != queryPart
-				&& getDialect().supportsWindowFunctions() && !isRowsOnlyFetchClauseType( queryPart );
+				&& dialect.supportsWindowFunctions() && !isRowsOnlyFetchClauseType( queryPart );
 	}
 
 	@Override
@@ -133,7 +136,7 @@ public class TiDBSqlAstTranslator<T extends JdbcOperation> extends AbstractSqlAs
 
 	@Override
 	public boolean supportsRowValueConstructorSyntaxInInList() {
-		return getDialect().getVersion().isSameOrAfter( 5, 7 );
+		return dialect.getVersion().isSameOrAfter( 5, 7 );
 	}
 
 	@Override
@@ -156,6 +159,6 @@ public class TiDBSqlAstTranslator<T extends JdbcOperation> extends AbstractSqlAs
 
 	@Override
 	public TiDBDialect getDialect() {
-		return (TiDBDialect) super.getDialect();
+		return this.dialect;
 	}
 }

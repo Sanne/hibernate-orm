@@ -585,10 +585,7 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 
 	@Override
 	public LobCreator getLobCreator() {
-		return ( (SharedSessionContractImplementor) this ).getFactory()
-				.getServiceRegistry()
-				.getService( JdbcServices.class )
-				.getLobCreator(this);
+		return getFactory().getFastSessionServices().jdbcServices.getLobCreator( this );
 	}
 
 	@Override
