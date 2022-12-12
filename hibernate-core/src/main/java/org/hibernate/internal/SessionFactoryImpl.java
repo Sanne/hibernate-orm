@@ -40,7 +40,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
 import org.hibernate.MappingException;
 import org.hibernate.Session;
-import org.hibernate.SessionBuilder;
 import org.hibernate.SessionEventListener;
 import org.hibernate.SessionFactory;
 import org.hibernate.SessionFactoryObserver;
@@ -75,6 +74,7 @@ import org.hibernate.engine.profile.FetchProfile;
 import org.hibernate.engine.spi.FilterDefinition;
 import org.hibernate.engine.spi.SessionBuilderImplementor;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
 import org.hibernate.event.spi.EventEngine;
 import org.hibernate.graph.spi.RootGraphImplementor;
@@ -88,7 +88,6 @@ import org.hibernate.jpa.internal.PersistenceUnitUtilImpl;
 import org.hibernate.mapping.Collection;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.RootClass;
-import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.metamodel.internal.RuntimeMetamodelsImpl;
 import org.hibernate.metamodel.model.domain.spi.JpaMetamodelImplementor;
@@ -127,9 +126,6 @@ import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.spi.TypeConfiguration;
 
 import org.jboss.logging.Logger;
-
-import static org.hibernate.engine.internal.ManagedTypeHelper.asHibernateProxy;
-import static org.hibernate.engine.internal.ManagedTypeHelper.isHibernateProxy;
 
 
 /**
@@ -188,8 +184,8 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 
 	private final transient FastSessionServices fastSessionServices;
 	private final transient WrapperOptions wrapperOptions;
-	private final transient SessionBuilder defaultSessionOpenOptions;
-	private final transient SessionBuilder temporarySessionOpenOptions;
+	private final transient SessionBuilderImpl defaultSessionOpenOptions;
+	private final transient SessionBuilderImpl temporarySessionOpenOptions;
 	private final transient StatelessSessionBuilder defaultStatelessOptions;
 	private final transient EntityNameResolver entityNameResolver;
 
@@ -414,7 +410,7 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 		}
 	}
 
-	private SessionBuilder createDefaultSessionOpenOptionsIfPossible() {
+	private SessionBuilderImpl createDefaultSessionOpenOptionsIfPossible() {
 		final CurrentTenantIdentifierResolver currentTenantIdentifierResolver = getCurrentTenantIdentifierResolver();
 		if ( currentTenantIdentifierResolver == null ) {
 			return withOptions();
@@ -425,7 +421,7 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 		}
 	}
 
-	private SessionBuilder buildTemporarySessionOpenOptions() {
+	private SessionBuilderImpl buildTemporarySessionOpenOptions() {
 		return withOptions()
 				.autoClose( false )
 				.flushMode( FlushMode.MANUAL )
@@ -486,7 +482,7 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 		getCache().prime( regionConfigs );
 	}
 
-	public Session openSession() throws HibernateException {
+	public SessionImplementor openSession() throws HibernateException {
 		//The defaultSessionOpenOptions can't be used in some cases; for example when using a TenantIdentifierResolver.
 		if ( this.defaultSessionOpenOptions != null ) {
 			return this.defaultSessionOpenOptions.openSession();
@@ -496,7 +492,8 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 		}
 	}
 
-	public Session openTemporarySession() throws HibernateException {
+	@Override
+	public SessionImpl openTemporarySession() throws HibernateException {
 		//The temporarySessionOpenOptions can't be used in some cases; for example when using a TenantIdentifierResolver.
 		if ( this.temporarySessionOpenOptions != null ) {
 			return this.temporarySessionOpenOptions.openSession();
@@ -515,8 +512,8 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 	}
 
 	@Override
-	public SessionBuilderImplementor withOptions() {
-		return new SessionBuilderImpl<>( this );
+	public SessionBuilderImpl withOptions() {
+		return new SessionBuilderImpl( this );
 	}
 
 	@Override
@@ -1131,7 +1128,7 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 		return null;
 	}
 
-	public static class SessionBuilderImpl<T extends SessionBuilder> implements SessionBuilderImplementor<T>, SessionCreationOptions {
+	public static class SessionBuilderImpl implements SessionBuilderImplementor, SessionCreationOptions {
 		private static final Logger log = CoreLogging.logger( SessionBuilderImpl.class );
 
 		private final SessionFactoryImpl sessionFactory;
@@ -1241,91 +1238,86 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 		// SessionBuilder
 
 		@Override
-		public Session openSession() {
+		public SessionImpl openSession() {
 			log.tracef( "Opening Hibernate Session.  tenant=%s", tenantIdentifier );
 			return new SessionImpl( sessionFactory, this );
 		}
 
-		@SuppressWarnings("unchecked")
-		private T getThis() {
-			return (T) this;
-		}
-
 		@Override
-		public T interceptor(Interceptor interceptor) {
+		public SessionBuilderImpl interceptor(Interceptor interceptor) {
 			this.interceptor = interceptor;
 			this.explicitNoInterceptor = false;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T noInterceptor() {
+		public SessionBuilderImpl noInterceptor() {
 			this.interceptor = EmptyInterceptor.INSTANCE;
 			this.explicitNoInterceptor = true;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T statementInspector(StatementInspector statementInspector) {
+		public SessionBuilderImpl statementInspector(StatementInspector statementInspector) {
 			this.statementInspector = statementInspector;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T connection(Connection connection) {
+		public SessionBuilderImpl connection(Connection connection) {
 			this.connection = connection;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T connectionHandlingMode(PhysicalConnectionHandlingMode connectionHandlingMode) {
+		public SessionBuilderImpl connectionHandlingMode(PhysicalConnectionHandlingMode connectionHandlingMode) {
 			this.connectionHandlingMode = connectionHandlingMode;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T autoJoinTransactions(boolean autoJoinTransactions) {
+		public SessionBuilderImpl autoJoinTransactions(boolean autoJoinTransactions) {
 			this.autoJoinTransactions = autoJoinTransactions;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T autoClose(boolean autoClose) {
+		public SessionBuilderImpl autoClose(boolean autoClose) {
 			this.autoClose = autoClose;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T autoClear(boolean autoClear) {
+		public SessionBuilderImpl autoClear(boolean autoClear) {
 			this.autoClear = autoClear;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T flushMode(FlushMode flushMode) {
+		public SessionBuilderImpl flushMode(FlushMode flushMode) {
 			this.flushMode = flushMode;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T tenantIdentifier(String tenantIdentifier) {
+		public SessionBuilderImpl tenantIdentifier(String tenantIdentifier) {
 			this.tenantIdentifier = tenantIdentifier;
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T eventListeners(SessionEventListener... listeners) {
+		public SessionBuilderImpl eventListeners(SessionEventListener... listeners) {
 			if ( this.listeners == null ) {
 				this.listeners = sessionFactory.getSessionFactoryOptions()
 						.getBaselineSessionEventsListenerBuilder()
 						.buildBaselineList();
 			}
 			Collections.addAll( this.listeners, listeners );
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T clearEventListeners() {
+		public SessionBuilderImpl clearEventListeners() {
 			if ( listeners == null ) {
 				//Needs to initialize explicitly to an empty list as otherwise "null" implies the default listeners will be applied
 				this.listeners = new ArrayList<>( 3 );
@@ -1333,13 +1325,13 @@ public class SessionFactoryImpl implements SessionFactoryImplementor {
 			else {
 				listeners.clear();
 			}
-			return getThis();
+			return this;
 		}
 
 		@Override
-		public T jdbcTimeZone(TimeZone timeZone) {
+		public SessionBuilderImpl jdbcTimeZone(TimeZone timeZone) {
 			jdbcTimeZone = timeZone;
-			return getThis();
+			return this;
 		}
 	}
 

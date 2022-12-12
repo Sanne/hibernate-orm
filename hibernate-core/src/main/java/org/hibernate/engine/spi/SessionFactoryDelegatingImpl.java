@@ -36,6 +36,7 @@ import org.hibernate.event.spi.EventEngine;
 import org.hibernate.graph.spi.RootGraphImplementor;
 import org.hibernate.id.IdentifierGenerator;
 import org.hibernate.internal.FastSessionServices;
+import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.metamodel.model.domain.spi.JpaMetamodelImplementor;
@@ -80,7 +81,7 @@ public class SessionFactoryDelegatingImpl implements SessionFactoryImplementor, 
 	}
 
 	@Override
-	public Session openSession() throws HibernateException {
+	public SessionImplementor openSession() throws HibernateException {
 		return delegate.openSession();
 	}
 
@@ -200,7 +201,7 @@ public class SessionFactoryDelegatingImpl implements SessionFactoryImplementor, 
 	}
 
 	@Override
-	public Session openTemporarySession() throws HibernateException {
+	public SessionImplementor openTemporarySession() throws HibernateException {
 		return delegate.openTemporarySession();
 	}
 
