@@ -34,6 +34,6 @@ public class InMemoryGeneratedValueResolver implements GeneratedValueResolver {
 
 	@Override
 	public Object resolveGeneratedValue(Object[] row, Object entity, SharedSessionContractImplementor session) {
-		return valueGenerator.generateValue( (Session) session, entity );
+		return valueGenerator.generateValue( session.asSessionImplementor(), entity );
 	}
 }

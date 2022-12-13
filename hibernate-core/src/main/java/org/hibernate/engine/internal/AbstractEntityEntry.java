@@ -268,7 +268,7 @@ public abstract class AbstractEntityEntry implements Serializable, EntityEntry {
 		getPersistenceContext().getSession()
 				.getFactory()
 				.getCustomEntityDirtinessStrategy()
-				.resetDirty( entity, getPersister(), (Session) getPersistenceContext().getSession() );
+				.resetDirty( entity, persister, getPersistenceContext().getSession().asSessionImplementor() );
 	}
 
 	private static void clearDirtyAttributes(final SelfDirtinessTracker entity) {
@@ -361,8 +361,9 @@ public abstract class AbstractEntityEntry implements Serializable, EntityEntry {
 
 		final CustomEntityDirtinessStrategy customEntityDirtinessStrategy =
 				getPersistenceContext().getSession().getFactory().getCustomEntityDirtinessStrategy();
-		if ( customEntityDirtinessStrategy.canDirtyCheck( entity, getPersister(), (Session) getPersistenceContext().getSession() ) ) {
-			return ! customEntityDirtinessStrategy.isDirty( entity, getPersister(), (Session) getPersistenceContext().getSession() );
+		final Session session = getPersistenceContext().getSession().asSessionImplementor();
+		if ( customEntityDirtinessStrategy.canDirtyCheck( entity, getPersister(), session  ) ) {
+			return ! customEntityDirtinessStrategy.isDirty( entity, getPersister(), session );
 		}
 
 		if ( getPersister().hasMutableProperties() ) {

@@ -3811,6 +3811,7 @@ public abstract class AbstractEntityPersister
 
 		// apply any pre-update in-memory value generation
 		if ( getEntityMetamodel().hasPreUpdateGeneratedValues() ) {
+			final SessionImplementor sessionImplementor = session.asSessionImplementor();
 			final InMemoryValueGenerationStrategy[] valueGenerationStrategies = getEntityMetamodel().getInMemoryValueGenerationStrategies();
 			int valueGenerationStrategiesSize = valueGenerationStrategies.length;
 			if ( valueGenerationStrategiesSize != 0 ) {
@@ -3820,7 +3821,7 @@ public abstract class AbstractEntityPersister
 					if ( valueGenerationStrategies[i] != null && valueGenerationStrategies[i].getGenerationTiming()
 							.includesUpdate() ) {
 						fields[i] = valueGenerationStrategies[i].getValueGenerator().generateValue(
-								(Session) session,
+								sessionImplementor,
 								object
 						);
 						setPropertyValue( object, i, fields[i] );
@@ -4064,9 +4065,10 @@ public abstract class AbstractEntityPersister
 	protected void preInsertInMemoryValueGeneration(Object[] fields, Object object, SharedSessionContractImplementor session) {
 		if ( getEntityMetamodel().hasPreInsertGeneratedValues() ) {
 			final InMemoryValueGenerationStrategy[] strategies = getEntityMetamodel().getInMemoryValueGenerationStrategies();
+			final SessionImplementor sessionImplementor = session.asSessionImplementor();
 			for ( int i = 0; i < strategies.length; i++ ) {
 				if ( strategies[i] != null && strategies[i].getGenerationTiming().includesInsert() ) {
-					fields[i] = strategies[i].getValueGenerator().generateValue( (Session) session, object, fields[i] );
+					fields[i] = strategies[i].getValueGenerator().generateValue( sessionImplementor, object, fields[i] );
 					setPropertyValue( object, i, fields[i] );
 				}
 			}
