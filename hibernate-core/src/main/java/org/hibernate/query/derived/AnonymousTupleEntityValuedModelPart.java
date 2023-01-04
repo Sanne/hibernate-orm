@@ -693,4 +693,9 @@ public class AnonymousTupleEntityValuedModelPart
 				? ( (TableGroupJoinProducer) delegate ).isSimpleJoinPredicate( predicate )
 				: false;
 	}
+
+	@Override
+	public EntityPersister asEntityPersister() {
+		return ( EntityPersister ) this;
+	}
 }

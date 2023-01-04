@@ -872,4 +872,9 @@ public class CustomPersister implements EntityPersister {
 	public Loadable asLoadable() {
 		return ( Loadable ) this;
 	}
+
+	@Override
+	public EntityPersister asEntityPersister() {
+		return this;
+	}
 }

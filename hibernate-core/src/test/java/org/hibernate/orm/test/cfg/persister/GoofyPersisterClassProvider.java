@@ -780,6 +780,11 @@ public class GoofyPersisterClassProvider implements PersisterClassResolver {
 		public org.hibernate.persister.entity.Loadable asLoadable() {
 			return ( org.hibernate.persister.entity.Loadable ) this;
 		}
+
+		@Override
+		public EntityPersister asEntityPersister() {
+			return this;
+		}
 	}
 
 	public static class NoopCollectionPersister implements CollectionPersister {

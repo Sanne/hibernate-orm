@@ -6156,4 +6156,9 @@ public abstract class AbstractEntityPersister
 	public Loadable asLoadable() {
 		return this;
 	}
+
+	@Override
+	public EntityPersister asEntityPersister() {
+		return this;
+	}
 }
