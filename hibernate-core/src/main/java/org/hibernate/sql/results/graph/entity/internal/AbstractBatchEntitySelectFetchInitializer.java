@@ -138,4 +138,8 @@ public abstract class AbstractBatchEntitySelectFetchInitializer extends Abstract
 		return concreteDescriptor;
 	}
 
+	@Override
+	public EntityInitializer asEntityInitializer() {
+		return this;
+	}
 }

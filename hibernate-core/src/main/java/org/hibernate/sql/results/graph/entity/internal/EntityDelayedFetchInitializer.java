@@ -256,4 +256,7 @@ public class EntityDelayedFetchInitializer extends AbstractFetchParentAccess imp
 		return true;
 	}
 
+	public EntityInitializer asEntityInitializer() {
+		return this;
+	}
 }

@@ -21,6 +21,7 @@ import org.hibernate.sql.results.graph.FetchParentAccess;
 import org.hibernate.sql.results.graph.collection.CollectionInitializer;
 import org.hibernate.sql.results.graph.collection.CollectionLoadingLogger;
 import org.hibernate.sql.results.graph.collection.LoadingCollectionEntry;
+import org.hibernate.sql.results.graph.entity.EntityInitializer;
 import org.hibernate.sql.results.jdbc.spi.RowProcessingState;
 
 /**
@@ -182,5 +183,10 @@ public abstract class AbstractCollectionInitializer implements CollectionInitial
 	@Override
 	public void finishUpRow(RowProcessingState rowProcessingState) {
 		collectionKey = null;
+	}
+
+	@Override
+	public EntityInitializer asEntityInitializer() {
+		return ( EntityInitializer ) this;
 	}
 }

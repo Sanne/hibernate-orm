@@ -6,6 +6,8 @@
  */
 package org.hibernate.sql.results.graph;
 
+import org.hibernate.sql.results.graph.entity.EntityInitializer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -42,5 +44,10 @@ public abstract class AbstractFetchParentAccess implements FetchParentAccess {
 		}
 
 		listeners.clear();
+	}
+
+	@Override
+	public EntityInitializer asEntityInitializer() {
+		return ( EntityInitializer ) this;
 	}
 }

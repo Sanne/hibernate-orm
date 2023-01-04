@@ -464,4 +464,9 @@ public abstract class AbstractEmbeddableInitializer extends AbstractFetchParentA
 	public String toString() {
 		return getClass().getSimpleName() + "(" + navigablePath + ") : `" + getInitializedPart().getJavaType().getJavaTypeClass() + "`";
 	}
+
+	@Override
+	public EntityInitializer asEntityInitializer() {
+		return ( EntityInitializer ) this;
+	}
 }

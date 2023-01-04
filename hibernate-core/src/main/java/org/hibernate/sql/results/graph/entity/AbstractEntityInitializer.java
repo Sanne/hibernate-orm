@@ -1018,4 +1018,9 @@ public abstract class AbstractEntityInitializer extends AbstractFetchParentAcces
 		isInitialized = false;
 		clearResolutionListeners();
 	}
+
+	@Override
+	public EntityInitializer asEntityInitializer() {
+		return this;
+	}
 }

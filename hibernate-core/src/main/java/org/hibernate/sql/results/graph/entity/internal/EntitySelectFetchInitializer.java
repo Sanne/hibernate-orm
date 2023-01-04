@@ -256,4 +256,9 @@ public class EntitySelectFetchInitializer extends AbstractFetchParentAccess impl
 	public String toString() {
 		return "EntitySelectFetchInitializer(" + LoggingHelper.toLoggableString( getNavigablePath() ) + ")";
 	}
+
+	@Override
+	public EntityInitializer asEntityInitializer() {
+		return this;
+	}
 }
