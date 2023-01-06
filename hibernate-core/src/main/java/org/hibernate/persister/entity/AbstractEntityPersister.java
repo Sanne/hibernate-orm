@@ -6151,4 +6151,9 @@ public abstract class AbstractEntityPersister
 		}
 		return true;
 	}
+
+	@Override
+	public Loadable asLoadable() {
+		return this;
+	}
 }

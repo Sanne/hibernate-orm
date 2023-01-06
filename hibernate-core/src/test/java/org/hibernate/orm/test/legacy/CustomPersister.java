@@ -57,6 +57,7 @@ import org.hibernate.metamodel.spi.EntityRepresentationStrategy;
 import org.hibernate.persister.entity.AttributeMappingsList;
 import org.hibernate.persister.entity.AttributeMappingsMap;
 import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.persister.entity.Loadable;
 import org.hibernate.persister.spi.PersisterCreationContext;
 import org.hibernate.query.sqm.mutation.spi.SqmMultiTableInsertStrategy;
 import org.hibernate.query.sqm.mutation.spi.SqmMultiTableMutationStrategy;
@@ -865,5 +866,10 @@ public class CustomPersister implements EntityPersister {
 	@Override
 	public JavaType getMappedJavaType() {
 		return null;
+	}
+
+	@Override
+	public Loadable asLoadable() {
+		return ( Loadable ) this;
 	}
 }

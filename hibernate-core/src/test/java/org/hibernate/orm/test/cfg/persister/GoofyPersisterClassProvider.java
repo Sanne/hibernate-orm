@@ -775,6 +775,11 @@ public class GoofyPersisterClassProvider implements PersisterClassResolver {
 		public JavaType getMappedJavaType() {
 			return null;
 		}
+
+		@Override
+		public org.hibernate.persister.entity.Loadable asLoadable() {
+			return ( org.hibernate.persister.entity.Loadable ) this;
+		}
 	}
 
 	public static class NoopCollectionPersister implements CollectionPersister {

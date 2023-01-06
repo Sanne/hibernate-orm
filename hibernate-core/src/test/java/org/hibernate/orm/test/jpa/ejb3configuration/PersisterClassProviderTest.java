@@ -58,6 +58,7 @@ import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.entity.AttributeMappingsList;
 import org.hibernate.persister.entity.AttributeMappingsMap;
 import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.persister.entity.Loadable;
 import org.hibernate.persister.internal.PersisterClassResolverInitiator;
 import org.hibernate.persister.spi.PersisterClassResolver;
 import org.hibernate.persister.spi.PersisterCreationContext;
@@ -793,6 +794,11 @@ public class PersisterClassProviderTest {
 		@Override
 		public JavaType getMappedJavaType() {
 			return null;
+		}
+
+		@Override
+		public Loadable asLoadable() {
+			return ( Loadable ) this;
 		}
 	}
 
