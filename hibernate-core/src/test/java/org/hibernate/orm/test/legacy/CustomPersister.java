@@ -868,13 +868,4 @@ public class CustomPersister implements EntityPersister {
 		return null;
 	}
 
-	@Override
-	public Loadable asLoadable() {
-		return ( Loadable ) this;
-	}
-
-	@Override
-	public EntityPersister asEntityPersister() {
-		return this;
-	}
 }

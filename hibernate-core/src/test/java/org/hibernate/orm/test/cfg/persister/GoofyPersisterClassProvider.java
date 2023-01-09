@@ -777,11 +777,6 @@ public class GoofyPersisterClassProvider implements PersisterClassResolver {
 		}
 
 		@Override
-		public org.hibernate.persister.entity.Loadable asLoadable() {
-			return ( org.hibernate.persister.entity.Loadable ) this;
-		}
-
-		@Override
 		public EntityPersister asEntityPersister() {
 			return this;
 		}

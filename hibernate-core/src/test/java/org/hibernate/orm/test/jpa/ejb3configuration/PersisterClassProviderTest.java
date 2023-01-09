@@ -796,15 +796,6 @@ public class PersisterClassProviderTest {
 			return null;
 		}
 
-		@Override
-		public Loadable asLoadable() {
-			return ( Loadable ) this;
-		}
-
-		@Override
-		public EntityPersister asEntityPersister() {
-			return this;
-		}
 	}
 
 	public static class GoofyException extends RuntimeException {
