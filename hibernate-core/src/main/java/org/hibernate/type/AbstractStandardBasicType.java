@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Objects;
 
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -165,7 +166,8 @@ public abstract class AbstractStandardBasicType<T>
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean isEqual(Object one, Object another) {
-		return javaType.areEqual( (T) one, (T) another );
+		return Objects.equals( one, another) //optimisation to attempt avoid the need for the method on javaType:
+				|| javaType.areEqual( (T) one, (T) another );
 	}
 
 	@Override

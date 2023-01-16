@@ -7,6 +7,7 @@
 package org.hibernate.event.internal;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.CustomEntityDirtinessStrategy;
@@ -80,6 +81,14 @@ public class DefaultFlushEntityEventListener implements FlushEntityEventListener
 		if ( id == null ) {
 			throw new AssertionFailure( "null id in " + persister.getEntityName()
 					+ " entry (don't flush the Session after an exception occurs)" );
+		}
+
+		//Small optimisation: we don't need to invoke the full equality check when the two objects are equal;
+		//this is particularly true in this case as there's a strong expectation for the ID to not have changed at all.
+		//(this optimisation may not be generally applicable)
+		if ( id.equals( oid ) ) {
+			//No further checks necessary:
+			return;
 		}
 
 		if ( !persister.getIdentifierType().isEqual( id, oid, session.getFactory() ) ) {

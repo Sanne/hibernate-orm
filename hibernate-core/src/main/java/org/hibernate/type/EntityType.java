@@ -9,6 +9,7 @@ package org.hibernate.type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Objects;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.HibernateException;
@@ -396,7 +397,8 @@ public abstract class EntityType extends AbstractType implements AssociationType
 			}
 		}
 
-		return persister.getIdentifierType()
+		//Check for Objects.equals first as it might be much cheaper than going for the type-specific checks by IdentifierType
+		return Objects.equals( xid, yid ) || persister.getIdentifierType()
 				.isEqual( xid, yid, factory );
 	}
 
