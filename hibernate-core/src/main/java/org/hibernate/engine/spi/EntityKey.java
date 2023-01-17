@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.persister.entity.EntityPersister;
@@ -97,8 +98,30 @@ public final class EntityKey implements Serializable {
 	}
 
 	private boolean sameIdentifier(final EntityKey otherKey) {
-		return this.identifier.equals( otherKey.identifier ) || //Check for direct equality first (semantically unneccessary but interesting optimisation)
-			persister.getIdentifierType().isEqual( otherKey.identifier, this.identifier, persister.getFactory() );
+
+		try {
+//			boolean direct = this.identifier.equals( otherKey.identifier );
+			System.out.println("This identifier: " + (this.identifier!=null));
+			System.out.println("That identifier: " + (otherKey.identifier!=null));
+			final Object identifier1 = this.identifier;
+			final Object identifier2 = otherKey.identifier;
+			if ( identifier1 instanceof Integer && identifier2 instanceof Integer ) {
+				boolean areEquals = identifier1.equals( identifier2 );
+			}
+			else if ( identifier1 instanceof HashMap && identifier2 instanceof HashMap<?,?> ) {
+				System.out.println( "Both ids are of HashMap type");
+				final boolean equals = identifier1.equals( identifier2 );
+			}
+			else {
+				System.out.println( "id1 type : " + identifier1.getClass());
+				System.out.println( "id2 type : " + identifier2.getClass());
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+//		boolean full = persister.getIdentifierType().isEqual( otherKey.identifier, this.identifier, persister.getFactory() );
+
+		return persister.getIdentifierType().isEqual( otherKey.identifier, this.identifier, persister.getFactory() );
 	}
 
 	private boolean samePersistentType(final EntityKey otherKey) {
