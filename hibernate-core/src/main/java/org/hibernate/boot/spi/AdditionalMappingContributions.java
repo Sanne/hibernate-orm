@@ -37,7 +37,7 @@ public interface AdditionalMappingContributions {
 	/**
 	 * Contribute mappings in the form of {@code hbm.xml} JAXB bindings.
 	 *
-	 * @deprecated {@code hbm.xml} mapping file support is deprecated.  Use
+	 * The {@code hbm.xml} mapping file support is deprecated.  Use
 	 * {@linkplain #contributeBinding(JaxbEntityMappings) extended orm.xml}
 	 * bindings instead.
 	 */
