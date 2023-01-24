@@ -28,6 +28,7 @@ public final class CacheKeyImplementation implements Serializable {
 	private final Object id;
 	private final String entityOrRoleName;
 	private final String tenantId;
+	private final boolean requiresDeepEquals;
 	private final int hashCode;
 
 	/**
@@ -52,6 +53,9 @@ public final class CacheKeyImplementation implements Serializable {
 		this.entityOrRoleName = entityOrRoleName;
 		this.tenantId = tenantId;
 		this.hashCode = calculateHashCode( id, type, tenantId );
+		// sadly Objects::deepEquals perform a long list of such checks that
+		// we can often skip
+		this.requiresDeepEquals = this.id.getClass().isArray();
 	}
 
 	private static int calculateHashCode(Object id, Type type, String tenantId) {
@@ -78,8 +82,8 @@ public final class CacheKeyImplementation implements Serializable {
 		}
 		final CacheKeyImplementation that = (CacheKeyImplementation) other;
 		return entityOrRoleName.equals( that.entityOrRoleName )
-				&& Objects.deepEquals( id, that.id )
-				&& Objects.equals( tenantId, that.tenantId );
+				&& Objects.equals( tenantId, that.tenantId )
+				&& ( requiresDeepEquals? Objects.deepEquals( id, that.id ) : id.equals( that.id ) );
 	}
 
 	@Override
