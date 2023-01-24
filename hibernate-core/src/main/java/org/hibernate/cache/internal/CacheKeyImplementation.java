@@ -22,13 +22,14 @@ import org.hibernate.type.Type;
  *
  * @author Gavin King
  * @author Steve Ebersole
+ * @author Sanne Grinovero
  */
 @Internal
 public final class CacheKeyImplementation implements Serializable {
 	private final Object id;
 	private final String entityOrRoleName;
 	private final String tenantId;
-	private final boolean requiresDeepEquals;
+	private final boolean requiresDeepEquals;//because of object alignmnet, we had "free space" in this key.
 	private final int hashCode;
 
 	/**
@@ -37,25 +38,23 @@ public final class CacheKeyImplementation implements Serializable {
 	 * name, not a subclass entity name.
 	 *
 	 * @param id The identifier associated with the cached data
+	 * @param disassembledKey
 	 * @param type The Hibernate type mapping
 	 * @param entityOrRoleName The entity or collection-role name.
 	 * @param tenantId The tenant identifier associated with this data.
-	 * @param factory The session factory for which we are caching
 	 */
 	@Internal
 	public CacheKeyImplementation(
 			final Object id,
+			Serializable disassembledKey,
 			final Type type,
 			final String entityOrRoleName,
-			final String tenantId,
-			final SessionFactoryImplementor factory) {
-		this.id = type.disassemble( id, factory );
+			final String tenantId) {
+		this.id = disassembledKey;
 		this.entityOrRoleName = entityOrRoleName;
 		this.tenantId = tenantId;
 		this.hashCode = calculateHashCode( id, type, tenantId );
-		// sadly Objects::deepEquals perform a long list of such checks that
-		// we can often skip
-		this.requiresDeepEquals = this.id.getClass().isArray();
+		this.requiresDeepEquals = disassembledKey.getClass().isArray();
 	}
 
 	private static int calculateHashCode(Object id, Type type, String tenantId) {
@@ -73,17 +72,30 @@ public final class CacheKeyImplementation implements Serializable {
 		if ( other == null ) {
 			return false;
 		}
-		if ( this == other ) {
+		else if ( this == other ) {
 			return true;
 		}
-		if ( hashCode != other.hashCode() || !( other instanceof CacheKeyImplementation ) ) {
-			//hashCode is part of this check since it is pre-calculated and hash must match for equals to be true
+		else if ( other.getClass() != CacheKeyImplementation.class ) {
 			return false;
 		}
-		final CacheKeyImplementation that = (CacheKeyImplementation) other;
-		return entityOrRoleName.equals( that.entityOrRoleName )
-				&& Objects.equals( tenantId, that.tenantId )
-				&& ( requiresDeepEquals? Objects.deepEquals( id, that.id ) : id.equals( that.id ) );
+		else {
+			CacheKeyImplementation o = (CacheKeyImplementation) other;
+			//check this first, so we can short-cut following checks in a different order
+			if ( requiresDeepEquals ) {
+				//only in this case, leverage the hashcode comparison check first;
+				//this is typically unnecessary, still far cheaper than the other checks we need to perform
+				//so it should be worth it.
+				return this.hashCode == o.hashCode &&
+						entityOrRoleName.equals( o.entityOrRoleName ) &&
+						Objects.equals( this.tenantId, o.tenantId ) &&
+						Objects.deepEquals( this.id, o.id );
+			}
+			else {
+				return this.id.equals( o.id ) &&
+						entityOrRoleName.equals( o.entityOrRoleName ) &&
+						( this.tenantId != null ? this.tenantId.equals( o.tenantId ) : o.tenantId == null );
+			}
+		}
 	}
 
 	@Override
