@@ -26,9 +26,15 @@ public class BasicResultAssembler<J> implements DomainResultAssembler<J> {
 		return new BasicResultAssembler<>( selection.getValuesArrayPosition(), javaType );
 	}
 
+	private static final ResultsLogger RESULTS_LOGGER = ResultsLogger.RESULTS_MESSAGE_LOGGER;
+
 	private final int valuesArrayPosition;
 	private final JavaType<J> assembledJavaType;
 	private final BasicValueConverter<J,?> valueConverter;
+
+	//We read this only once for each new instance of BasicResultAssembler:
+	//an assembler is short lived.
+	private final boolean RESULTS_LOGGER_DEBUG_ENABLED = RESULTS_LOGGER.isDebugEnabled();
 
 	public BasicResultAssembler(
 			int valuesArrayPosition,
@@ -58,7 +64,9 @@ public class BasicResultAssembler<J> implements DomainResultAssembler<J> {
 			JdbcValuesSourceProcessingOptions options) {
 		final Object jdbcValue = extractRawValue( rowProcessingState );
 
-		ResultsLogger.RESULTS_MESSAGE_LOGGER.debugf( "Extracted JDBC value [%d] - [%s]", valuesArrayPosition, jdbcValue );
+		if ( RESULTS_LOGGER_DEBUG_ENABLED ) {
+			RESULTS_LOGGER.debugf( "Extracted JDBC value [%d] - [%s]", valuesArrayPosition, jdbcValue );
+		}
 
 		if ( valueConverter != null ) {
 			if ( jdbcValue != null ) {
