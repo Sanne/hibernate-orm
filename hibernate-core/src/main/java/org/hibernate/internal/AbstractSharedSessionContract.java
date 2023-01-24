@@ -442,6 +442,11 @@ public abstract class AbstractSharedSessionContract implements SharedSessionCont
 		}
 	}
 
+	@Override
+	public final void checkOpen() {
+		checkOpen( true );
+	}
+
 	protected void checkOpenOrWaitingForAutoClose() {
 		if ( !waitingForAutoClose ) {
 			checkOpen();
