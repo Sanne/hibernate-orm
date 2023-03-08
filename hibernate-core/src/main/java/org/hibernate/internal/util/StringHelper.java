@@ -128,7 +128,10 @@ public final class StringHelper {
 			return template;
 		}
 		else {
-			String beforePlaceholder = template.substring( 0, loc );
+			String beforePlaceholder = "";
+			if (loc > 0) {
+				beforePlaceholder = template.substring(0, loc);
+			}
 			String afterPlaceholder = template.substring( loc + placeholder.length() );
 			return replace(
 					beforePlaceholder,
