@@ -1599,7 +1599,7 @@ public class ToOneAttributeMapping
 			DomainResultCreationState creationState) {
 		final SqlAstJoinType joinType;
 		if ( fetchParent instanceof EntityResultJoinedSubclassImpl
-				&& ( (EntityPersister) fetchParent.getReferencedModePart() ).findDeclaredAttributeMapping( getPartName() ) == null ) {
+				&& ( fetchParent.getReferencedModePart().asEntityPersister() ).findDeclaredAttributeMapping( getPartName() ) == null ) {
 			joinType = getJoinTypeForFetch( fetchablePath, parentTableGroup );
 		}
 		else {

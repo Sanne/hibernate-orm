@@ -1074,4 +1074,8 @@ public interface EntityPersister extends EntityMappingType, RootTableGroupProduc
 	@Deprecated(since = "6.2")
 	String ENTITY_ID = "id";
 
+	default EntityPersister asEntityPersister() {
+		return this;
+	}
+
 }

@@ -11,6 +11,7 @@ import java.util.function.BiConsumer;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.metamodel.model.domain.NavigableRole;
+import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.query.sqm.sql.internal.DomainResultProducer;
 import org.hibernate.spi.NavigablePath;
 import org.hibernate.sql.ast.spi.SqlSelection;
@@ -199,6 +200,10 @@ public interface ModelPart extends MappingModelExpressible {
 	default boolean areEqual(Object one, Object other, SharedSessionContractImplementor session) {
 		// NOTE : deepEquals to account for arrays (compound natural-id)
 		return Objects.deepEquals( one, other );
+	}
+
+	default EntityPersister asEntityPersister() {
+		return null;
 	}
 
 	/**

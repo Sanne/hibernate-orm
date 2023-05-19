@@ -137,7 +137,7 @@ public class DefaultLoadEventListener implements LoadEventListener {
 								loadType,
 								persister,
 								compositeIdMapping,
-								(EntityPersister) parentIdTargetMapping
+								parentIdTargetMapping.asEntityPersister()
 						);
 						return false;
 					}

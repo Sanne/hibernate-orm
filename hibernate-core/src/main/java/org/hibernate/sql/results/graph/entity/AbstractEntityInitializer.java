@@ -118,7 +118,7 @@ public abstract class AbstractEntityInitializer extends AbstractFetchParentAcces
 		super();
 
 		referencedModelPart = resultDescriptor.getEntityValuedModelPart();
-		entityDescriptor = (EntityPersister) referencedModelPart.getEntityMappingType();
+		entityDescriptor = referencedModelPart.getEntityMappingType().asEntityPersister();
 
 		final String rootEntityName = entityDescriptor.getRootEntityName();
 		rootEntityDescriptor = rootEntityName == null || rootEntityName.equals( entityDescriptor.getEntityName() )
