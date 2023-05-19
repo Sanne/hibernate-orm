@@ -6,7 +6,7 @@
  */
 package org.hibernate.sql.exec.spi;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import org.hibernate.Incubating;
@@ -22,7 +22,7 @@ import org.hibernate.sql.results.spi.RowTransformer;
  */
 @Incubating
 public interface JdbcSelectExecutor {
-	default <R> List<R> list(
+	default <R> ArrayList<R> list(
 			JdbcOperationQuerySelect jdbcSelect,
 			JdbcParameterBindings jdbcParameterBindings,
 			ExecutionContext executionContext,
@@ -31,7 +31,7 @@ public interface JdbcSelectExecutor {
 		return list( jdbcSelect, jdbcParameterBindings, executionContext, rowTransformer, null, uniqueSemantic );
 	}
 
-	<R> List<R> list(
+	<R> ArrayList<R> list(
 			JdbcOperationQuerySelect jdbcSelect,
 			JdbcParameterBindings jdbcParameterBindings,
 			ExecutionContext executionContext,

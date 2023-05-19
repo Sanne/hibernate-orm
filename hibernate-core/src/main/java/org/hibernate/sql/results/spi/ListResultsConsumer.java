@@ -30,7 +30,7 @@ import org.hibernate.type.spi.TypeConfiguration;
  *
  * @author Steve Ebersole
  */
-public class ListResultsConsumer<R> implements ResultsConsumer<List<R>, R> {
+public class ListResultsConsumer<R> implements ResultsConsumer<ArrayList<R>, R> {
 	private static final ListResultsConsumer<?> NEVER_DE_DUP_CONSUMER = new ListResultsConsumer<>( UniqueSemantic.NEVER );
 	private static final ListResultsConsumer<?> ALLOW_DE_DUP_CONSUMER = new ListResultsConsumer<>( UniqueSemantic.ALLOW );
 	private static final ListResultsConsumer<?> IGNORE_DUP_CONSUMER = new ListResultsConsumer<>( UniqueSemantic.NONE );
@@ -96,7 +96,7 @@ public class ListResultsConsumer<R> implements ResultsConsumer<List<R>, R> {
 	}
 
 	private static class Results<R> {
-		private final List<R> results = new ArrayList<>();
+		private final ArrayList<R> results = new ArrayList<>();
 		private final JavaType resultJavaType;
 
 		public Results(JavaType resultJavaType) {
@@ -117,7 +117,7 @@ public class ListResultsConsumer<R> implements ResultsConsumer<List<R>, R> {
 			results.add( result );
 		}
 
-		public List<R> getResults() {
+		public ArrayList<R> getResults() {
 			return results;
 		}
 	}
@@ -141,7 +141,7 @@ public class ListResultsConsumer<R> implements ResultsConsumer<List<R>, R> {
 	}
 
 	@Override
-	public List<R> consume(
+	public ArrayList<R> consume(
 			JdbcValues jdbcValues,
 			SharedSessionContractImplementor session,
 			JdbcValuesSourceProcessingOptions processingOptions,
@@ -212,7 +212,7 @@ public class ListResultsConsumer<R> implements ResultsConsumer<List<R>, R> {
 			//noinspection unchecked
 			final ResultListTransformer<R> resultListTransformer = (ResultListTransformer<R>) queryOptions.getResultListTransformer();
 			if ( resultListTransformer != null ) {
-				return resultListTransformer.transformList( results.getResults() );
+				return (ArrayList) resultListTransformer.transformList( results.getResults() );
 			}
 
 			return results.getResults();

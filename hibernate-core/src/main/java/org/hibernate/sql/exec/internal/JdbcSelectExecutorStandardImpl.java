@@ -8,6 +8,7 @@ package org.hibernate.sql.exec.internal;
 
 import java.io.Serializable;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Spliterator;
@@ -82,7 +83,7 @@ public class JdbcSelectExecutorStandardImpl implements JdbcSelectExecutor {
 	public static final JdbcSelectExecutorStandardImpl INSTANCE = new JdbcSelectExecutorStandardImpl();
 
 	@Override
-	public <R> List<R> list(
+	public <R> ArrayList<R> list(
 			JdbcOperationQuerySelect jdbcSelect,
 			JdbcParameterBindings jdbcParameterBindings,
 			ExecutionContext executionContext,
