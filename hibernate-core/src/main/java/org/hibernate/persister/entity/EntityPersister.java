@@ -49,6 +49,7 @@ import org.hibernate.sql.ast.spi.SqlAliasStemHelper;
 import org.hibernate.sql.ast.tree.from.RootTableGroupProducer;
 import org.hibernate.sql.ast.tree.from.TableGroup;
 import org.hibernate.tuple.entity.EntityMetamodel;
+import org.hibernate.type.AssociationType;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.Type;
 import org.hibernate.type.descriptor.java.VersionJavaType;
@@ -641,6 +642,12 @@ public interface EntityPersister extends EntityMappingType, RootTableGroupProduc
 	 * Get the Hibernate types of the class properties
 	 */
 	Type[] getPropertyTypes();
+
+	/**
+	 * Get the Hibernate types of the class properties, but only
+	 * those represented by an AssociationType
+	 */
+	AssociationType[] getAssociationPropertyTypes();
 
 	/**
 	 * Get the names of the class properties - doesn't have to be the names of the

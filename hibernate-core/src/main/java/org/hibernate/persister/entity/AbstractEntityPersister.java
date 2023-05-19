@@ -271,6 +271,7 @@ import org.hibernate.stat.spi.StatisticsImplementor;
 import org.hibernate.tuple.NonIdentifierAttribute;
 import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.type.AnyType;
+import org.hibernate.type.AssociationType;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.CompositeType;
@@ -4042,6 +4043,11 @@ public abstract class AbstractEntityPersister
 	@Override
 	public Type[] getPropertyTypes() {
 		return entityMetamodel.getPropertyTypes();
+	}
+
+	@Override
+	public AssociationType[] getAssociationPropertyTypes() {
+		return entityMetamodel.getAssociationPropertyTypes();
 	}
 
 	@Override

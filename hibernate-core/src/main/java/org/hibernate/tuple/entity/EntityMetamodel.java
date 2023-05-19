@@ -92,6 +92,7 @@ public class EntityMetamodel implements Serializable {
 	// temporary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	private final String[] propertyNames;
 	private final Type[] propertyTypes;
+	private final AssociationType[] associationPropertyTypes;
 	private final boolean[] propertyLaziness;
 	private final boolean[] propertyUpdateability;
 	private final boolean[] nonlazyPropertyUpdateability;
@@ -371,6 +372,7 @@ public class EntityMetamodel implements Serializable {
 
 			mapPropertyToIndex( property, i );
 		}
+		this.associationPropertyTypes = computeAssociationPropertyTypes( propertyTypes );
 
 		if ( naturalIdNumbers.isEmpty() ) {
 			naturalIdPropertyNumbers = null;
@@ -757,6 +759,10 @@ public class EntityMetamodel implements Serializable {
 		return propertyTypes;
 	}
 
+	public AssociationType[] getAssociationPropertyTypes() {
+		return associationPropertyTypes;
+	}
+
 	public boolean[] getPropertyLaziness() {
 		return propertyLaziness;
 	}
@@ -815,4 +821,15 @@ public class EntityMetamodel implements Serializable {
 	public BytecodeEnhancementMetadata getBytecodeEnhancementMetadata() {
 		return bytecodeEnhancementMetadata;
 	}
+
+	private static AssociationType[] computeAssociationPropertyTypes(Type[] propertyTypes) {
+		ArrayList<AssociationType> list = new ArrayList<>();
+		for (Type t : propertyTypes) {
+			if ( t instanceof AssociationType ) {
+				list.add( (AssociationType) t );
+			}
+		}
+		return list.toArray(new AssociationType[list.size()]);
+	}
+
 }
