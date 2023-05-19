@@ -161,8 +161,9 @@ public class CompleteResultBuilderCollectionStandard implements CompleteResultBu
 					creationStateImpl.getSessionFactory().getTypeConfiguration()
 			);
 		};
-		if ( modelPart instanceof EntityValuedModelPart ) {
-			final EntityMappingType entityMappingType = ( (EntityValuedModelPart) modelPart ).getEntityMappingType();
+		final EntityValuedModelPart valuedModelPart = modelPart.asEntityValuedModelPart();
+		if ( valuedModelPart != null ) {
+			final EntityMappingType entityMappingType = valuedModelPart.getEntityMappingType();
 			int index = entityMappingType.getIdentifierMapping().forEachSelectable( consumer );
 			if ( entityMappingType.getDiscriminatorMapping() != null ) {
 				index += entityMappingType.getDiscriminatorMapping().forEachSelectable( index, consumer );

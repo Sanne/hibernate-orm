@@ -217,6 +217,10 @@ public interface Bindable extends JdbcMappingContainer {
 		return forEachJdbcValue( value, offset, null, null, valuesConsumer, session );
 	}
 
+	default EntityValuedModelPart asEntityValuedModelPart() {
+		return null;
+	}
+
 	/**
 	 * Functional interface for consuming the JDBC values.
 	 */

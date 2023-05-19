@@ -85,7 +85,7 @@ public class FetchProfileHelper {
 	}
 
 	private static boolean isAssociation(ModelPart fetchablePart) {
-		return fetchablePart instanceof EntityValuedModelPart
+		return fetchablePart.asEntityValuedModelPart() != null
 				|| fetchablePart instanceof PluralAttributeMapping;
 	}
 

@@ -3940,9 +3940,9 @@ public abstract class BaseSqmToSqlAstConverter<T extends Statement> extends Base
 		}
 
 		final Expression result;
-		if ( actualModelPart instanceof EntityValuedModelPart ) {
-			final EntityValuedModelPart entityValuedModelPart = (EntityValuedModelPart) actualModelPart;
-			final EntityValuedModelPart inferredEntityMapping = (EntityValuedModelPart) getInferredValueMapping();
+		final EntityValuedModelPart entityValuedModelPart = actualModelPart.asEntityValuedModelPart();
+		if ( entityValuedModelPart != null ) {
+			final EntityValuedModelPart inferredEntityMapping = getInferredValueMapping().asEntityValuedModelPart();
 			final ModelPart resultModelPart;
 			final EntityValuedModelPart interpretationModelPart;
 			final TableGroup tableGroupToUse;
@@ -5042,8 +5042,9 @@ public abstract class BaseSqmToSqlAstConverter<T extends Statement> extends Base
 
 			final ModelPartContainer modelPart = tableGroup.getModelPart();
 			final EntityMappingType entityMapping;
-			if ( modelPart instanceof EntityValuedModelPart ) {
-				entityMapping = ( (EntityValuedModelPart) modelPart ).getEntityMappingType();
+			final EntityValuedModelPart valuedModelPart = modelPart.asEntityValuedModelPart();
+			if ( valuedModelPart != null ) {
+				entityMapping = valuedModelPart.getEntityMappingType();
 			}
 			else {
 				entityMapping = (EntityMappingType) ( (PluralAttributeMapping) modelPart ).getElementDescriptor().getPartMappingType();
@@ -5374,6 +5375,7 @@ public abstract class BaseSqmToSqlAstConverter<T extends Statement> extends Base
 					(BasicValuedMapping) expressible
 			);
 		}
+		final EntityValuedModelPart entityValuedModelPart = expressible.asEntityValuedModelPart();
 		// Handling other values might seem unnecessary, but with JPA Criteria it is totally possible to have such literals
 		if ( expressible instanceof EmbeddableValuedModelPart ) {
 			final EmbeddableValuedModelPart embeddableValuedModelPart = (EmbeddableValuedModelPart) expressible;
@@ -5388,8 +5390,7 @@ public abstract class BaseSqmToSqlAstConverter<T extends Statement> extends Base
 			);
 			return new SqlTuple( list, expressible );
 		}
-		else if ( expressible instanceof EntityValuedModelPart ) {
-			final EntityValuedModelPart entityValuedModelPart = (EntityValuedModelPart) expressible;
+		else if ( entityValuedModelPart != null ) {
 			final Object associationKey;
 			final ModelPart associationKeyPart;
 			if ( entityValuedModelPart instanceof EntityAssociationMapping ) {

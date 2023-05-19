@@ -72,7 +72,7 @@ public abstract class AbstractEntityResultGraphNode extends AbstractFetchParent 
 
 	@Override
 	public EntityValuedModelPart getEntityValuedModelPart() {
-		return (EntityValuedModelPart) getFetchContainer();
+		return getFetchContainer().asEntityValuedModelPart();
 	}
 
 	@Override

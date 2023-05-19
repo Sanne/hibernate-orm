@@ -124,11 +124,11 @@ public class CteTable {
 	}
 
 	public static void forEachCteColumn(String prefix, ModelPart modelPart, Consumer<CteColumn> consumer) {
+		final EntityValuedModelPart entityPart = modelPart.asEntityValuedModelPart();
 		if ( modelPart instanceof BasicValuedMapping ) {
 			consumer.accept( new CteColumn( prefix, ( (BasicValuedMapping) modelPart ).getJdbcMapping() ) );
 		}
-		else if ( modelPart instanceof EntityValuedModelPart ) {
-			final EntityValuedModelPart entityPart = ( EntityValuedModelPart ) modelPart;
+		else if ( entityPart != null ) {
 			final ModelPart targetPart;
 			if ( modelPart instanceof Association ) {
 				final Association association = (Association) modelPart;
@@ -215,7 +215,7 @@ public class CteTable {
 				keyPart = ( (Association) modelPart ).getForeignKeyDescriptor();
 			}
 			else {
-				keyPart = ( (EntityValuedModelPart) modelPart ).getEntityMappingType().getIdentifierMapping();
+				keyPart = modelPart.asEntityValuedModelPart().getEntityMappingType().getIdentifierMapping();
 			}
 			return determineModelPartStartIndex( offset, keyPart, modelPartToFind );
 		}

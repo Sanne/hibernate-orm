@@ -49,8 +49,9 @@ public class ImplicitModelPartResultMemento implements ModelPartResultMemento {
 			return new ImplicitModelPartResultBuilderEmbeddable( navigablePath, (EmbeddableValuedModelPart) referencedModelPart );
 		}
 
-		if ( referencedModelPart instanceof EntityValuedModelPart ) {
-			return new ImplicitModelPartResultBuilderEntity( navigablePath, (EntityValuedModelPart) referencedModelPart );
+		final EntityValuedModelPart valuedModelPart = referencedModelPart.asEntityValuedModelPart();
+		if ( valuedModelPart != null ) {
+			return new ImplicitModelPartResultBuilderEntity( navigablePath, valuedModelPart );
 		}
 
 		throw new IllegalStateException( "Unknown type of model part : "+ referencedModelPart );

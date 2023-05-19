@@ -825,8 +825,8 @@ public class LoaderSelectBuilder {
 				}
 				else {
 					final FetchableContainer fetchableContainer = fetchParent.getReferencedMappingContainer();
-					if ( fetchableContainer instanceof EntityValuedModelPart ) {
-						final EntityValuedModelPart entityValuedModelPart = (EntityValuedModelPart) fetchableContainer;
+					final EntityValuedModelPart entityValuedModelPart = fetchableContainer.asEntityValuedModelPart();
+					if ( entityValuedModelPart != null ) {
 						identifierMapping = entityValuedModelPart.getEntityMappingType().getIdentifierMapping();
 					}
 					else {

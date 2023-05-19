@@ -59,8 +59,8 @@ public class SqmParameterInterpretation implements Expression, DomainResultProdu
 			final EntityAssociationMapping mapping = (EntityAssociationMapping) valueMapping;
 			this.valueMapping = mapping.getForeignKeyDescriptor().getPart( mapping.getSideNature() );
 		}
-		else if ( valueMapping instanceof EntityValuedModelPart ) {
-			this.valueMapping = ( (EntityValuedModelPart) valueMapping ).getEntityMappingType().getIdentifierMapping();
+		else if ( valueMapping.asEntityValuedModelPart() != null ) {
+			this.valueMapping = valueMapping.asEntityValuedModelPart().getEntityMappingType().getIdentifierMapping();
 		}
 		else {
 			this.valueMapping = valueMapping;

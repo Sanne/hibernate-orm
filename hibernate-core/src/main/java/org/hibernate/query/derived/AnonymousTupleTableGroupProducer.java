@@ -142,7 +142,7 @@ public class AnonymousTupleTableGroupProducer implements TableGroupProducer, Map
 			Set<String> compatibleTableExpressions,
 			int fetchableIndex) {
 		if ( domainType instanceof EntityDomainType<?> ) {
-			final EntityValuedModelPart existingModelPartContainer = (EntityValuedModelPart) existingModelPart;
+			final EntityValuedModelPart existingModelPartContainer = existingModelPart.asEntityValuedModelPart();
 			final EntityIdentifierMapping identifierMapping = existingModelPartContainer.getEntityMappingType()
 					.getIdentifierMapping();
 			final EntityIdentifierMapping newIdentifierMapping;

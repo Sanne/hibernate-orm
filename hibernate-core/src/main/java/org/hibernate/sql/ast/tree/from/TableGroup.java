@@ -127,8 +127,8 @@ public interface TableGroup extends SqlAstNode, ColumnReferenceQualifier, SqmPat
 	default void applySqlSelections(DomainResultCreationState creationState) {
 		final ModelPartContainer modelPart = getModelPart();
 		final ModelPart modelPartToApply;
-		if ( modelPart instanceof EntityValuedModelPart ) {
-			modelPartToApply = ( (EntityValuedModelPart) modelPart ).getEntityMappingType();
+		if ( modelPart.asEntityValuedModelPart() != null ) {
+			modelPartToApply = modelPart.asEntityValuedModelPart().getEntityMappingType();
 		}
 		else {
 			modelPartToApply = modelPart;

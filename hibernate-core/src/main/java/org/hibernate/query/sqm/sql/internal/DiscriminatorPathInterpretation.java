@@ -66,8 +66,9 @@ public class DiscriminatorPathInterpretation<T> extends AbstractSqmPathInterpret
 		final TableGroup tableGroup = converter.getFromClauseAccess().getTableGroup( navigablePath.getParent() );
 		final ModelPartContainer modelPart = tableGroup.getModelPart();
 		final EntityMappingType entityMapping;
-		if ( modelPart instanceof EntityValuedModelPart ) {
-			entityMapping = ( (EntityValuedModelPart) modelPart ).getEntityMappingType();
+		final EntityValuedModelPart valuedModelPart = modelPart.asEntityValuedModelPart();
+		if ( valuedModelPart != null ) {
+			entityMapping = valuedModelPart.getEntityMappingType();
 		}
 		else {
 			entityMapping = (EntityMappingType) ( (PluralAttributeMapping) modelPart ).getElementDescriptor().getPartMappingType();

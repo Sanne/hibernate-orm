@@ -57,7 +57,7 @@ public class EntityValuedPathInterpretation<T> extends AbstractSqmPathInterpreta
 		final TableGroup tableGroup = sqlAstCreationState
 				.getFromClauseAccess()
 				.findTableGroup( sqmPath.getNavigablePath() );
-		final EntityValuedModelPart pathMapping = (EntityValuedModelPart) tableGroup.getModelPart();
+		final EntityValuedModelPart pathMapping = tableGroup.getModelPart().asEntityValuedModelPart();
 		if ( inferredMapping instanceof EntityAssociationMapping ) {
 			final EntityAssociationMapping inferredAssociation = (EntityAssociationMapping) inferredMapping;
 			if ( pathMapping instanceof EntityAssociationMapping && inferredMapping != pathMapping ) {
@@ -127,7 +127,7 @@ public class EntityValuedPathInterpretation<T> extends AbstractSqmPathInterpreta
 				return from(
 						sqmPath.getNavigablePath(),
 						tableGroup,
-						(EntityValuedModelPart) inferredMapping,
+						inferredMapping.asEntityValuedModelPart(),
 						inferredMapping,
 						sqlAstCreationState
 				);
@@ -444,7 +444,7 @@ public class EntityValuedPathInterpretation<T> extends AbstractSqmPathInterpreta
 
 	@Override
 	public EntityValuedModelPart getExpressionType() {
-		return (EntityValuedModelPart) super.getExpressionType();
+		return super.getExpressionType().asEntityValuedModelPart();
 	}
 
 }

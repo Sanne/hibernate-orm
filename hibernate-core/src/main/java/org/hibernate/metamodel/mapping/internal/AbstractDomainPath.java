@@ -76,13 +76,13 @@ public abstract class AbstractDomainPath implements DomainPath {
 					)
 			);
 		}
-		else if ( referenceModelPart instanceof EntityValuedModelPart ) {
+		else if ( referenceModelPart.asEntityValuedModelPart() != null ) {
 			final ModelPart subPart;
 			if ( ELEMENT_TOKEN.equals( modelPartName ) ) {
-				subPart = ( (EntityValuedModelPart) referenceModelPart ).getEntityMappingType().getIdentifierMapping();
+				subPart = referenceModelPart.asEntityValuedModelPart().getEntityMappingType().getIdentifierMapping();
 			}
 			else {
-				subPart = ( (EntityValuedModelPart) referenceModelPart ).findSubPart( modelPartName );
+				subPart = referenceModelPart.asEntityValuedModelPart().findSubPart( modelPartName );
 			}
 			return resolve( subPart, ast, tableGroup, modelPartName, creationState );
 		}
@@ -151,13 +151,13 @@ public abstract class AbstractDomainPath implements DomainPath {
 					creationState
 			);
 		}
-		else if ( referenceModelPart instanceof EntityValuedModelPart ) {
+		else if ( referenceModelPart.asEntityValuedModelPart() != null ) {
 			ModelPart subPart;
 			if ( ELEMENT_TOKEN.equals( modelPartName ) ) {
-				subPart = ( (EntityValuedModelPart) referenceModelPart ).getEntityMappingType().getIdentifierMapping();
+				subPart = referenceModelPart.asEntityValuedModelPart().getEntityMappingType().getIdentifierMapping();
 			}
 			else {
-				subPart = ( (EntityValuedModelPart) referenceModelPart ).findSubPart( modelPartName );
+				subPart = referenceModelPart.asEntityValuedModelPart().findSubPart( modelPartName );
 				if ( subPart == null && referenceModelPart instanceof ToOneAttributeMapping ) {
 					// this is the case of sort by to-one attribute inside an embedded item,
 					// at this stage the foreign key descriptor should have been set on the attribute mapping,

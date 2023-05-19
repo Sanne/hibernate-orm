@@ -127,4 +127,9 @@ public interface EntityValuedModelPart extends FetchableContainer {
 			SharedSessionContractImplementor session) {
 		return getEntityMappingType().forEachJdbcValue( value, offset, x, y, consumer, session );
 	}
+
+	@Override
+	default EntityValuedModelPart asEntityValuedModelPart() {
+		return this;
+	}
 }
