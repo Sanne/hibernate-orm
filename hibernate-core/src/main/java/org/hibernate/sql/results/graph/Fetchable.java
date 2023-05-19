@@ -11,6 +11,7 @@ import org.hibernate.engine.FetchTiming;
 import org.hibernate.internal.util.IndexedConsumer;
 import org.hibernate.metamodel.mapping.AttributeMapping;
 import org.hibernate.metamodel.mapping.EntityMappingType;
+import org.hibernate.metamodel.mapping.EntityVersionMapping;
 import org.hibernate.metamodel.mapping.ModelPart;
 import org.hibernate.metamodel.model.domain.NavigableRole;
 import org.hibernate.spi.NavigablePath;
@@ -99,4 +100,9 @@ public interface Fetchable extends ModelPart {
 			return true;
 		}
 	}
+
+	default EntityVersionMapping asEntityVersionMapping() {
+		return null;
+	}
+
 }

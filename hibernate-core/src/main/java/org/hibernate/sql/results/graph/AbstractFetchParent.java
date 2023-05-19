@@ -64,8 +64,9 @@ public abstract class AbstractFetchParent implements FetchParent {
 
 	@Override
 	public Fetch findFetch(final Fetchable fetchable) {
-		if ( fetchable instanceof EntityVersionMapping ) {
-			return fetches.get( ( (EntityVersionMapping) fetchable ).getVersionAttribute() );
+		EntityVersionMapping converted = fetchable.asEntityVersionMapping();
+		if ( converted != null ) {
+			return fetches.get( converted.getVersionAttribute() );
 		}
 		return fetches.get( fetchable );
 	}

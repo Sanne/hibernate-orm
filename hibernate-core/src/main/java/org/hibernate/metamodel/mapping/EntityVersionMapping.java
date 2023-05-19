@@ -41,4 +41,9 @@ public interface EntityVersionMapping extends BasicValuedModelPart {
 	default AttributeMapping asAttributeMapping() {
 		return getVersionAttribute();
 	}
+
+	default EntityVersionMapping asEntityVersionMapping() {
+		return this;
+	}
+
 }
