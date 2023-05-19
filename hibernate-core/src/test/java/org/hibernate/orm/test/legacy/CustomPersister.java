@@ -66,6 +66,7 @@ import org.hibernate.sql.ast.tree.from.TableGroup;
 import org.hibernate.sql.results.graph.DomainResult;
 import org.hibernate.sql.results.graph.DomainResultCreationState;
 import org.hibernate.tuple.entity.EntityMetamodel;
+import org.hibernate.type.AssociationType;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.Type;
 import org.hibernate.type.descriptor.java.JavaType;
@@ -550,6 +551,11 @@ public class CustomPersister implements EntityPersister {
 
 	public Type[] getPropertyTypes() {
 		return TYPES;
+	}
+
+	@Override
+	public AssociationType[] getAssociationPropertyTypes() {
+		return new AssociationType[0];
 	}
 
 	public String[] getPropertyNames() {
