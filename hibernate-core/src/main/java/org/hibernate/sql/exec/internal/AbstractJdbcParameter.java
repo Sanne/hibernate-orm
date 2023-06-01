@@ -15,6 +15,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.util.IndexedConsumer;
 import org.hibernate.metamodel.mapping.JdbcMapping;
 import org.hibernate.metamodel.mapping.MappingModelExpressible;
+import org.hibernate.metamodel.mapping.ReadOnlyList;
 import org.hibernate.metamodel.mapping.SqlExpressible;
 import org.hibernate.query.BindableType;
 import org.hibernate.sql.ast.SqlAstWalker;
@@ -45,6 +46,11 @@ public abstract class AbstractJdbcParameter
 	@Override
 	public JdbcParameterBinder getParameterBinder() {
 		return this;
+	}
+
+	@Override
+	public ReadOnlyList<JdbcMapping> readJdbcMappings() {
+		return null;
 	}
 
 	@Override

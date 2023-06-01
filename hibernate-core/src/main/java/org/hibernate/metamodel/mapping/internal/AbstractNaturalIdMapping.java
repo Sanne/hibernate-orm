@@ -7,8 +7,11 @@
 package org.hibernate.metamodel.mapping.internal;
 
 import org.hibernate.cache.spi.access.NaturalIdDataAccess;
+import org.hibernate.internal.util.IndexedConsumer;
 import org.hibernate.metamodel.mapping.EntityMappingType;
+import org.hibernate.metamodel.mapping.JdbcMapping;
 import org.hibernate.metamodel.mapping.NaturalIdMapping;
+import org.hibernate.metamodel.mapping.ReadOnlyList;
 import org.hibernate.metamodel.model.domain.NavigableRole;
 
 /**
@@ -52,5 +55,15 @@ public abstract class AbstractNaturalIdMapping implements NaturalIdMapping {
 	@Override
 	public EntityMappingType findContainingEntityMapping() {
 		return declaringType;
+	}
+
+	@Override
+	public ReadOnlyList<JdbcMapping> readJdbcMappings() {
+//		forEachJdbcType()
+		return null;
+	}
+	int forEachJdbcType(int offset, IndexedConsumer<JdbcMapping> action)
+	{
+
 	}
 }
