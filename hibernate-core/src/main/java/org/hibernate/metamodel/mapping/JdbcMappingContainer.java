@@ -22,15 +22,6 @@ public interface JdbcMappingContainer {
 		return forEachJdbcType( (index, jdbcMapping) -> {} );
 	}
 
-	/**
-	 * The list of JDBC mappings
-	 */
-	default List<JdbcMapping> getJdbcMappings() {
-		final List<JdbcMapping> results = new ArrayList<>();
-		forEachJdbcType( (index, jdbcMapping) -> results.add( jdbcMapping ) );
-		return results;
-	}
-
 	default JdbcMapping getJdbcMapping(int index) {
 		return readJdbcMappings().get( index );
 	}

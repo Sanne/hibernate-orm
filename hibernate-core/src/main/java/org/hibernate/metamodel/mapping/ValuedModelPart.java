@@ -28,11 +28,6 @@ public interface ValuedModelPart extends ModelPart, ValueMapping, SelectableMapp
 	}
 
 	@Override
-	default List<JdbcMapping> getJdbcMappings() {
-		return ModelPart.super.getJdbcMappings();
-	}
-
-	@Override
 	default JdbcMapping getJdbcMapping(int index) {
 		return ModelPart.super.getJdbcMapping( index );
 	}
