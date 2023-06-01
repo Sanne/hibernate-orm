@@ -32,14 +32,16 @@ public interface JdbcMappingContainer {
 	}
 
 	default JdbcMapping getJdbcMapping(int index) {
-		return getJdbcMappings().get( index );
+		return readJdbcMappings().get( index );
 	}
 
 	default JdbcMapping getSingleJdbcMapping() {
-		final List<JdbcMapping> jdbcMappings = getJdbcMappings();
+		final ReadOnlyList<JdbcMapping> jdbcMappings = readJdbcMappings();
 		assert jdbcMappings.size() == 1;
 		return jdbcMappings.get( 0 );
 	}
+
+	ReadOnlyList<JdbcMapping> readJdbcMappings();
 
 	/**
 	 * Visit each of JdbcMapping

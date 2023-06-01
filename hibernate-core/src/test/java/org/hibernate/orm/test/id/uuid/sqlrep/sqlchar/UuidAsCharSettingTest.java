@@ -18,6 +18,7 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.mapping.Property;
 import org.hibernate.metamodel.MappingMetamodel;
 import org.hibernate.metamodel.mapping.JdbcMapping;
+import org.hibernate.metamodel.mapping.ReadOnlyList;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.descriptor.jdbc.spi.JdbcTypeRegistry;
@@ -69,8 +70,8 @@ public class UuidAsCharSettingTest {
 	public void testUsage(SessionFactoryScope scope) {
 		final MappingMetamodel domainModel = scope.getSessionFactory().getRuntimeMetamodels().getMappingMetamodel();
 		final EntityPersister entityDescriptor = domainModel.findEntityDescriptor( Node.class );
-		final List<JdbcMapping> identifierJdbcMappings = entityDescriptor.getIdentifierMapping().getJdbcMappings();
-		assertThat( identifierJdbcMappings, hasSize( 1 ) );
+		final ReadOnlyList<JdbcMapping> identifierJdbcMappings = entityDescriptor.getIdentifierMapping().readJdbcMappings();
+		assertThat( identifierJdbcMappings.size(), is( 1 ) );
 		final JdbcMapping jdbcMapping = identifierJdbcMappings.get( 0 );
 		assertThat( jdbcMapping.getJdbcType().isString(), is( true ) );
 

@@ -181,7 +181,7 @@ public class TemporaryTable implements Exportable, Contributable {
 							.getEntityBinding( entityDescriptor.getEntityName() );
 
 					final Iterator<JdbcMapping> jdbcMappings = entityDescriptor.getIdentifierMapping()
-							.getJdbcMappings()
+							.readJdbcMappings()
 							.iterator();
 					for ( Column column : entityBinding.getKey().getColumns() ) {
 						final JdbcMapping jdbcMapping = jdbcMappings.next();
@@ -316,7 +316,7 @@ public class TemporaryTable implements Exportable, Contributable {
 					if ( identityColumn ) {
 						hasOptimizer = false;
 						final Iterator<JdbcMapping> jdbcMappings = entityDescriptor.getIdentifierMapping()
-								.getJdbcMappings()
+								.readJdbcMappings()
 								.iterator();
 						for ( Column column : entityBinding.getKey().getColumns() ) {
 							final JdbcMapping jdbcMapping = jdbcMappings.next();
@@ -350,7 +350,7 @@ public class TemporaryTable implements Exportable, Contributable {
 						}
 					}
 					final Iterator<JdbcMapping> jdbcMappings = entityDescriptor.getIdentifierMapping()
-							.getJdbcMappings()
+							.readJdbcMappings()
 							.iterator();
 					for ( Column column : entityBinding.getKey().getColumns() ) {
 						final JdbcMapping jdbcMapping = jdbcMappings.next();
