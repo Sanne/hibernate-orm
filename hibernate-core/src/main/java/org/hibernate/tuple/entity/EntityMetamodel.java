@@ -399,10 +399,10 @@ public class EntityMetamodel implements Serializable {
 			LOG.lazyPropertyFetchingAvailable( name );
 		}
 
-		lazy = persistentClass.isLazy() && (
-				// TODO: this disables laziness even in non-pojo entity modes:
-				!persistentClass.hasPojoRepresentation() || !isFinalClass( persistentClass.getProxyInterface() ) )
-				|| bytecodeEnhancementMetadata.isEnhancedForLazyLoading();
+		final boolean isFinalClass = persistentClass.getProxyInterface() != null && isFinalClass( persistentClass.getProxyInterface() );
+		final boolean couldBeMadeLazy = !isFinalClass && ( !persistentClass.hasPojoRepresentation() || bytecodeEnhancementMetadata.isEnhancedForLazyLoading() );
+		// TODO: this disables laziness even in non-pojo entity modes, apparently currently necessary to have Envers pass tests:
+		lazy = couldBeMadeLazy && persistentClass.isLazy() && persistentClass.hasPojoRepresentation();
 
 		mutable = persistentClass.isMutable();
 		if ( persistentClass.isAbstract() == null ) {
