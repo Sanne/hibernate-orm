@@ -41,6 +41,8 @@ import static org.hibernate.bytecode.internal.BytecodeProviderInitiator.buildDef
  */
 public class BytecodeEnhancerRunner extends Suite {
 
+	private static final boolean DUMP_CLASSES_FOR_DIAGNOSTICS = Boolean.getBoolean( "dump_classes_for_diagnostics" );
+
 	// Allow reusing the bytecode provider during the testsuite, to expedite builds:
 	private static final BytecodeProvider DEF_BYTECODE_PROVIDER = new org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl();
 
@@ -225,12 +227,22 @@ public class BytecodeEnhancerRunner extends Suite {
 							return defineClass( name, original, 0, original.length );
 						}
 
-						File f = new File( debugOutputDir + File.separator + name.replace( ".", File.separator ) + ".class" );
-						f.getParentFile().mkdirs();
-						f.createNewFile();
-						try ( FileOutputStream out = new FileOutputStream( f ) ) {
-							out.write( enhanced );
+						if ( DUMP_CLASSES_FOR_DIAGNOSTICS ) {
+							File f = new File( debugOutputDir + File.separator + name.replace(
+									".",
+									File.separator
+							) + ".class" );
+							boolean dirCreated = f.getParentFile().mkdirs();
+							if ( dirCreated ) {
+								boolean fileCreated = f.createNewFile();
+								if ( fileCreated ) {
+									try (FileOutputStream out = new FileOutputStream( f )) {
+										out.write( enhanced );
+									}
+								}
+							}
 						}
+
 						return defineClass( name, enhanced, 0, enhanced.length );
 					}
 					catch ( Throwable t ) {
