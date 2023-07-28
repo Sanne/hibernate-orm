@@ -55,6 +55,7 @@ public class BytecodeEnhancerRunner extends Suite {
 
 	public BytecodeEnhancerRunner(Class<?> klass) throws ClassNotFoundException, InitializationError {
 		super( CUSTOM_RUNNER_BUILDER, klass, enhanceTestClass( klass ) );
+		DEF_BYTECODE_PROVIDER.resetCaches();
 	}
 
 	private static Class<?>[] enhanceTestClass(Class<?> klass) throws ClassNotFoundException {
