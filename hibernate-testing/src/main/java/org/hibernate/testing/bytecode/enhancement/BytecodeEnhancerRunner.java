@@ -208,15 +208,12 @@ public class BytecodeEnhancerRunner extends Suite {
 						return c;
 					}
 
-					try ( InputStream is = getResourceAsStream( name.replace( '.', '/' ) + ".class" ) ) {
-						if ( is == null ) {
-							throw new ClassNotFoundException( name + " not found" );
-						}
-
-						byte[] original = new byte[is.available()];
-						try ( BufferedInputStream bis = new BufferedInputStream( is ) ) {
-							bis.read( original );
-						}
+					InputStream is = getResourceAsStream( name.replace( '.', '/' ) + ".class" );
+					if ( is == null ) {
+						throw new ClassNotFoundException( name + " not found" );
+					}
+					try {
+						byte[] original = ByteCodeHelper.readByteCode( is );
 
 						byte[] enhanced = enhancer.enhance( name, original );
 						if ( enhanced == null ) {
