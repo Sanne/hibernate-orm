@@ -22,6 +22,8 @@ import org.hibernate.bytecode.enhance.spi.EnhancementContext;
 import org.hibernate.bytecode.enhance.spi.Enhancer;
 import org.hibernate.bytecode.enhance.spi.UnloadedClass;
 import org.hibernate.bytecode.enhance.spi.UnloadedField;
+import org.hibernate.bytecode.spi.ByteCodeHelper;
+import org.hibernate.bytecode.spi.BytecodeProvider;
 import org.hibernate.cfg.Environment;
 
 import org.hibernate.testing.junit4.CustomRunner;
@@ -38,6 +40,9 @@ import static org.hibernate.bytecode.internal.BytecodeProviderInitiator.buildDef
  * @author Luis Barreiro
  */
 public class BytecodeEnhancerRunner extends Suite {
+
+	// Allow reusing the bytecode provider during the testsuite, to expedite builds:
+	private static final BytecodeProvider DEF_BYTECODE_PROVIDER = new org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl();
 
 	private static final RunnerBuilder CUSTOM_RUNNER_BUILDER = new RunnerBuilder() {
 		@Override
@@ -184,7 +189,7 @@ public class BytecodeEnhancerRunner extends Suite {
 			EnhancementContext enhancerContext,
 			List<EnhancementSelector> selectors) {
 		return new EnhancingClassLoader(
-				buildDefaultBytecodeProvider().getEnhancer( enhancerContext ),
+				DEF_BYTECODE_PROVIDER.getEnhancer( enhancerContext ),
 				selectors
 		);
 	}
