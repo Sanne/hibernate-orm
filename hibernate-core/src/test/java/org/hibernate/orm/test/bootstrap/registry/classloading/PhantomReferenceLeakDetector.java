@@ -32,7 +32,7 @@ public final class PhantomReferenceLeakDetector {
 	 * So consider carefully if there's not a deeper
 	 * problem before setting these to even larger amounts.
 	 */
-	private static final int MAX_TOTAL_WAIT_SECONDS = 180;
+	private static final int MAX_TOTAL_WAIT_SECONDS = 5;
 	private static final int GC_ATTEMPTS = MAX_TOTAL_WAIT_SECONDS * 5;
 	private static PhantomReference hold;
 
