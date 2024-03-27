@@ -16,6 +16,7 @@ import org.hibernate.bytecode.spi.ByteCodeHelper;
 import org.hibernate.bytecode.spi.ReflectionOptimizer;
 import org.hibernate.property.access.internal.PropertyAccessStrategyFieldImpl;
 import org.hibernate.property.access.spi.PropertyAccess;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.proxy.pojo.bytebuddy.ByteBuddyProxyHelper;
 import org.hibernate.testing.orm.junit.JiraKey;
 import org.junit.Test;
@@ -56,9 +57,10 @@ public class GenerateProxiesTest {
 
 		final PropertyAccessStrategyFieldImpl propertyAccessStrategy = new PropertyAccessStrategyFieldImpl();
 
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(MappedSuperclassEntity.class);
 		propertyAccessMap.put(
 				"timestamp",
-				propertyAccessStrategy.buildPropertyAccess(MappedSuperclassEntity.class, "value", true )
+				propertyAccessStrategy.buildPropertyAccess(type, "value", true )
 		);
 
 		ReflectionOptimizer reflectionOptimizer = bytecodeProvider.getReflectionOptimizer(

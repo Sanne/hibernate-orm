@@ -42,6 +42,7 @@ import org.hibernate.metamodel.spi.EmbeddableInstantiator;
 import org.hibernate.property.access.spi.Setter;
 import org.hibernate.generator.Generator;
 import org.hibernate.generator.BeforeExecutionGenerator;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.resource.beans.internal.FallbackBeanInstanceProducer;
 import org.hibernate.resource.beans.spi.ManagedBeanRegistry;
 import org.hibernate.type.ComponentType;
@@ -583,6 +584,7 @@ public class Component extends SimpleValue implements MetaAttributable, Sortable
 				getType()
 		);
 
+		final TypeIntrospectionHelper declarerHelper = attributeDeclarer == null ? null : TypeIntrospectionHelper.fromType( attributeDeclarer );
 		final List<Property> properties = getProperties();
 		for ( int i = 0; i < properties.size(); i++ ) {
 			final Property property = properties.get( i );
@@ -594,7 +596,7 @@ public class Component extends SimpleValue implements MetaAttributable, Sortable
 					// the StandardGenerationContextLocator
 					generator.addGeneratedValuePlan( new ValueGenerationPlan(
 							value.createGenerator( identifierGeneratorFactory, dialect, rootClass ),
-							getType().isMutable() ? injector( property, attributeDeclarer ) : null,
+							getType().isMutable() ? injector( property, declarerHelper ) : null,
 							i
 					) );
 				}
@@ -603,7 +605,7 @@ public class Component extends SimpleValue implements MetaAttributable, Sortable
 		return generator;
 	}
 
-	private Setter injector(Property property, Class<?> attributeDeclarer) {
+	private Setter injector(Property property, TypeIntrospectionHelper attributeDeclarer) {
 		return property.getPropertyAccessStrategy( attributeDeclarer )
 				.buildPropertyAccess( attributeDeclarer, property.getName(), true )
 				.getSetter();

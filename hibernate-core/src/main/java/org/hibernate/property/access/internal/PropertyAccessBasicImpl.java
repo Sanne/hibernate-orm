@@ -9,12 +9,7 @@ package org.hibernate.property.access.internal;
 import java.lang.reflect.Method;
 
 import org.hibernate.internal.util.ReflectHelper;
-import org.hibernate.property.access.spi.Getter;
-import org.hibernate.property.access.spi.GetterMethodImpl;
-import org.hibernate.property.access.spi.PropertyAccess;
-import org.hibernate.property.access.spi.PropertyAccessStrategy;
-import org.hibernate.property.access.spi.Setter;
-import org.hibernate.property.access.spi.SetterMethodImpl;
+import org.hibernate.property.access.spi.*;
 
 import org.jboss.logging.Logger;
 
@@ -36,7 +31,7 @@ public class PropertyAccessBasicImpl implements PropertyAccess {
 
 	public PropertyAccessBasicImpl(
 			PropertyAccessStrategyBasicImpl strategy,
-			Class<?> containerJavaType,
+			TypeIntrospectionHelper containerJavaType,
 			final String propertyName,
 			boolean setterRequired) {
 		this.strategy = strategy;

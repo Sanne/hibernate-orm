@@ -27,13 +27,13 @@ import static org.hibernate.internal.CoreLogging.messageLogger;
 public class SetterMethodImpl implements Setter {
 	private static final CoreMessageLogger LOG = messageLogger( SetterMethodImpl.class );
 
-	private final Class<?> containerClass;
+	private final TypeIntrospectionHelper containerClass;
 	private final String propertyName;
 	private final Method setterMethod;
 
 	private final boolean isPrimitive;
 
-	public SetterMethodImpl(Class<?> containerClass, String propertyName, Method setterMethod) {
+	public SetterMethodImpl(TypeIntrospectionHelper containerClass, String propertyName, Method setterMethod) {
 		this.containerClass = containerClass;
 		this.propertyName = propertyName;
 		this.setterMethod = setterMethod;
@@ -52,7 +52,7 @@ public class SetterMethodImpl implements Setter {
 						npe,
 						"Null value was assigned to a property of primitive type",
 						true,
-						containerClass,
+						containerClass.getType(),
 						propertyName
 				);
 			}
@@ -61,7 +61,7 @@ public class SetterMethodImpl implements Setter {
 						npe,
 						"NullPointerException occurred while calling",
 						true,
-						containerClass,
+						containerClass.getType(),
 						propertyName
 				);
 			}
@@ -76,7 +76,7 @@ public class SetterMethodImpl implements Setter {
 					cause,
 					"Exception occurred inside",
 					true,
-					containerClass,
+					containerClass.getType(),
 					propertyName
 			);
 		}
@@ -85,7 +85,7 @@ public class SetterMethodImpl implements Setter {
 					iae,
 					"IllegalAccessException occurred while calling",
 					true,
-					containerClass,
+					containerClass.getType(),
 					propertyName
 			);
 			//cannot occur
@@ -96,7 +96,7 @@ public class SetterMethodImpl implements Setter {
 						iae,
 						"Null value was assigned to a property of primitive type",
 						true,
-						containerClass,
+						containerClass.getType(),
 						propertyName
 				);
 			}
@@ -106,7 +106,7 @@ public class SetterMethodImpl implements Setter {
 				LOG.expectedType( expectedType.getName(), value == null ? null : value.getClass().getName() );
 				throw new PropertySetterAccessException(
 						iae,
-						containerClass,
+						containerClass.getType(),
 						propertyName,
 						expectedType,
 						target,
@@ -117,7 +117,7 @@ public class SetterMethodImpl implements Setter {
 	}
 
 	public Class<?> getContainerClass() {
-		return containerClass;
+		return containerClass.getType();
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class SetterMethodImpl implements Setter {
 	}
 
 	private Object writeReplace() {
-		return new SerialForm( containerClass, propertyName, setterMethod );
+		return new SerialForm( containerClass.getType(), propertyName, setterMethod );
 	}
 
 	private static class SerialForm extends AbstractSetterMethodSerialForm implements Serializable {
@@ -140,7 +140,7 @@ public class SetterMethodImpl implements Setter {
 		}
 
 		private Object readResolve() {
-			return new SetterMethodImpl( getContainerClass(), getPropertyName(), resolveMethod() );
+			return new SetterMethodImpl( TypeIntrospectionHelper.fromType( getContainerClass() ), getPropertyName(), resolveMethod() );
 		}
 	}
 }

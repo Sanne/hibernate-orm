@@ -9,6 +9,7 @@ package org.hibernate.orm.test.property;
 import org.hibernate.property.access.internal.PropertyAccessStrategyBasicImpl;
 import org.hibernate.property.access.spi.PropertyAccess;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.testing.junit4.BaseUnitTestCase;
 import org.junit.Test;
 
@@ -71,15 +72,16 @@ public class BasicPropertyAccessorTest extends BaseUnitTestCase {
 	@Test
 	public void testBridgeMethodDisregarded() {
 		PropertyAccessStrategyBasicImpl accessStrategy = PropertyAccessStrategyBasicImpl.INSTANCE;
-
 		{
-			final PropertyAccess access = accessStrategy.buildPropertyAccess( Duper.class, "it", true );
+			TypeIntrospectionHelper duperType = TypeIntrospectionHelper.fromType(Duper.class);
+			final PropertyAccess access = accessStrategy.buildPropertyAccess( duperType, "it", true );
 			assertEquals( String.class, access.getGetter().getReturnTypeClass() );
 			assertEquals( Object.class, access.getSetter().getMethod().getParameterTypes()[0] );
 		}
 
 		{
-			final PropertyAccess access = accessStrategy.buildPropertyAccess( Duper2.class, "it", true );
+			TypeIntrospectionHelper duperType2 = TypeIntrospectionHelper.fromType(Duper2.class);
+			final PropertyAccess access = accessStrategy.buildPropertyAccess( duperType2, "it", true );
 			assertEquals( String.class, access.getGetter().getReturnTypeClass() );
 			assertEquals( String.class, access.getSetter().getMethod().getParameterTypes()[0] );
 		}

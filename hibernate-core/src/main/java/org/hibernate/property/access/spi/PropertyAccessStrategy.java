@@ -22,5 +22,5 @@ public interface PropertyAccessStrategy {
 	 *
 	 * @return The appropriate PropertyAccess
 	 */
-	PropertyAccess buildPropertyAccess(Class<?> containerJavaType, String propertyName, boolean setterRequired);
+	PropertyAccess buildPropertyAccess(TypeIntrospectionHelper containerJavaType, String propertyName, boolean setterRequired);
 }

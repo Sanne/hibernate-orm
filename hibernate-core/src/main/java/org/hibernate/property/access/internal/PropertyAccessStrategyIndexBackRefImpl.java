@@ -18,6 +18,7 @@ import org.hibernate.property.access.spi.PropertyAccessStrategy;
 import org.hibernate.property.access.spi.Setter;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 /**
  * @author Gavin King
@@ -33,7 +34,7 @@ public class PropertyAccessStrategyIndexBackRefImpl implements PropertyAccessStr
 	}
 
 	@Override
-	public PropertyAccess buildPropertyAccess(Class<?> containerJavaType, String propertyName, boolean setterRequired) {
+	public PropertyAccess buildPropertyAccess(TypeIntrospectionHelper containerJavaType, String propertyName, boolean setterRequired) {
 		return new PropertyAccessIndexBackRefImpl( this );
 	}
 

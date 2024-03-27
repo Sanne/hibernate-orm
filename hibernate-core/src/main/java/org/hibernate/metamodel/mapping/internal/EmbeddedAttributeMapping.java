@@ -26,6 +26,7 @@ import org.hibernate.metamodel.mapping.SelectableMappings;
 import org.hibernate.metamodel.model.domain.NavigableRole;
 import org.hibernate.property.access.internal.PropertyAccessStrategyBasicImpl;
 import org.hibernate.property.access.spi.PropertyAccess;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.query.sqm.sql.SqmToSqlAstConverter;
 import org.hibernate.spi.NavigablePath;
 import org.hibernate.sql.ast.Clause;
@@ -366,7 +367,7 @@ public class EmbeddedAttributeMapping
 		final PropertyAccess parentInjectionAttributePropertyAccess;
 		if ( parentInjectionAttributeName != null ) {
 			parentInjectionAttributePropertyAccess = PropertyAccessStrategyBasicImpl.INSTANCE.buildPropertyAccess(
-					embeddableMappingType.getMappedJavaType().getJavaTypeClass(),
+					TypeIntrospectionHelper.fromType( embeddableMappingType.getMappedJavaType().getJavaTypeClass() ), //TODO can we reuse the TypeIntrospectionHelper instances?
 					parentInjectionAttributeName,
 					true );
 		}

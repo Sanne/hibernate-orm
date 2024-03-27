@@ -34,6 +34,7 @@ import org.hibernate.boot.spi.MetadataBuildingContext;
 import org.hibernate.engine.spi.ExecuteUpdateResultCheckStyle;
 import org.hibernate.internal.util.ReflectHelper;
 import org.hibernate.internal.util.StringHelper;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 import static org.hibernate.internal.util.StringHelper.nullIfEmpty;
 
@@ -233,16 +234,17 @@ public class Helper {
 			String attributeOwnerClassName,
 			String attributeName) {
 		final Class attributeOwnerClass = buildingContext.getBootstrapContext().getClassLoaderAccess().classForName( attributeOwnerClassName );
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(attributeOwnerClass);
 		return reflectedPropertyClass(
 				buildingContext,
-				attributeOwnerClass,
+				type,
 				attributeName
 		);
 	}
 
 	public static Class reflectedPropertyClass(
 			MetadataBuildingContext buildingContext,
-			Class attributeOwnerClass,
+			TypeIntrospectionHelper attributeOwnerClass,
 			final String attributeName) {
 		return ReflectHelper.reflectedPropertyClass( attributeOwnerClass, attributeName );
 	}

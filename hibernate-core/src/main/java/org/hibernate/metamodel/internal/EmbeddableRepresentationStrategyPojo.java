@@ -31,6 +31,7 @@ import org.hibernate.property.access.internal.PropertyAccessStrategyIndexBackRef
 import org.hibernate.property.access.spi.BuiltInPropertyAccessStrategies;
 import org.hibernate.property.access.spi.PropertyAccess;
 import org.hibernate.property.access.spi.PropertyAccessStrategy;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.java.spi.JavaTypeRegistry;
 import org.hibernate.type.internal.CompositeUserTypeJavaTypeWrapper;
@@ -116,7 +117,8 @@ public class EmbeddableRepresentationStrategyPojo extends AbstractEmbeddableRepr
 
 	@Override
 	protected PropertyAccess buildPropertyAccess(Property bootAttributeDescriptor) {
-		PropertyAccessStrategy strategy = bootAttributeDescriptor.getPropertyAccessStrategy( getEmbeddableJavaType().getJavaTypeClass() );
+		final TypeIntrospectionHelper embeddableHelper = TypeIntrospectionHelper.fromType( getEmbeddableJavaType().getJavaTypeClass() );
+		PropertyAccessStrategy strategy = bootAttributeDescriptor.getPropertyAccessStrategy( embeddableHelper );
 
 		if ( strategy == null ) {
 			final String propertyAccessorName = bootAttributeDescriptor.getPropertyAccessorName();
@@ -160,7 +162,7 @@ public class EmbeddableRepresentationStrategyPojo extends AbstractEmbeddableRepr
 		}
 
 		return strategy.buildPropertyAccess(
-				getEmbeddableJavaType().getJavaTypeClass(),
+				embeddableHelper,
 				bootAttributeDescriptor.getName(),
 				instantiator instanceof StandardEmbeddableInstantiator
 		);

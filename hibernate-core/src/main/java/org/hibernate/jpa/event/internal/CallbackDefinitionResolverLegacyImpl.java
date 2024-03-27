@@ -28,6 +28,7 @@ import org.hibernate.jpa.event.spi.CallbackType;
 import org.hibernate.mapping.Property;
 import org.hibernate.property.access.spi.Getter;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.jboss.logging.Logger;
 
 /**
@@ -175,7 +176,8 @@ public final class CallbackDefinitionResolverLegacyImpl {
 			CallbackType callbackType) {
 		final Class<?> embeddableClass = embeddableProperty.getType().getReturnedClass();
 		final XClass embeddableXClass = reflectionManager.toXClass( embeddableClass );
-		final Getter embeddableGetter = embeddableProperty.getGetter( entityClass );
+		final TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType( entityClass );//TODO can use a cache?
+		final Getter embeddableGetter = embeddableProperty.getGetter( type );
 		final List<CallbackDefinition> callbackDefinitions = new ArrayList<>();
 		final List<String> callbacksMethodNames = new ArrayList<>();
 		XClass currentClazz = embeddableXClass;

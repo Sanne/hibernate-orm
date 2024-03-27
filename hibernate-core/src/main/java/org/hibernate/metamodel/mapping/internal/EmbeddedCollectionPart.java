@@ -26,6 +26,7 @@ import org.hibernate.metamodel.model.domain.NavigableRole;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.property.access.internal.PropertyAccessStrategyBasicImpl;
 import org.hibernate.property.access.spi.PropertyAccess;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.query.sqm.sql.SqmToSqlAstConverter;
 import org.hibernate.spi.NavigablePath;
 import org.hibernate.sql.ast.Clause;
@@ -81,7 +82,7 @@ public class EmbeddedCollectionPart implements CollectionPart, EmbeddableValuedF
 		this.nature = nature;
 		if ( parentInjectionAttributeName != null ) {
 			parentInjectionAttributePropertyAccess = PropertyAccessStrategyBasicImpl.INSTANCE.buildPropertyAccess(
-					embeddableMappingType.getMappedJavaType().getJavaTypeClass(),
+					TypeIntrospectionHelper.fromType( embeddableMappingType.getMappedJavaType().getJavaTypeClass() ),//TODO can reuse?
 					parentInjectionAttributeName,
 					true );
 		}

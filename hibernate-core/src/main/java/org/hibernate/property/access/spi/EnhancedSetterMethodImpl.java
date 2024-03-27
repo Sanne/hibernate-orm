@@ -30,10 +30,10 @@ public class EnhancedSetterMethodImpl extends SetterMethodImpl {
 	private final String propertyName;
 	private final int enhancementState;
 
-	public EnhancedSetterMethodImpl(Class<?> containerClass, String propertyName, Method setterMethod) {
+	public EnhancedSetterMethodImpl(TypeIntrospectionHelper containerClass, String propertyName, Method setterMethod) {
 		super( containerClass, propertyName, setterMethod );
 		this.propertyName = propertyName;
-		this.enhancementState = determineEnhancementState( containerClass, setterMethod.getReturnType() );
+		this.enhancementState = determineEnhancementState( containerClass.getType(), setterMethod.getReturnType() );
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class EnhancedSetterMethodImpl extends SetterMethodImpl {
 		}
 
 		private Object readResolve() {
-			return new EnhancedSetterMethodImpl( getContainerClass(), getPropertyName(), resolveMethod() );
+			return new EnhancedSetterMethodImpl( TypeIntrospectionHelper.fromType( getContainerClass() ), getPropertyName(), resolveMethod() );
 		}
 	}
 }

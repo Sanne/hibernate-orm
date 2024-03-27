@@ -31,10 +31,10 @@ public class EnhancedSetterImpl extends SetterFieldImpl {
 	private final String propertyName;
 	private final int enhancementState;
 
-	public EnhancedSetterImpl(Class<?> containerClass, String propertyName, Field field) {
+	public EnhancedSetterImpl(TypeIntrospectionHelper containerClass, String propertyName, Field field) {
 		super( containerClass, propertyName, field );
 		this.propertyName = propertyName;
-		this.enhancementState = determineEnhancementState( containerClass, field.getType() );
+		this.enhancementState = determineEnhancementState( containerClass.getType(), field.getType() );
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class EnhancedSetterImpl extends SetterFieldImpl {
 		}
 
 		private Object readResolve() {
-			return new EnhancedSetterImpl( containerClass, propertyName, resolveField() );
+			return new EnhancedSetterImpl( TypeIntrospectionHelper.fromType( containerClass ), propertyName, resolveField() );
 		}
 	}
 }

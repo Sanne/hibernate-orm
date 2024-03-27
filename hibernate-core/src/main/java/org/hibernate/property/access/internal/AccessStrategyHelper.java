@@ -25,6 +25,7 @@ import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Transient;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 import static org.hibernate.engine.internal.ManagedTypeHelper.asCompositeOwner;
 import static org.hibernate.engine.internal.ManagedTypeHelper.asCompositeTracker;
@@ -43,7 +44,7 @@ public class AccessStrategyHelper {
 	public static final int COMPOSITE_OWNER = 2;
 	public static final int PERSISTENT_ATTRIBUTE_INTERCEPTABLE_MASK = 4;
 
-	public static @Nullable Field fieldOrNull(Class<?> containerJavaType, String propertyName) {
+	public static @Nullable Field fieldOrNull(TypeIntrospectionHelper containerJavaType, String propertyName) {
 		try {
 			return findField( containerJavaType, propertyName );
 		}
@@ -52,7 +53,7 @@ public class AccessStrategyHelper {
 		}
 	}
 
-	public static AccessType getAccessType(Class<?> containerJavaType, String propertyName) {
+	public static AccessType getAccessType(TypeIntrospectionHelper containerJavaType, String propertyName) {
 		final Field field = fieldOrNull( containerJavaType, propertyName );
 		final AccessType explicitAccessType = getExplicitAccessType( containerJavaType, propertyName, field );
 		if ( explicitAccessType != null ) {
@@ -60,7 +61,7 @@ public class AccessStrategyHelper {
 		}
 
 		// No @Access on property or field; check to see if containerJavaType has an explicit @Access
-		AccessType classAccessType = getAccessTypeOrNull( containerJavaType );
+		AccessType classAccessType = getAccessTypeOrNull( containerJavaType.getType() );
 		if ( classAccessType != null ) {
 			return classAccessType;
 		}
@@ -69,8 +70,8 @@ public class AccessStrategyHelper {
 		return field != null ? AccessType.FIELD : AccessType.PROPERTY;
 	}
 
-	public static @Nullable AccessType getExplicitAccessType(Class<?> containerClass, String propertyName, @Nullable Field field) {
-		if ( isRecord( containerClass ) ) {
+	public static @Nullable AccessType getExplicitAccessType(TypeIntrospectionHelper containerClass, String propertyName, @Nullable Field field) {
+		if ( containerClass.isRecord() ) {
 			try {
 				containerClass.getMethod( propertyName, NO_PARAM_SIGNATURE );
 				return AccessType.PROPERTY;
@@ -87,7 +88,7 @@ public class AccessStrategyHelper {
 			return AccessType.FIELD;
 		}
 
-		for ( Method method : containerClass.getDeclaredMethods() ) {
+		for ( Method method : containerClass.getNonStaticDeclaredMethods() ) {
 			// if the method has parameters, skip it
 			if ( method.getParameterCount() != 0 ) {
 				continue;
@@ -99,10 +100,6 @@ public class AccessStrategyHelper {
 			}
 
 			if ( method.isAnnotationPresent( Transient.class ) ) {
-				continue;
-			}
-
-			if ( Modifier.isStatic( method.getModifiers() ) ) {
 				continue;
 			}
 
@@ -138,7 +135,7 @@ public class AccessStrategyHelper {
 	}
 
 	private static void checkIsMethodVariant(
-			Class<?> containerClass,
+			TypeIntrospectionHelper containerClass,
 			String propertyName,
 			Method method,
 			String stemName) {
@@ -161,7 +158,7 @@ public class AccessStrategyHelper {
 		}
 	}
 
-	public static @Nullable Method findIsMethodVariant(Class<?> containerClass, String stemName) {
+	public static @Nullable Method findIsMethodVariant(TypeIntrospectionHelper containerClass, String stemName) {
 		// verify that the Class does not also define a method with the same stem name with 'is'
 		try {
 			final Method isMethod = containerClass.getDeclaredMethod( "is" + stemName );

@@ -21,6 +21,7 @@ import org.hibernate.property.access.spi.SetterMethodImpl;
 
 import jakarta.persistence.AccessType;
 import org.checkerframework.checker.nullness.qual.PolyNull;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 import static org.hibernate.internal.util.ReflectHelper.findSetterMethod;
 import static org.hibernate.internal.util.ReflectHelper.getterMethodOrNull;
@@ -36,7 +37,7 @@ public class PropertyAccessMixedImpl implements PropertyAccess {
 	private final Getter getter;
 	private final Setter setter;
 
-	public PropertyAccessMixedImpl(PropertyAccessStrategy strategy, Class<?> containerJavaType, String propertyName) {
+	public PropertyAccessMixedImpl(PropertyAccessStrategy strategy, TypeIntrospectionHelper containerJavaType, String propertyName) {
 		this.strategy = strategy;
 
 		final AccessType propertyAccessType = AccessStrategyHelper.getAccessType( containerJavaType, propertyName );
@@ -75,19 +76,19 @@ public class PropertyAccessMixedImpl implements PropertyAccess {
 
 	// --- //
 
-	private static Getter fieldGetter(Class<?> containerJavaType, String propertyName, Field field) {
+	private static Getter fieldGetter(TypeIntrospectionHelper containerJavaType, String propertyName, Field field) {
 		return new GetterFieldImpl( containerJavaType, propertyName, field );
 	}
 
-	private static Setter fieldSetter(Class<?> containerJavaType, String propertyName, Field field) {
+	private static Setter fieldSetter(TypeIntrospectionHelper containerJavaType, String propertyName, Field field) {
 		return new SetterFieldImpl( containerJavaType, propertyName, field );
 	}
 
-	private static Getter propertyGetter(Class<?> containerJavaType, String propertyName, Method method) {
+	private static Getter propertyGetter(TypeIntrospectionHelper containerJavaType, String propertyName, Method method) {
 		return new GetterMethodImpl( containerJavaType, propertyName, method );
 	}
 
-	private static @PolyNull Setter propertySetter(Class<?> containerJavaType, String propertyName, @PolyNull Method method) {
+	private static @PolyNull Setter propertySetter(TypeIntrospectionHelper containerJavaType, String propertyName, @PolyNull Method method) {
 		return method == null ? null : new SetterMethodImpl( containerJavaType, propertyName, method );
 	}
 

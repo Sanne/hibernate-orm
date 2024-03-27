@@ -24,6 +24,7 @@ import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.internal.util.PropertiesHelper;
 import org.hibernate.internal.util.ReflectHelper;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.testing.DialectCheck;
 import org.hibernate.testing.jdbc.ConnectionProviderDelegate;
 import org.hibernate.testing.jdbc.SharedDriverManagerConnectionProviderImpl;
@@ -103,13 +104,14 @@ public class ConnectionProviderBuilder implements DialectCheck {
 		try {
 			Class<?> dataSourceClass = ReflectHelper.classForName( DATA_SOURCE, ConnectionProviderBuilder.class );
 			DataSource actualDataSource = (DataSource) dataSourceClass.newInstance();
-			ReflectHelper.findSetterMethod( dataSourceClass, "URL", String.class ).invoke(
+			TypeIntrospectionHelper datasourceType = TypeIntrospectionHelper.fromType(dataSourceClass);
+			ReflectHelper.findSetterMethod( datasourceType, "URL", String.class ).invoke(
 					actualDataSource,
 					String.format( URL_FORMAT, dbName )
 			);
-			ReflectHelper.findSetterMethod( dataSourceClass, "user", String.class )
+			ReflectHelper.findSetterMethod( datasourceType, "user", String.class )
 					.invoke( actualDataSource, globalProperties.getProperty( Environment.USER ) );
-			ReflectHelper.findSetterMethod( dataSourceClass, "password", String.class )
+			ReflectHelper.findSetterMethod( datasourceType, "password", String.class )
 					.invoke( actualDataSource, globalProperties.getProperty( Environment.PASS ) );
 
 			final DataSourceInvocationHandler dataSourceInvocationHandler = new DataSourceInvocationHandler(

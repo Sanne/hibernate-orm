@@ -9,6 +9,7 @@ package org.hibernate.mapping;
 import org.hibernate.MappingException;
 import org.hibernate.property.access.internal.PropertyAccessStrategyIndexBackRefImpl;
 import org.hibernate.property.access.spi.PropertyAccessStrategy;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 /**
  * @author Gavin King
@@ -43,7 +44,7 @@ public class IndexBackref extends Property {
 	private PropertyAccessStrategy accessStrategy;
 
 	@Override
-	public PropertyAccessStrategy getPropertyAccessStrategy(Class clazz) throws MappingException {
+	public PropertyAccessStrategy getPropertyAccessStrategy(TypeIntrospectionHelper clazz) throws MappingException {
 		if ( accessStrategy == null ) {
 			accessStrategy = new PropertyAccessStrategyIndexBackRefImpl( collectionRole, entityName );
 		}

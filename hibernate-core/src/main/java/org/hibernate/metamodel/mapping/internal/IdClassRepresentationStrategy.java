@@ -18,6 +18,7 @@ import org.hibernate.metamodel.spi.EmbeddableInstantiator;
 import org.hibernate.metamodel.spi.EmbeddableRepresentationStrategy;
 import org.hibernate.property.access.spi.PropertyAccess;
 import org.hibernate.property.access.spi.PropertyAccessStrategy;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.type.descriptor.java.JavaType;
 
 import static org.hibernate.internal.util.ReflectHelper.isRecord;
@@ -58,7 +59,8 @@ public class IdClassRepresentationStrategy implements EmbeddableRepresentationSt
 
 	@Override
 	public PropertyAccess resolvePropertyAccess(Property bootAttributeDescriptor) {
-		final PropertyAccessStrategy strategy = bootAttributeDescriptor.getPropertyAccessStrategy( idClassType.getJavaTypeClass() );
+		TypeIntrospectionHelper idTypeHelper = TypeIntrospectionHelper.fromType(idClassType.getJavaTypeClass());
+		final PropertyAccessStrategy strategy = bootAttributeDescriptor.getPropertyAccessStrategy( idTypeHelper );
 
 		if ( strategy == null ) {
 			throw new HibernateException(
@@ -72,7 +74,7 @@ public class IdClassRepresentationStrategy implements EmbeddableRepresentationSt
 		}
 
 		return strategy.buildPropertyAccess(
-				idClassType.getJavaTypeClass(),
+				idTypeHelper,
 				bootAttributeDescriptor.getName(),
 				false
 		);

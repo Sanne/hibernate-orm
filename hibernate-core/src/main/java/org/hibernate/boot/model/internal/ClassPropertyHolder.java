@@ -38,6 +38,7 @@ import org.hibernate.mapping.Value;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Converts;
 import jakarta.persistence.JoinTable;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 import static org.hibernate.internal.util.StringHelper.isEmpty;
 
@@ -383,9 +384,10 @@ public class ClassPropertyHolder extends AbstractPropertyHolder {
 							}
 							else {
 								final Iterator<Property> propertyIterator = component.getPropertyIterator();
+								final TypeIntrospectionHelper wrappedComponentClass = TypeIntrospectionHelper.fromType(componentClass );
 								while ( propertyIterator.hasNext() ) {
 									try {
-										propertyIterator.next().getGetter( componentClass );
+										propertyIterator.next().getGetter( wrappedComponentClass );
 									}
 									catch (PropertyNotFoundException e) {
 										propertyIterator.remove();

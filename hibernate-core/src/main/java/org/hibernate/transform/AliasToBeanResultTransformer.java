@@ -14,6 +14,7 @@ import org.hibernate.property.access.internal.PropertyAccessStrategyChainedImpl;
 import org.hibernate.property.access.internal.PropertyAccessStrategyFieldImpl;
 import org.hibernate.property.access.internal.PropertyAccessStrategyMapImpl;
 import org.hibernate.property.access.spi.Setter;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.query.TypedTupleTransformer;
 
 /**
@@ -85,11 +86,12 @@ public class AliasToBeanResultTransformer<T> implements ResultTransformer<T>, Ty
 		);
 		this.aliases = new String[ aliases.length ];
 		setters = new Setter[ aliases.length ];
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(resultClass);
 		for ( int i = 0; i < aliases.length; i++ ) {
 			String alias = aliases[ i ];
 			if ( alias != null ) {
 				this.aliases[ i ] = alias;
-				setters[ i ] = propertyAccessStrategy.buildPropertyAccess( resultClass, alias, true ).getSetter();
+				setters[ i ] = propertyAccessStrategy.buildPropertyAccess( type, alias, true ).getSetter();
 			}
 		}
 		isInitialized = true;

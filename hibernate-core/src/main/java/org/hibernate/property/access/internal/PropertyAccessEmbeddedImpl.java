@@ -18,6 +18,7 @@ import org.hibernate.property.access.spi.PropertyAccessStrategy;
 import org.hibernate.property.access.spi.Setter;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 /**
  * {@link PropertyAccess} for handling non-aggregated composites.
@@ -35,11 +36,11 @@ public class PropertyAccessEmbeddedImpl implements PropertyAccess {
 
 	public PropertyAccessEmbeddedImpl(
 			PropertyAccessStrategyEmbeddedImpl strategy,
-			Class<?> containerType,
+			TypeIntrospectionHelper containerType,
 			@SuppressWarnings("UnusedParameters")
 			String propertyName) {
 		this.strategy = strategy;
-		this.getter = new GetterImpl( containerType );
+		this.getter = new GetterImpl( containerType.getType() );
 	}
 
 	@Override

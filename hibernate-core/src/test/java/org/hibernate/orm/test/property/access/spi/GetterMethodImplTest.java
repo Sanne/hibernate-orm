@@ -11,6 +11,7 @@ import org.hibernate.property.access.spi.Getter;
 import org.hibernate.property.access.spi.GetterFieldImpl;
 import org.hibernate.property.access.spi.GetterMethodImpl;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,14 +22,17 @@ public class GetterMethodImplTest {
 	@Test
 	public void get() throws Exception {
 		Target target = new Target();
+		//TODO this is a great test to be used as a starting point to check for the TypeIntrospectionHelper
+		//to provide the benefits it's expected to.
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(Target.class);
 
-		Assert.assertEquals( true, getter( Target.class, "active" ).get( target ) );
-		Assert.assertEquals( (byte) 2, getter( Target.class, "children" ).get( target ) );
-		Assert.assertEquals( 'M', getter( Target.class, "gender" ).get( target ) );
-		Assert.assertEquals( Integer.MAX_VALUE, getter( Target.class, "code" ).get( target ) );
-		Assert.assertEquals( Long.MAX_VALUE, getter( Target.class, "id" ).get( target ) );
-		Assert.assertEquals( (short) 34, getter( Target.class, "age" ).get( target ) );
-		Assert.assertEquals( "John Doe", getter( Target.class, "name" ).get( target ) );
+		Assert.assertEquals( true, getter( type, "active" ).get( target ) );
+		Assert.assertEquals( (byte) 2, getter( type, "children" ).get( target ) );
+		Assert.assertEquals( 'M', getter( type, "gender" ).get( target ) );
+		Assert.assertEquals( Integer.MAX_VALUE, getter( type, "code" ).get( target ) );
+		Assert.assertEquals( Long.MAX_VALUE, getter( type, "id" ).get( target ) );
+		Assert.assertEquals( (short) 34, getter( type, "age" ).get( target ) );
+		Assert.assertEquals( "John Doe", getter( type, "name" ).get( target ) );
 	}
 
 	private static class Target {
@@ -79,22 +83,22 @@ public class GetterMethodImplTest {
 	@Test
 	public void getThrowing() {
 		TargetThrowingExceptions target = new TargetThrowingExceptions();
-
-		Getter runtimeException = getter( TargetThrowingExceptions.class, "runtimeException" );
+		TypeIntrospectionHelper fromType = TypeIntrospectionHelper.fromType(TargetThrowingExceptions.class);
+		Getter runtimeException = getter( fromType, "runtimeException" );
 		assertThatThrownBy( () -> runtimeException.get( target ) )
 				.isInstanceOf( PropertyAccessException.class )
 				.hasMessage( "Exception occurred inside: '" + TargetThrowingExceptions.class.getName() +".runtimeException' (getter)" )
 				.getCause() // Not the root cause, the *direct* cause! We don't want extra wrapping.
 				.isExactlyInstanceOf( RuntimeException.class );
 
-		Getter checkedException = getter( TargetThrowingExceptions.class, "checkedException" );
+		Getter checkedException = getter( fromType, "checkedException" );
 		assertThatThrownBy( () -> checkedException.get( target ) )
 				.isInstanceOf( PropertyAccessException.class )
 				.hasMessage( "Exception occurred inside: '" + TargetThrowingExceptions.class.getName() +".checkedException' (getter)" )
 				.getCause() // Not the root cause, the *direct* cause! We don't want extra wrapping.
 				.isExactlyInstanceOf( Exception.class );
 
-		Getter error = getter( TargetThrowingExceptions.class, "error" );
+		Getter error = getter( fromType, "error" );
 		assertThatThrownBy( () -> error.get( target ) )
 				.isExactlyInstanceOf( Error.class ); // We don't want *any* wrapping!
 	}
@@ -113,7 +117,7 @@ public class GetterMethodImplTest {
 		}
 	}
 
-	private Getter getter(Class<?> clazz, String property) {
+	private Getter getter(TypeIntrospectionHelper clazz, String property) {
 		final Method getterMethod = ReflectHelper.findGetterMethod( clazz, property );
 		return new GetterMethodImpl( clazz, property, getterMethod );
 	}

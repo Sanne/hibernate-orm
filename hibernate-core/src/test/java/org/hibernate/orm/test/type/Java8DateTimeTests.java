@@ -23,6 +23,7 @@ import jakarta.persistence.Table;
 import org.hibernate.Session;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.type.AbstractStandardBasicType;
 import org.hibernate.type.SerializableType;
 import org.hibernate.type.descriptor.java.JavaType;
@@ -78,7 +79,7 @@ public class Java8DateTimeTests extends BaseNonConfigCoreFunctionalTestCase {
 							"%s (%s) -> %s",
 							propertyBinding.getName(),
 							javaType.getJavaTypeClass().getSimpleName(),
-							javaType.toString(propertyBinding.getGetter(TheEntity.class).get(theEntity))
+							javaType.toString(propertyBinding.getGetter(TypeIntrospectionHelper.fromType(TheEntity.class)).get(theEntity))
 					)
 			);
 		}

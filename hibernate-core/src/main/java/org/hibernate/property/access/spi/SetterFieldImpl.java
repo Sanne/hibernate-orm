@@ -27,20 +27,20 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 @Internal
 public class SetterFieldImpl implements Setter {
-	private final Class<?> containerClass;
+	private final TypeIntrospectionHelper typeWrapper;
 	private final String propertyName;
 	private final Field field;
 	private final @Nullable Method setterMethod;
 
-	public SetterFieldImpl(Class<?> containerClass, String propertyName, Field field) {
-		this.containerClass = containerClass;
+	public SetterFieldImpl(TypeIntrospectionHelper typeWrapper, String propertyName, Field field) {
+		this.typeWrapper = typeWrapper;
 		this.propertyName = propertyName;
 		this.field = field;
-		this.setterMethod = ReflectHelper.setterMethodOrNull( containerClass, propertyName, field.getType() );
+		this.setterMethod = ReflectHelper.setterMethodOrNull( typeWrapper, propertyName, field.getType() );
 	}
 
 	public Class<?> getContainerClass() {
-		return containerClass;
+		return typeWrapper.getType();
 	}
 
 	public String getPropertyName() {
@@ -63,11 +63,11 @@ public class SetterFieldImpl implements Setter {
 						String.format(
 								Locale.ROOT,
 								"Null value was assigned to a property [%s.%s] of primitive type",
-								containerClass,
+								typeWrapper,
 								propertyName
 						),
 						true,
-						containerClass,
+						typeWrapper.getType(),
 						propertyName
 				);
 			}
@@ -91,7 +91,7 @@ public class SetterFieldImpl implements Setter {
 								valueType
 						),
 						true,
-						containerClass,
+						typeWrapper.getType(),
 						propertyName
 				);
 			}
@@ -109,7 +109,7 @@ public class SetterFieldImpl implements Setter {
 	}
 
 	private Object writeReplace() {
-		return new SerialForm( containerClass, propertyName, field );
+		return new SerialForm( typeWrapper.getType(), propertyName, field );
 	}
 
 	private static class SerialForm extends AbstractFieldSerialForm implements Serializable {
@@ -124,7 +124,7 @@ public class SetterFieldImpl implements Setter {
 		}
 
 		private Object readResolve() {
-			return new SetterFieldImpl( containerClass, propertyName, resolveField() );
+			return new SetterFieldImpl( TypeIntrospectionHelper.fromType( containerClass ), propertyName, resolveField() );
 		}
 
 	}

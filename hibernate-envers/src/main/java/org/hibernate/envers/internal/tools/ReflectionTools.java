@@ -22,6 +22,7 @@ import org.hibernate.property.access.spi.Getter;
 import org.hibernate.property.access.spi.PropertyAccessStrategy;
 import org.hibernate.property.access.spi.PropertyAccessStrategyResolver;
 import org.hibernate.property.access.spi.Setter;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.service.ServiceRegistry;
 
 /**
@@ -53,10 +54,12 @@ public abstract class ReflectionTools {
 		else {
 			final String propertyName = propertyData.getName();
 			final Pair<Class, String> key = Pair.make( cls, propertyName );
+			//TODO modify this cache to benefit from TypeIntrospectionHelper metadata
 			Getter value = GETTER_CACHE.get( key );
 			if ( value == null ) {
+				final TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(cls);
 				value = propertyData.getPropertyAccessStrategy().buildPropertyAccess(
-						cls,
+						type,
 						propertyData.getBeanName(), false
 				).getGetter();
 				// It's ok if two getters are generated concurrently
@@ -70,7 +73,8 @@ public abstract class ReflectionTools {
 		final Pair<Class, String> key = Pair.make( cls, propertyName );
 		Getter value = GETTER_CACHE.get( key );
 		if ( value == null ) {
-			value = getAccessStrategy( cls, serviceRegistry, accessorType ).buildPropertyAccess( cls, propertyName, true ).getGetter();
+			TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(cls);//TODO make use of the cache
+			value = getAccessStrategy( cls, serviceRegistry, accessorType ).buildPropertyAccess( type, propertyName, true ).getGetter();
 			// It's ok if two getters are generated concurrently
 			GETTER_CACHE.put( key, value );
 		}
@@ -86,7 +90,8 @@ public abstract class ReflectionTools {
 		final Pair<Class, String> key = Pair.make( cls, propertyName );
 		Setter value = SETTER_CACHE.get( key );
 		if ( value == null ) {
-			value = getAccessStrategy( cls, serviceRegistry, accessorType ).buildPropertyAccess( cls, propertyName, true ).getSetter();
+			TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(cls);//TODO benefit from the cache
+			value = getAccessStrategy( cls, serviceRegistry, accessorType ).buildPropertyAccess( type, propertyName, true ).getSetter();
 			// It's ok if two setters are generated concurrently
 			SETTER_CACHE.put( key, value );
 		}

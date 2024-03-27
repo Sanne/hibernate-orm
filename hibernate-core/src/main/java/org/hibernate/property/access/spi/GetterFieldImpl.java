@@ -29,17 +29,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 @Internal
 public class GetterFieldImpl implements Getter {
-	private final Class<?> containerClass;
+	private final TypeIntrospectionHelper containerClass;
 	private final String propertyName;
 	private final Field field;
 	private final @Nullable Method getterMethod;
 
-	public GetterFieldImpl(Class<?> containerClass, String propertyName, Field field) {
+	public GetterFieldImpl(TypeIntrospectionHelper containerClass, String propertyName, Field field) {
 		this.containerClass = containerClass;
 		this.propertyName = propertyName;
 		this.field = field;
 
-		this.getterMethod = ReflectHelper.findGetterMethodForFieldAccess( field, propertyName );
+		this.getterMethod = ReflectHelper.findGetterMethodForFieldAccess( containerClass, field, propertyName );
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class GetterFieldImpl implements Getter {
 	}
 
 	private Object writeReplace() throws ObjectStreamException {
-		return new SerialForm( containerClass, propertyName, field );
+		return new SerialForm( containerClass.getType(), propertyName, field );
 	}
 
 	private static class SerialForm extends AbstractFieldSerialForm implements Serializable {
@@ -108,7 +108,8 @@ public class GetterFieldImpl implements Getter {
 		}
 
 		private Object readResolve() {
-			return new GetterFieldImpl( containerClass, propertyName, resolveField() );
+			TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType( containerClass );
+			return new GetterFieldImpl( type, propertyName, resolveField() );
 		}
 
 	}

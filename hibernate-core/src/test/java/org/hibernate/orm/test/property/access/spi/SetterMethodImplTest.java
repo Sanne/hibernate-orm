@@ -9,6 +9,7 @@ import org.hibernate.internal.util.ReflectHelper;
 import org.hibernate.property.access.spi.Setter;
 import org.hibernate.property.access.spi.SetterMethodImpl;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -117,7 +118,8 @@ public class SetterMethodImplTest {
 	}
 
 	private Setter setter(Class<?> clazz, String property, Class<?> type) {
-		final Method setterMethod = ReflectHelper.findSetterMethod( clazz, property, type );
-		return new SetterMethodImpl( clazz, property, setterMethod );
+		TypeIntrospectionHelper helper = TypeIntrospectionHelper.fromType(clazz);
+		final Method setterMethod = ReflectHelper.findSetterMethod( helper, property, type );
+		return new SetterMethodImpl( helper, property, setterMethod );
 	}
 }

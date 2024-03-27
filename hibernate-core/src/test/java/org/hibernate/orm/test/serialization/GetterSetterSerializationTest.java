@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.junit.Test;
 
 import org.hibernate.internal.util.ReflectHelper;
@@ -41,10 +42,11 @@ public class GetterSetterSerializationTest {
 		final AnEntity entity = new AnEntity( new PK( 1L ) );
 
 		final String propertyName = "pk";
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(AnEntity.class);
 		final Getter getter = new GetterFieldImpl(
-				AnEntity.class,
+				type,
 				propertyName,
-				ReflectHelper.findField( AnEntity.class, propertyName)
+				ReflectHelper.findField( type, propertyName)
 		);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -61,17 +63,18 @@ public class GetterSetterSerializationTest {
 	@TestForIssue( jiraKey = "HHH-11202")
 	public void testPrivateFieldSetter() throws Exception {
 		AnEntity entity = new AnEntity( new PK( 1L ) );
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(AnEntity.class);
 
 		final String propertyName = "pk";
 		final Getter getter = new GetterFieldImpl(
-				AnEntity.class,
+				type,
 				propertyName,
-				ReflectHelper.findField( AnEntity.class, propertyName)
+				ReflectHelper.findField( type, propertyName)
 		);
 		final Setter setter = new SetterFieldImpl(
-				AnEntity.class,
+				type,
 				propertyName,
-				ReflectHelper.findField( AnEntity.class, propertyName)
+				ReflectHelper.findField( type, propertyName)
 		);
 
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -91,11 +94,11 @@ public class GetterSetterSerializationTest {
 	@TestForIssue( jiraKey = "HHH-11202")
 	public void testProtectedMethodGetter() throws Exception {
 		final AnEntity entity = new AnEntity( new PK( 1L ) );
-
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(AnEntity.class);
 		final Getter getter = new GetterMethodImpl(
-				AnEntity.class,
+				type,
 				"pk",
-				ReflectHelper.findGetterMethod( AnEntity.class, "pk" )
+				ReflectHelper.findGetterMethod( type, "pk" )
 		);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -112,16 +115,17 @@ public class GetterSetterSerializationTest {
 	@TestForIssue( jiraKey = "HHH-11202")
 	public void testProtectedMethodSetter() throws Exception {
 		final AnEntity entity = new AnEntity( new PK( 1L ) );
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(AnEntity.class);
 
 		final Getter getter = new GetterMethodImpl(
-				AnEntity.class,
+				type,
 				"pk",
-				ReflectHelper.findGetterMethod( AnEntity.class, "pk" )
+				ReflectHelper.findGetterMethod( type, "pk" )
 		);
 		final Setter setter = new SetterMethodImpl(
-				AnEntity.class,
+				type,
 				"pk",
-				ReflectHelper.findSetterMethod( AnEntity.class, "pk", PK.class )
+				ReflectHelper.findSetterMethod( type, "pk", PK.class )
 		);
 
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();

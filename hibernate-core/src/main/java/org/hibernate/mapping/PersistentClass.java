@@ -30,6 +30,7 @@ import org.hibernate.internal.util.collections.JoinedList;
 import org.hibernate.jdbc.Expectation;
 import org.hibernate.metamodel.spi.RuntimeModelCreationContext;
 import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.jpa.event.spi.CallbackDefinition;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 import org.hibernate.service.ServiceRegistry;
@@ -76,6 +77,7 @@ public abstract class PersistentClass implements IdentifiableTypeClass, Attribut
 
 	private String className;
 	private transient Class<?> mappedClass;
+	private transient TypeIntrospectionHelper mappedClassHelper;
 
 	private String proxyInterfaceName;
 	private transient Class<?> proxyInterface;
@@ -148,6 +150,7 @@ public abstract class PersistentClass implements IdentifiableTypeClass, Attribut
 	public void setClassName(String className) {
 		this.className = className == null ? null : className.intern();
 		this.mappedClass = null;
+		this.mappedClassHelper = null;
 	}
 
 	public String getProxyInterfaceName() {
@@ -1284,5 +1287,15 @@ public abstract class PersistentClass implements IdentifiableTypeClass, Attribut
 
 	public void setDeleteExpectation(Class<? extends Expectation> deleteExpectation) {
 		this.deleteExpectation = deleteExpectation;
+	}
+
+	public TypeIntrospectionHelper getMappedClassHelper() {
+		if ( mappedClassHelper == null ) {
+			final Class<?> mappedClass = getMappedClass();
+			if ( mappedClass != null ) {
+				this.mappedClassHelper = TypeIntrospectionHelper.fromType( mappedClass );
+			}
+		}
+		return this.mappedClassHelper;
 	}
 }

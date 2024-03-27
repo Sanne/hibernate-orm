@@ -35,6 +35,7 @@ import org.hibernate.metamodel.model.domain.ManagedDomainType;
 import org.hibernate.property.access.spi.BuiltInPropertyAccessStrategies;
 import org.hibernate.property.access.spi.Getter;
 import org.hibernate.property.access.spi.PropertyAccess;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.query.BindableType;
 import org.hibernate.query.CommonQueryContract;
 import org.hibernate.query.QueryLogging;
@@ -1426,10 +1427,11 @@ public abstract class AbstractCommonQueryContract implements CommonQueryContract
 	@Override
 	public CommonQueryContract setProperties(Object bean) {
 		final Class<?> clazz = bean.getClass();
+		TypeIntrospectionHelper fromType = TypeIntrospectionHelper.fromType(clazz);
 		for ( String paramName : getParameterMetadata().getNamedParameterNames() ) {
 			try {
 				final PropertyAccess propertyAccess = BuiltInPropertyAccessStrategies.BASIC.getStrategy().buildPropertyAccess(
-						clazz,
+						fromType,
 						paramName,
 						true );
 				final Getter getter = propertyAccess.getGetter();

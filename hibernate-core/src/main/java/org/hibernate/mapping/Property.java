@@ -27,6 +27,7 @@ import org.hibernate.property.access.spi.Getter;
 import org.hibernate.property.access.spi.PropertyAccessStrategy;
 import org.hibernate.property.access.spi.PropertyAccessStrategyResolver;
 import org.hibernate.property.access.spi.Setter;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.generator.Generator;
 import org.hibernate.generator.GeneratorCreationContext;
@@ -132,14 +133,6 @@ public class Property implements Serializable, MetaAttributable {
 				column.setNullable( optional );
 			}
 		}
-	}
-
-	/**
-	 * @deprecated this method is no longer used
-	 */
-	@Deprecated(since = "6", forRemoval = true)
-	public boolean isPrimitive(Class<?> clazz) {
-		return getGetter( clazz ).getReturnTypeClass().isPrimitive();
 	}
 
 	public CascadeStyle getCascadeStyle() throws MappingException {
@@ -381,24 +374,25 @@ public class Property implements Serializable, MetaAttributable {
 
 	// todo : remove
 	@Internal
-	public Getter getGetter(Class clazz) throws MappingException {
+	public Getter getGetter(TypeIntrospectionHelper clazz) throws MappingException {
 		return getPropertyAccessStrategy( clazz ).buildPropertyAccess( clazz, name, true ).getGetter();
 	}
 
 	// todo : remove
 	@Internal
-	public Setter getSetter(Class clazz) throws MappingException {
+	public Setter getSetter(TypeIntrospectionHelper clazz) throws MappingException {
 		return getPropertyAccessStrategy( clazz ).buildPropertyAccess( clazz, name, true ).getSetter();
 	}
 
 	// todo : remove
 	@Internal
-	public PropertyAccessStrategy getPropertyAccessStrategy(Class clazz) throws MappingException {
+	public PropertyAccessStrategy getPropertyAccessStrategy(TypeIntrospectionHelper helper) throws MappingException {
 		final PropertyAccessStrategy propertyAccessStrategy = getPropertyAccessStrategy();
 		if ( propertyAccessStrategy != null ) {
 			return propertyAccessStrategy;
 		}
 		String accessName = getPropertyAccessorName();
+		Class<?> clazz = helper.getType();
 		if ( accessName == null ) {
 			if ( clazz == null || java.util.Map.class.equals( clazz ) ) {
 				accessName = "map";

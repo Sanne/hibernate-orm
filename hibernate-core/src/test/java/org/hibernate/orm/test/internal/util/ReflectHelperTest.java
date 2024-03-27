@@ -6,33 +6,26 @@
  */
 package org.hibernate.orm.test.internal.util;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import jakarta.persistence.FetchType;
-
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.util.ReflectHelper;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
-
 import org.hibernate.testing.TestForIssue;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.mockito.Mockito;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static java.lang.Integer.valueOf;
 import static org.hibernate.orm.test.internal.util.ReflectHelperTest.Status.OFF;
 import static org.hibernate.orm.test.internal.util.ReflectHelperTest.Status.ON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -40,118 +33,119 @@ import static org.mockito.Mockito.when;
  */
 public class ReflectHelperTest {
 
-	public enum Status {
-		ON,
-		OFF
-	}
+    public enum Status {
+        ON,
+        OFF
+    }
 
-	interface A {
+    interface A {
 
-		Integer getId();
-		void setId(Integer id);
+        Integer getId();
 
-		default Status getStatus(){
-			return ON;
-		}
+        void setId(Integer id);
 
-		default void setId(String id){
-			this.setId(valueOf(id));
-		}
-	}
+        default Status getStatus() {
+            return ON;
+        }
 
-	interface B extends A {
-		String getName();
-	}
+        default void setId(String id) {
+            this.setId(valueOf(id));
+        }
+    }
 
-	interface C extends B {
-		String getData();
-	}
+    interface B extends A {
+        String getName();
+    }
 
-	class D implements C {
+    interface C extends B {
+        String getData();
+    }
 
-		@Override
-		public Integer getId() {
-			return null;
-		}
+    class D implements C {
 
-		@Override
-		public void setId(Integer id) {
+        @Override
+        public Integer getId() {
+            return null;
+        }
 
-		}
+        @Override
+        public void setId(Integer id) {
 
-		@Override
-		public String getName() {
-			return null;
-		}
+        }
 
-		@Override
-		public String getData() {
-			return null;
-		}
-	}
+        @Override
+        public String getName() {
+            return null;
+        }
 
-	class E extends D {
+        @Override
+        public String getData() {
+            return null;
+        }
+    }
 
-	}
+    class E extends D {
 
-	class F extends D {
-		public Status getStatus(){
-			return OFF;
-		}
-	}
+    }
 
-	private SessionFactoryImplementor sessionFactoryImplementorMock;
+    class F extends D {
+        public Status getStatus() {
+            return OFF;
+        }
+    }
 
-	private SessionFactoryOptions sessionFactoryOptionsMock;
+    private SessionFactoryImplementor sessionFactoryImplementorMock;
 
-	private ServiceRegistryImplementor serviceRegistryMock;
+    private SessionFactoryOptions sessionFactoryOptionsMock;
 
-	private ClassLoaderService classLoaderServiceMock;
+    private ServiceRegistryImplementor serviceRegistryMock;
 
-	@Before
-	public void init() {
-		sessionFactoryImplementorMock = Mockito.mock(SessionFactoryImplementor.class);
-		sessionFactoryOptionsMock = Mockito.mock(SessionFactoryOptions.class);
-		when(sessionFactoryImplementorMock.getSessionFactoryOptions()).thenReturn( sessionFactoryOptionsMock );
+    private ClassLoaderService classLoaderServiceMock;
 
-		serviceRegistryMock = Mockito.mock(ServiceRegistryImplementor.class);
-		when( sessionFactoryImplementorMock.getServiceRegistry() ).thenReturn( serviceRegistryMock );
+    @Before
+    public void init() {
+        sessionFactoryImplementorMock = Mockito.mock(SessionFactoryImplementor.class);
+        sessionFactoryOptionsMock = Mockito.mock(SessionFactoryOptions.class);
+        when(sessionFactoryImplementorMock.getSessionFactoryOptions()).thenReturn(sessionFactoryOptionsMock);
 
-		classLoaderServiceMock = Mockito.mock(ClassLoaderService.class);
-		when( serviceRegistryMock.getService( eq( ClassLoaderService.class ) ) ).thenReturn( classLoaderServiceMock );
-	}
+        serviceRegistryMock = Mockito.mock(ServiceRegistryImplementor.class);
+        when(sessionFactoryImplementorMock.getServiceRegistry()).thenReturn(serviceRegistryMock);
 
-	@Test
-	public void test_getMethod_nestedInterfaces() {
-		assertNotNull( ReflectHelper.findGetterMethod( C.class, "id" ) );
-	}
+        classLoaderServiceMock = Mockito.mock(ClassLoaderService.class);
+        when(serviceRegistryMock.getService(eq(ClassLoaderService.class))).thenReturn(classLoaderServiceMock);
+    }
 
-	@Test
-	public void test_getMethod_superclass() {
-		assertNotNull( ReflectHelper.findGetterMethod( E.class, "id" ) );
-	}
+    @Test
+    public void test_getMethod_nestedInterfaces() {
+        assertNotNull(ReflectHelper.findGetterMethod(TypeIntrospectionHelper.fromType(C.class), "id"));
+    }
 
-	@Test
-	public void test_setMethod_nestedInterfaces() {
-		assertNotNull( ReflectHelper.findSetterMethod( C.class, "id", Integer.class ) );
-	}
+    @Test
+    public void test_getMethod_superclass() {
+        assertNotNull(ReflectHelper.findGetterMethod(TypeIntrospectionHelper.fromType(E.class), "id"));
+    }
 
-	@TestForIssue(jiraKey = "HHH-12090")
-	@Test
-	public void test_getMethod_nestedInterfaces_on_superclasses()
-			throws InvocationTargetException, IllegalAccessException {
-		Method statusMethodEClass = ReflectHelper.findGetterMethod( E.class, "status" );
-		assertNotNull(statusMethodEClass);
-		assertEquals( ON,  statusMethodEClass.invoke( new E() ) );
+    @Test
+    public void test_setMethod_nestedInterfaces() {
+        assertNotNull(ReflectHelper.findSetterMethod(TypeIntrospectionHelper.fromType(C.class), "id", Integer.class));
+    }
 
-		Method statusMethodFClass = ReflectHelper.findGetterMethod( F.class, "status" );
-		assertNotNull(statusMethodFClass);
-		assertEquals( OFF,  statusMethodFClass.invoke( new F() ) );
-	}
+    @TestForIssue(jiraKey = "HHH-12090")
+    @Test
+    public void test_getMethod_nestedInterfaces_on_superclasses()
+            throws InvocationTargetException, IllegalAccessException {
+        Method statusMethodEClass = ReflectHelper.findGetterMethod(TypeIntrospectionHelper.fromType(E.class), "status");
+        assertNotNull(statusMethodEClass);
+        assertEquals(ON, statusMethodEClass.invoke(new E()));
 
-	@TestForIssue(jiraKey = "HHH-12090")
-	@Test
-	public void test_setMethod_nestedInterfaces_on_superclasses() {
-		assertNotNull( ReflectHelper.findSetterMethod( E.class, "id", String.class ) );
-	}
+        Method statusMethodFClass = ReflectHelper.findGetterMethod(TypeIntrospectionHelper.fromType(F.class), "status");
+        assertNotNull(statusMethodFClass);
+        assertEquals(OFF, statusMethodFClass.invoke(new F()));
+    }
+
+    @TestForIssue(jiraKey = "HHH-12090")
+    @Test
+    public void test_setMethod_nestedInterfaces_on_superclasses() {
+        assertNotNull(ReflectHelper.findSetterMethod(TypeIntrospectionHelper.fromType(E.class), "id", String.class));
+    }
 }

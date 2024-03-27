@@ -19,6 +19,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.internal.util.ReflectHelper;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.testing.TestForIssue;
 import org.hibernate.testing.util.ServiceRegistryUtil;
 import org.junit.AfterClass;
@@ -110,7 +111,7 @@ public class GetAndIsVariantGetterTest {
 		assertNotNull( metadata.getEntityBinding( InstanceStaticEntity.class.getName() ).getIdentifier() );
 		assertNotNull( metadata.getEntityBinding( InstanceStaticEntity.class.getName() ).getIdentifierProperty() );
 		assertTrue( metadata.getEntityBinding( InstanceStaticEntity.class.getName() ).hasProperty("foo") );
-		ReflectHelper.findGetterMethod( InstanceStaticEntity.class, "foo" );
+		ReflectHelper.findGetterMethod( TypeIntrospectionHelper.fromType( InstanceStaticEntity.class ), "foo" );
 	}
 
 	@Entity

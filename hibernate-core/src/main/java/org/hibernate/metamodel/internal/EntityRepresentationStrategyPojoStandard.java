@@ -40,6 +40,7 @@ import org.hibernate.property.access.internal.PropertyAccessStrategyIndexBackRef
 import org.hibernate.property.access.spi.BuiltInPropertyAccessStrategies;
 import org.hibernate.property.access.spi.PropertyAccess;
 import org.hibernate.property.access.spi.PropertyAccessStrategy;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.ProxyFactory;
 import org.hibernate.proxy.pojo.ProxyFactoryHelper;
@@ -58,6 +59,7 @@ public class EntityRepresentationStrategyPojoStandard implements EntityRepresent
 	private static final CoreMessageLogger LOG = CoreLogging.messageLogger( EntityRepresentationStrategyPojoStandard.class );
 
 	private final JavaType<?> mappedJtd;
+	private final TypeIntrospectionHelper mappedJtdTypeHelper;
 	private final JavaType<?> proxyJtd;
 
 	private final boolean isBytecodeEnhanced;
@@ -82,6 +84,7 @@ public class EntityRepresentationStrategyPojoStandard implements EntityRepresent
 
 		final Class<?> mappedJavaType = bootDescriptor.getMappedClass();
 		this.mappedJtd = jtdRegistry.resolveEntityTypeDescriptor( mappedJavaType );
+		this.mappedJtdTypeHelper = TypeIntrospectionHelper.fromType( mappedJtd.getJavaTypeClass() );
 
 		final Class<?> proxyJavaType = bootDescriptor.getProxyInterface();
 		if ( proxyJavaType != null ) {
@@ -257,17 +260,18 @@ public class EntityRepresentationStrategyPojoStandard implements EntityRepresent
 		proxyInterfaces.add( HibernateProxy.class );
 
 		Class<?> clazz = bootDescriptor.getMappedClass();
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType( clazz );
 		final Method idGetterMethod;
 		final Method idSetterMethod;
 		try {
 			for ( Property property : bootDescriptor.getProperties() ) {
 				ProxyFactoryHelper.validateGetterSetterMethodProxyability(
 						"Getter",
-						property.getGetter( clazz ).getMethod()
+						property.getGetter( type ).getMethod()
 				);
 				ProxyFactoryHelper.validateGetterSetterMethodProxyability(
 						"Setter",
-						property.getSetter( clazz ).getMethod()
+						property.getSetter( type ).getMethod()
 				);
 			}
 			if ( identifierPropertyAccess != null ) {
@@ -329,7 +333,7 @@ public class EntityRepresentationStrategyPojoStandard implements EntityRepresent
 	}
 
 	private PropertyAccess makePropertyAccess(Property bootAttributeDescriptor) {
-		PropertyAccessStrategy strategy = bootAttributeDescriptor.getPropertyAccessStrategy( mappedJtd.getJavaTypeClass() );
+		PropertyAccessStrategy strategy = bootAttributeDescriptor.getPropertyAccessStrategy( mappedJtdTypeHelper );
 
 		if ( strategy == null ) {
 			final String propertyAccessorName = bootAttributeDescriptor.getPropertyAccessorName();
@@ -368,7 +372,7 @@ public class EntityRepresentationStrategyPojoStandard implements EntityRepresent
 			);
 		}
 
-		return strategy.buildPropertyAccess( mappedJtd.getJavaTypeClass(), bootAttributeDescriptor.getName(), true );
+		return strategy.buildPropertyAccess( mappedJtdTypeHelper , bootAttributeDescriptor.getName(), true );
 	}
 
 	@Override

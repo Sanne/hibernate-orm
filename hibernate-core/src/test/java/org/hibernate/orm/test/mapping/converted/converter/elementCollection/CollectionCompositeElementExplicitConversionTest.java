@@ -30,6 +30,7 @@ import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.mapping.SimpleValue;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.testing.TestForIssue;
 import org.hibernate.testing.orm.junit.ServiceRegistry;
 import org.hibernate.testing.orm.junit.ServiceRegistryScope;
@@ -54,7 +55,8 @@ public class CollectionCompositeElementExplicitConversionTest {
 
 	@BeforeAll
 	public void setUp() throws Exception {
-		simpleValueAttributeConverterDescriptorField = ReflectHelper.findField( SimpleValue.class, "attributeConverterDescriptor" );
+		TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(SimpleValue.class);
+		simpleValueAttributeConverterDescriptorField = ReflectHelper.findField( type, "attributeConverterDescriptor" );
 	}
 
 	@Test

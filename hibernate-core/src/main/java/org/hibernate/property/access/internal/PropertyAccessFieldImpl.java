@@ -15,6 +15,7 @@ import org.hibernate.property.access.spi.PropertyAccess;
 import org.hibernate.property.access.spi.PropertyAccessStrategy;
 import org.hibernate.property.access.spi.Setter;
 import org.hibernate.property.access.spi.SetterFieldImpl;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 /**
  * @author Steve Ebersole
@@ -27,7 +28,7 @@ public class PropertyAccessFieldImpl implements PropertyAccess {
 
 	public PropertyAccessFieldImpl(
 			PropertyAccessStrategyFieldImpl strategy,
-			Class<?> containerJavaType,
+			TypeIntrospectionHelper containerJavaType,
 			final String propertyName) {
 		this.strategy = strategy;
 

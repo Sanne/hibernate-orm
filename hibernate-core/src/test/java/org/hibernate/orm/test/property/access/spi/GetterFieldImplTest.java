@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import org.hibernate.property.access.spi.Getter;
 import org.hibernate.property.access.spi.GetterFieldImpl;
 
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
+import org.hibernate.type.TypeHelper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,7 +51,8 @@ public class GetterFieldImplTest {
 		try {
 			Field field = Target.class.getDeclaredField( property );
 			field.setAccessible( true );
-			return new GetterFieldImpl( Target.class, property, field );
+			TypeIntrospectionHelper type = TypeIntrospectionHelper.fromType(Target.class);
+			return new GetterFieldImpl( type, property, field );
 		}
 		catch (NoSuchFieldException e) {
 			throw new IllegalArgumentException( e );

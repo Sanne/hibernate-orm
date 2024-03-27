@@ -14,6 +14,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.orm.test.envers.BaseEnversJPAFunctionalTestCase;
 import org.hibernate.property.access.internal.PropertyAccessStrategyBasicImpl;
 import org.hibernate.property.access.spi.PropertyAccess;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.junit.Test;
 
 import org.hibernate.testing.TestForIssue;
@@ -91,7 +92,7 @@ public class AttributeAccessorTest extends BaseEnversJPAFunctionalTestCase {
 	public static class BasicAttributeAccessor extends PropertyAccessStrategyBasicImpl {
 		static boolean invoked;
 		@Override
-		public PropertyAccess buildPropertyAccess(Class containerJavaType, String propertyName, boolean setterRequired) {
+		public PropertyAccess buildPropertyAccess(TypeIntrospectionHelper containerJavaType, String propertyName, boolean setterRequired) {
 			invoked = true;
 			return super.buildPropertyAccess( containerJavaType, propertyName, setterRequired );
 		}

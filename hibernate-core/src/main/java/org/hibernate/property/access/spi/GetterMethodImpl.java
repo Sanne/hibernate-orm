@@ -32,11 +32,11 @@ import static org.hibernate.internal.CoreLogging.messageLogger;
 public class GetterMethodImpl implements Getter {
 	private static final CoreMessageLogger LOG = messageLogger( GetterMethodImpl.class );
 
-	private final Class<?> containerClass;
+	private final TypeIntrospectionHelper containerClass;
 	private final String propertyName;
 	private final Method getterMethod;
 
-	public GetterMethodImpl(Class<?> containerClass, String propertyName, Method getterMethod) {
+	public GetterMethodImpl(TypeIntrospectionHelper containerClass, String propertyName, Method getterMethod) {
 		this.containerClass = containerClass;
 		this.propertyName = propertyName;
 		this.getterMethod = getterMethod;
@@ -57,7 +57,7 @@ public class GetterMethodImpl implements Getter {
 					cause,
 					"Exception occurred inside",
 					false,
-					containerClass,
+					containerClass.getType(),
 					propertyName
 			);
 		}
@@ -66,7 +66,7 @@ public class GetterMethodImpl implements Getter {
 					iae,
 					"IllegalAccessException occurred while calling",
 					false,
-					containerClass,
+					containerClass.getType(),
 					propertyName
 			);
 			//cannot occur
@@ -77,7 +77,7 @@ public class GetterMethodImpl implements Getter {
 					iae,
 					"IllegalArgumentException occurred calling",
 					false,
-					containerClass,
+					containerClass.getType(),
 					propertyName
 			);
 		}
@@ -115,7 +115,7 @@ public class GetterMethodImpl implements Getter {
 	}
 
 	private Object writeReplace() throws ObjectStreamException {
-		return new SerialForm( containerClass, propertyName, getterMethod );
+		return new SerialForm( containerClass.getType(), propertyName, getterMethod );
 	}
 
 	private static class SerialForm implements Serializable {
@@ -133,7 +133,7 @@ public class GetterMethodImpl implements Getter {
 		}
 
 		private Object readResolve() {
-			return new GetterMethodImpl( containerClass, propertyName, resolveMethod() );
+			return new GetterMethodImpl( TypeIntrospectionHelper.fromType( containerClass ), propertyName, resolveMethod() );
 		}
 
 		private Method resolveMethod() {

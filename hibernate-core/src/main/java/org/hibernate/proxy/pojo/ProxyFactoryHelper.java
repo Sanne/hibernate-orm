@@ -18,6 +18,7 @@ import org.hibernate.mapping.Property;
 import org.hibernate.mapping.Subclass;
 import org.hibernate.property.access.spi.Getter;
 import org.hibernate.property.access.spi.Setter;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 import org.hibernate.proxy.HibernateProxy;
 
 /**
@@ -67,7 +68,7 @@ public final class ProxyFactoryHelper {
 	}
 
 	public static void validateProxyability(final PersistentClass persistentClass) {
-		Class<?> clazz = persistentClass.getMappedClass();
+		TypeIntrospectionHelper clazz = persistentClass.getMappedClassHelper();
 		for ( Property property : persistentClass.getProperties() ) {
 			validateGetterSetterMethodProxyability( "Getter", property.getGetter( clazz ).getMethod() );
 			validateGetterSetterMethodProxyability( "Setter", property.getSetter( clazz ).getMethod() );

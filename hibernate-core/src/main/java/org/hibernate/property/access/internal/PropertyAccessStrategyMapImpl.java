@@ -12,6 +12,7 @@ import org.hibernate.property.access.spi.PropertyAccess;
 import org.hibernate.property.access.spi.PropertyAccessStrategy;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.hibernate.property.access.spi.TypeIntrospectionHelper;
 
 /**
  * @author Steve Ebersole
@@ -24,10 +25,10 @@ public class PropertyAccessStrategyMapImpl implements PropertyAccessStrategy {
 	public static final PropertyAccessStrategyMapImpl INSTANCE = new PropertyAccessStrategyMapImpl();
 
 	@Override
-	public PropertyAccess buildPropertyAccess(@Nullable Class<?> containerJavaType, String propertyName, boolean setterRequired) {
+	public PropertyAccess buildPropertyAccess(@Nullable TypeIntrospectionHelper containerJavaType, String propertyName, boolean setterRequired) {
 		
 		// Sometimes containerJavaType is null, but if it isn't, make sure it's a Map.
-		if (containerJavaType != null && !Map.class.isAssignableFrom( containerJavaType)) {
+		if (containerJavaType != null && !Map.class.isAssignableFrom( containerJavaType.getType() ) ) {
 			throw new IllegalArgumentException(
 				String.format(
 					"Expecting class: [%1$s], but containerJavaType is of type: [%2$s] for propertyName: [%3$s]",
