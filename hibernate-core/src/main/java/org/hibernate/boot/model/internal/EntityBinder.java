@@ -1644,14 +1644,14 @@ public class EntityBinder {
 	}
 
 	private void bindSubclassCache(SharedCacheMode sharedCacheMode) {
-		if ( annotatedClass.isAnnotationPresent( Cache.class ) ) {
-			final String className = persistentClass.getClassName() == null
-					? annotatedClass.getName()
-					: persistentClass.getClassName();
-			throw new AnnotationException("Entity class '" + className
-					+  "' is annotated '@Cache' but it is a subclass in an entity inheritance hierarchy"
-					+" (only root classes may define second-level caching semantics)");
-		}
+//		if ( annotatedClass.isAnnotationPresent( Cache.class ) ) {
+//			final String className = persistentClass.getClassName() == null
+//					? annotatedClass.getName()
+//					: persistentClass.getClassName();
+//			throw new AnnotationException("Entity class '" + className
+//					+  "' is annotated '@Cache' but it is a subclass in an entity inheritance hierarchy"
+//					+" (only root classes may define second-level caching semantics)");
+//		}
 
 		final Cacheable cacheable = annotatedClass.getAnnotation( Cacheable.class );
 		isCached = cacheable == null && persistentClass.getSuperclass() != null

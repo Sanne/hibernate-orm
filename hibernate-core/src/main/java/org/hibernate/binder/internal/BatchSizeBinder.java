@@ -43,8 +43,8 @@ public class BatchSizeBinder implements TypeBinder<BatchSize>, AttributeBinder<B
 			final Collection collection = (Collection) value;
 			collection.setBatchSize( batchSize.size() );
 		}
-		else {
+		/*else {
 			throw new AnnotationException("Property '" + property.getName() + "' may not be annotated '@BatchSize'");
-		}
+		}*/
 	}
 }
