@@ -7,6 +7,7 @@
 package org.hibernate.bytecode.enhance.internal.bytebuddy;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -36,7 +37,7 @@ class ByteBuddyEnhancementContext {
 	private final ConcurrentHashMap<String, Object> locksMap = new ConcurrentHashMap<>();
 
 	ByteBuddyEnhancementContext(EnhancementContext enhancementContext) {
-		this.enhancementContext = enhancementContext;
+		this.enhancementContext = Objects.requireNonNull( enhancementContext );
 	}
 
 	public ClassLoader getLoadingClassLoader() {

@@ -6,7 +6,6 @@
  */
 package org.hibernate.bytecode.enhance.internal.bytebuddy;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -14,8 +13,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import org.hibernate.Version;
@@ -94,7 +93,7 @@ public class EnhancerImpl implements Enhancer {
 	protected final ByteBuddyEnhancementContext enhancementContext;
 	private final ByteBuddyState byteBuddyState;
 
-	private final EnhancerClassFileLocator classFileLocator;
+	private final EnhancerClassLocator classFileLocator;
 	private final TypePool typePool;
 
 	/**
@@ -126,10 +125,29 @@ public class EnhancerImpl implements Enhancer {
 	 * @param byteBuddyState refers to the ByteBuddy instance to use
 	 */
 	public EnhancerImpl(final EnhancementContext enhancementContext, final ByteBuddyState byteBuddyState) {
+		this( enhancementContext, byteBuddyState, ModelTypePool.buildModelTypePool( enhancementContext.getLoadingClassLoader() ) );
+	}
+
+	private EnhancerImpl(final EnhancementContext enhancementContext, final ByteBuddyState byteBuddyState, final EnhancerClassLocator classLocator) {
+		//We disable the TypePool.CacheProvider of ByteBuddy as we'll have a full cache in the default classLocator already:
+		//avoid duplicating caching efforts and delegates locking/loading operations to a single coordinator:
+		//our custom EnhancerClassLocator is both the source for type pool and its cache (implements both interfaces).
+		this( enhancementContext, byteBuddyState, classLocator, classLocator );
+	}
+
+	/**
+	 * Expert level constructor, this allows for more control of state and bytecode loading,
+	 * which allows integrators to optimise for particular contexts of use.
+	 * @param enhancementContext
+	 * @param byteBuddyState
+	 * @param classLocator
+	 * @param typePool
+	 */
+	public EnhancerImpl(final EnhancementContext enhancementContext, final ByteBuddyState byteBuddyState, final EnhancerClassLocator classLocator, final TypePool typePool) {
 		this.enhancementContext = new ByteBuddyEnhancementContext( enhancementContext );
-		this.byteBuddyState = byteBuddyState;
-		this.classFileLocator = new EnhancerClassFileLocator( enhancementContext.getLoadingClassLoader() );
-		this.typePool = buildTypePool( classFileLocator );
+		this.byteBuddyState = Objects.requireNonNull( byteBuddyState );
+		this.classFileLocator = Objects.requireNonNull( classLocator );
+		this.typePool = Objects.requireNonNull( typePool );
 	}
 
 	/**
@@ -185,10 +203,6 @@ public class EnhancerImpl implements Enhancer {
 		finally {
 			classFileLocator.deregisterClassNameAndBytes( className );
 		}
-	}
-
-	private TypePool buildTypePool(final ClassFileLocator classFileLocator) {
-		return TypePool.Default.WithLazyResolution.of( classFileLocator );
 	}
 
 	private DynamicType.Builder<?> doEnhance(Supplier<DynamicType.Builder<?>> builderSupplier, TypeDescription managedCtClass) {
@@ -649,41 +663,6 @@ public class EnhancerImpl implements Enhancer {
 
 				return new AnnotationList.Explicit( annotationDescriptions );
 			}
-		}
-	}
-
-	private static class EnhancerClassFileLocator extends ClassFileLocator.ForClassLoader {
-		private final ConcurrentHashMap<String, Resolution> resolutions = new ConcurrentHashMap<>();
-
-		/**
-		 * Creates a new class file locator for the given class loader.
-		 *
-		 * @param classLoader The class loader to query which must not be the bootstrap class loader, i.e. {@code null}.
-		 */
-		protected EnhancerClassFileLocator(ClassLoader classLoader) {
-			super( classLoader );
-		}
-
-		@Override
-		public Resolution locate(String className) throws IOException {
-			assert className != null;
-			final Resolution resolution = resolutions.get( className );
-			if ( resolution != null ) {
-				return resolution;
-			}
-			else {
-				return super.locate( className );
-			}
-		}
-
-		void registerClassNameAndBytes(String className, byte[] bytes) {
-			assert className != null;
-			assert bytes != null;
-			resolutions.put( className, new Resolution.Explicit( bytes ) );
-		}
-
-		void deregisterClassNameAndBytes(String className) {
-			resolutions.remove( className );
 		}
 	}
 
