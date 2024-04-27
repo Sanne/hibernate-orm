@@ -95,27 +95,7 @@ public class EnhancerImpl implements Enhancer {
 
 	private final EnhancerClassLocator classFileLocator;
 	private final TypePool typePool;
-
-	/**
-	 * Extract the following constants so that enhancement on large projects
-	 * can be done efficiently: otherwise each instance use will trigger a
-	 * resource load on the ClassLoader tree, triggering allocation of
-	 * several streams to unzip each JAR file each time.
-	 */
-	private final ClassFileLocator adviceLocator = ClassFileLocator.ForClassLoader.of(CodeTemplates.class.getClassLoader());
-	private final Implementation implementationTrackChange = Advice.to( CodeTemplates.TrackChange.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationGetDirtyAttributesWithoutCollections = Advice.to( CodeTemplates.GetDirtyAttributesWithoutCollections.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationAreFieldsDirtyWithoutCollections = Advice.to( CodeTemplates.AreFieldsDirtyWithoutCollections.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationClearDirtyAttributesWithoutCollections = Advice.to( CodeTemplates.ClearDirtyAttributesWithoutCollections.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationSuspendDirtyTracking = Advice.to( CodeTemplates.SuspendDirtyTracking.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationGetDirtyAttributes = Advice.to( CodeTemplates.GetDirtyAttributes.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationAreFieldsDirty = Advice.to( CodeTemplates.AreFieldsDirty.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationGetCollectionTrackerWithoutCollections = Advice.to( CodeTemplates.GetCollectionTrackerWithoutCollections.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationClearDirtyAttributes = Advice.to( CodeTemplates.ClearDirtyAttributes.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	//In this case we just extract the Advice:
-	private final Advice adviceInitializeLazyAttributeLoadingInterceptor = Advice.to( CodeTemplates.InitializeLazyAttributeLoadingInterceptor.class, adviceLocator );
-	private final Implementation implementationSetOwner = Advice.to( CodeTemplates.SetOwner.class, adviceLocator ).wrap( StubMethod.INSTANCE );
-	private final Implementation implementationClearOwner = Advice.to( CodeTemplates.ClearOwner.class, adviceLocator ).wrap( StubMethod.INSTANCE );
+	private final EnhancerImplConstants constants;
 
 	/**
 	 * Constructs the Enhancer, using the given context.
@@ -132,7 +112,7 @@ public class EnhancerImpl implements Enhancer {
 		//We disable the TypePool.CacheProvider of ByteBuddy as we'll have a full cache in the default classLocator already:
 		//avoid duplicating caching efforts and delegates locking/loading operations to a single coordinator:
 		//our custom EnhancerClassLocator is both the source for type pool and its cache (implements both interfaces).
-		this( enhancementContext, byteBuddyState, classLocator, classLocator );
+		this( enhancementContext, byteBuddyState, classLocator, classLocator);
 	}
 
 	/**
@@ -148,6 +128,7 @@ public class EnhancerImpl implements Enhancer {
 		this.byteBuddyState = Objects.requireNonNull( byteBuddyState );
 		this.classFileLocator = Objects.requireNonNull( classLocator );
 		this.typePool = Objects.requireNonNull( typePool );
+		this.constants = byteBuddyState.getEnhancerConstants();
 	}
 
 	/**
@@ -274,18 +255,18 @@ public class EnhancerImpl implements Enhancer {
 									.annotateField( TRANSIENT_ANNOTATION )
 							.defineMethod( EnhancerConstants.TRACKER_CHANGER_NAME, void.class, Visibility.PUBLIC )
 									.withParameters( String.class )
-									.intercept( implementationTrackChange )
+									.intercept( constants.implementationTrackChange )
 							.defineMethod( EnhancerConstants.TRACKER_GET_NAME, String[].class, Visibility.PUBLIC )
-									.intercept( implementationGetDirtyAttributesWithoutCollections )
+									.intercept( constants.implementationGetDirtyAttributesWithoutCollections )
 							.defineMethod( EnhancerConstants.TRACKER_HAS_CHANGED_NAME, boolean.class, Visibility.PUBLIC )
-									.intercept( implementationAreFieldsDirtyWithoutCollections )
+									.intercept( constants.implementationAreFieldsDirtyWithoutCollections )
 							.defineMethod( EnhancerConstants.TRACKER_CLEAR_NAME, void.class, Visibility.PUBLIC )
-									.intercept( implementationClearDirtyAttributesWithoutCollections )
+									.intercept( constants.implementationClearDirtyAttributesWithoutCollections )
 							.defineMethod( EnhancerConstants.TRACKER_SUSPEND_NAME, void.class, Visibility.PUBLIC )
 									.withParameters( boolean.class )
-									.intercept( implementationSuspendDirtyTracking )
+									.intercept( constants.implementationSuspendDirtyTracking )
 							.defineMethod( EnhancerConstants.TRACKER_COLLECTION_GET_NAME, CollectionTracker.class, Visibility.PUBLIC )
-									.intercept( implementationGetCollectionTrackerWithoutCollections );
+									.intercept( constants.implementationGetCollectionTrackerWithoutCollections );
 				}
 				else {
 					//TODO es.enableInterfaceExtendedSelfDirtinessTracker ? Careful with consequences..
@@ -296,16 +277,16 @@ public class EnhancerImpl implements Enhancer {
 									.annotateField( TRANSIENT_ANNOTATION )
 							.defineMethod( EnhancerConstants.TRACKER_CHANGER_NAME, void.class, Visibility.PUBLIC )
 									.withParameters( String.class )
-									.intercept( implementationTrackChange )
+									.intercept( constants.implementationTrackChange )
 							.defineMethod( EnhancerConstants.TRACKER_GET_NAME, String[].class, Visibility.PUBLIC )
-									.intercept( implementationGetDirtyAttributes )
+									.intercept( constants.implementationGetDirtyAttributes )
 							.defineMethod( EnhancerConstants.TRACKER_HAS_CHANGED_NAME, boolean.class, Visibility.PUBLIC )
-									.intercept( implementationAreFieldsDirty )
+									.intercept( constants.implementationAreFieldsDirty )
 							.defineMethod( EnhancerConstants.TRACKER_CLEAR_NAME, void.class, Visibility.PUBLIC )
-									.intercept( implementationClearDirtyAttributes )
+									.intercept( constants.implementationClearDirtyAttributes )
 							.defineMethod( EnhancerConstants.TRACKER_SUSPEND_NAME, void.class, Visibility.PUBLIC )
 									.withParameters( boolean.class )
-									.intercept( implementationSuspendDirtyTracking )
+									.intercept( constants.implementationSuspendDirtyTracking )
 							.defineMethod( EnhancerConstants.TRACKER_COLLECTION_GET_NAME, CollectionTracker.class, Visibility.PUBLIC )
 									.intercept( FieldAccessor.ofField( EnhancerConstants.TRACKER_COLLECTION_NAME ) );
 
@@ -330,17 +311,17 @@ public class EnhancerImpl implements Enhancer {
 							isDirty = Advice.withCustomMapping()
 									.bind( CodeTemplates.FieldName.class, collectionFieldName )
 									.bind( CodeTemplates.FieldValue.class, fieldDescription )
-									.to( adviceIsDirty, adviceLocator )
+									.to( adviceIsDirty, constants.adviceLocator )
 									.wrap( isDirty );
 							getDirtyNames = Advice.withCustomMapping()
 									.bind( CodeTemplates.FieldName.class, collectionFieldName )
 									.bind( CodeTemplates.FieldValue.class, fieldDescription )
-									.to( adviceGetDirtyNames, adviceLocator )
+									.to( adviceGetDirtyNames, constants.adviceLocator )
 									.wrap( getDirtyNames );
 							clearDirtyNames = Advice.withCustomMapping()
 									.bind( CodeTemplates.FieldName.class, collectionFieldName )
 									.bind( CodeTemplates.FieldValue.class, fieldDescription )
-									.to( adviceClearDirtyNames, adviceLocator )
+									.to( adviceClearDirtyNames, constants.adviceLocator )
 									.wrap( clearDirtyNames );
 						}
 						else {
@@ -349,23 +330,23 @@ public class EnhancerImpl implements Enhancer {
 							isDirty = Advice.withCustomMapping()
 									.bind( CodeTemplates.FieldName.class, collectionFieldName )
 									.bind( CodeTemplates.FieldValue.class, getterMapping )
-									.to( adviceIsDirty, adviceLocator )
+									.to( adviceIsDirty, constants.adviceLocator )
 									.wrap( isDirty );
 							getDirtyNames = Advice.withCustomMapping()
 									.bind( CodeTemplates.FieldName.class, collectionFieldName )
 									.bind( CodeTemplates.FieldValue.class, getterMapping )
-									.to( adviceGetDirtyNames, adviceLocator )
+									.to( adviceGetDirtyNames, constants.adviceLocator )
 									.wrap( getDirtyNames );
 							clearDirtyNames = Advice.withCustomMapping()
 									.bind( CodeTemplates.FieldName.class, collectionFieldName )
 									.bind( CodeTemplates.FieldValue.class, getterMapping )
-									.to( adviceClearDirtyNames, adviceLocator )
+									.to( adviceClearDirtyNames, constants.adviceLocator )
 									.wrap( clearDirtyNames );
 						}
 					}
 
 					if ( enhancementContext.hasLazyLoadableAttributes( managedCtClass ) ) {
-						clearDirtyNames = adviceInitializeLazyAttributeLoadingInterceptor.wrap( clearDirtyNames );
+						clearDirtyNames = constants.adviceInitializeLazyAttributeLoadingInterceptor.wrap( clearDirtyNames );
 					}
 
 					builder = builder.defineMethod( EnhancerConstants.TRACKER_COLLECTION_CHANGED_NAME, boolean.class, Visibility.PUBLIC )
@@ -375,7 +356,7 @@ public class EnhancerImpl implements Enhancer {
 									.intercept( getDirtyNames )
 							.defineMethod( EnhancerConstants.TRACKER_COLLECTION_CLEAR_NAME, void.class, Visibility.PUBLIC )
 									.intercept( Advice.withCustomMapping()
-									.to( CodeTemplates.ClearDirtyCollectionNames.class, adviceLocator )
+									.to( CodeTemplates.ClearDirtyCollectionNames.class, constants.adviceLocator )
 									.wrap( StubMethod.INSTANCE ) )
 							.defineMethod( ExtendedSelfDirtinessTracker.REMOVE_DIRTY_FIELDS_NAME, void.class, Visibility.PUBLIC )
 									.withParameters( LazyAttributeLoadingInterceptor.class )
@@ -407,14 +388,14 @@ public class EnhancerImpl implements Enhancer {
 								Visibility.PUBLIC
 						)
 								.withParameters( String.class, CompositeOwner.class )
-								.intercept( implementationSetOwner )
+								.intercept( constants.implementationSetOwner )
 						.defineMethod(
 								EnhancerConstants.TRACKER_COMPOSITE_CLEAR_OWNER,
 								void.class,
 								Visibility.PUBLIC
 						)
 								.withParameters( String.class )
-								.intercept( implementationClearOwner );
+								.intercept( constants.implementationClearOwner );
 			}
 
 			return createTransformer( managedCtClass ).applyTo( builder );
