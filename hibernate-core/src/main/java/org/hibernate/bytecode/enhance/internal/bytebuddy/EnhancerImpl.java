@@ -93,8 +93,7 @@ public class EnhancerImpl implements Enhancer {
 	protected final ByteBuddyEnhancementContext enhancementContext;
 	private final ByteBuddyState byteBuddyState;
 
-	private final EnhancerClassLocator classFileLocator;
-	private final TypePool typePool;
+	private final EnhancerClassLocator typePool;
 	private final EnhancerImplConstants constants;
 
 	/**
@@ -108,26 +107,17 @@ public class EnhancerImpl implements Enhancer {
 		this( enhancementContext, byteBuddyState, ModelTypePool.buildModelTypePool( enhancementContext.getLoadingClassLoader() ) );
 	}
 
-	private EnhancerImpl(final EnhancementContext enhancementContext, final ByteBuddyState byteBuddyState, final EnhancerClassLocator classLocator) {
-		//We disable the TypePool.CacheProvider of ByteBuddy as we'll have a full cache in the default classLocator already:
-		//avoid duplicating caching efforts and delegates locking/loading operations to a single coordinator:
-		//our custom EnhancerClassLocator is both the source for type pool and its cache (implements both interfaces).
-		this( enhancementContext, byteBuddyState, classLocator, classLocator);
-	}
-
 	/**
 	 * Expert level constructor, this allows for more control of state and bytecode loading,
 	 * which allows integrators to optimise for particular contexts of use.
 	 * @param enhancementContext
 	 * @param byteBuddyState
 	 * @param classLocator
-	 * @param typePool
 	 */
-	public EnhancerImpl(final EnhancementContext enhancementContext, final ByteBuddyState byteBuddyState, final EnhancerClassLocator classLocator, final TypePool typePool) {
+	public EnhancerImpl(final EnhancementContext enhancementContext, final ByteBuddyState byteBuddyState, final EnhancerClassLocator classLocator) {
 		this.enhancementContext = new ByteBuddyEnhancementContext( enhancementContext );
 		this.byteBuddyState = Objects.requireNonNull( byteBuddyState );
-		this.classFileLocator = Objects.requireNonNull( classLocator );
-		this.typePool = Objects.requireNonNull( typePool );
+		this.typePool = Objects.requireNonNull( classLocator );
 		this.constants = byteBuddyState.getEnhancerConstants();
 	}
 
@@ -146,7 +136,7 @@ public class EnhancerImpl implements Enhancer {
 	public byte[] enhance(String className, byte[] originalBytes) throws EnhancementException {
 		//Classpool#describe does not accept '/' in the description name as it expects a class name. See HHH-12545
 		final String safeClassName = className.replace( '/', '.' );
-		classFileLocator.registerClassNameAndBytes( safeClassName, originalBytes );
+		typePool.registerClassNameAndBytes( safeClassName, originalBytes );
 		try {
 			final TypeDescription typeDescription = typePool.describe( safeClassName ).resolve();
 
@@ -164,14 +154,14 @@ public class EnhancerImpl implements Enhancer {
 			throw new EnhancementException( "Failed to enhance class " + className, e );
 		}
 		finally {
-			classFileLocator.deregisterClassNameAndBytes( safeClassName );
+			typePool.deregisterClassNameAndBytes( safeClassName );
 		}
 	}
 
 	@Override
 	public void discoverTypes(String className, byte[] originalBytes) {
 		if ( originalBytes != null ) {
-			classFileLocator.registerClassNameAndBytes( className, originalBytes );
+			typePool.registerClassNameAndBytes( className, originalBytes );
 		}
 		try {
 			final TypeDescription typeDescription = typePool.describe( className ).resolve();
@@ -182,7 +172,7 @@ public class EnhancerImpl implements Enhancer {
 			throw new EnhancementException( "Failed to discover types for class " + className, e );
 		}
 		finally {
-			classFileLocator.deregisterClassNameAndBytes( className );
+			typePool.deregisterClassNameAndBytes( className );
 		}
 	}
 

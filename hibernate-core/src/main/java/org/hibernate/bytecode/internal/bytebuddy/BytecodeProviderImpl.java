@@ -1320,11 +1320,10 @@ public class BytecodeProviderImpl implements BytecodeProvider {
 	 * Possibly used in Quarkus in a future version.
 	 * @param enhancementContext
 	 * @param classLocator
-	 * @param typePool
 	 * @return
 	 */
-	public @Nullable Enhancer getEnhancer(EnhancementContext enhancementContext, EnhancerClassLocator classLocator, TypePool typePool) {
-		return new EnhancerImpl( enhancementContext, byteBuddyState, classLocator, typePool );
+	public @Nullable Enhancer getEnhancer(EnhancementContext enhancementContext, EnhancerClassLocator classLocator) {
+		return new EnhancerImpl( enhancementContext, byteBuddyState, classLocator );
 	}
 
 	@Override
