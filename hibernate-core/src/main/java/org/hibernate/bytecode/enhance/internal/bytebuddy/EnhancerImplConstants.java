@@ -6,10 +6,25 @@
  */
 package org.hibernate.bytecode.enhance.internal.bytebuddy;
 
+import jakarta.persistence.Transient;
 import net.bytebuddy.asm.Advice;
+import net.bytebuddy.description.annotation.AnnotationDescription;
+import net.bytebuddy.description.modifier.FieldPersistence;
+import net.bytebuddy.description.modifier.ModifierContributor;
+import net.bytebuddy.description.modifier.Visibility;
+import net.bytebuddy.description.type.TypeDefinition;
+import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.ClassFileLocator;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.implementation.StubMethod;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.hibernate.bytecode.enhance.spi.CollectionTracker;
+import org.hibernate.engine.spi.EntityEntry;
+import org.hibernate.engine.spi.ManagedEntity;
+import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 
 /**
  * Extracts constants used by EnhancerImpl.
@@ -34,6 +49,26 @@ public final class EnhancerImplConstants {
 	final Advice adviceInitializeLazyAttributeLoadingInterceptor;
 	final Implementation implementationSetOwner;
 	final Implementation implementationClearOwner;
+
+	final int methodModifierPUBLIC = ModifierContributor.Resolver.of( List.of( Visibility.PUBLIC ) ).resolve();
+	final int fieldModifierPRIVATE_TRANSIENT = ModifierContributor.Resolver.of( List.of(
+			FieldPersistence.TRANSIENT,
+			Visibility.PRIVATE
+	) ).resolve();
+
+	//Frequently used annotations, declared as collections:
+	final Collection<? extends AnnotationDescription> TRANSIENT_ANNOTATION = List.of(
+			AnnotationDescription.Builder.ofType( Transient.class ).build() );
+
+	//Frequently used Types for method signatures:
+	final TypeDefinition TypeVoid = TypeDescription.ForLoadedType.of( void.class );
+	final TypeDefinition TypeBooleanPrimitive = TypeDescription.ForLoadedType.of( boolean.class );
+	final TypeDefinition TypeManagedEntity = TypeDescription.ForLoadedType.of( ManagedEntity.class );
+	final TypeDefinition TypeEntityEntry = TypeDescription.ForLoadedType.of( EntityEntry.class );
+	final TypeDefinition TypePersistentAttributeInterceptor = TypeDescription.ForLoadedType.of( PersistentAttributeInterceptor.class );
+	final TypeDefinition TypeObject = TypeDescription.ForLoadedType.of( Object.class );
+	final TypeDefinition Type_Array_String = TypeDescription.ForLoadedType.of( String[].class );
+	final TypeDefinition TypeCollectionTracker = TypeDescription.ForLoadedType.of( CollectionTracker.class );
 
 	public EnhancerImplConstants() {
 		this.adviceLocator = ClassFileLocator.ForClassLoader.of( CodeTemplates.class.getClassLoader() );
