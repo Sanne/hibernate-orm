@@ -82,8 +82,8 @@ public class DomainResultCreationStateImpl
 	private final LegacyFetchResolver legacyFetchResolver;
 	private final SessionFactoryImplementor sessionFactory;
 
-	private final Stack<Function> fetchBuilderResolverStack = new StandardStack<>( Function.class, fetchableName -> null );
-	private final Stack<Map.Entry> relativePathStack = new StandardStack<>( Map.Entry.class );
+	private final Stack<Function> fetchBuilderResolverStack = new StandardStack<>( fetchableName -> null );
+	private final Stack<Map.Entry> relativePathStack = new StandardStack<>();
 	private Map<String, LockMode> registeredLockModes;
 	private boolean processingKeyFetches = false;
 	private boolean resolvingCircularFetch;
