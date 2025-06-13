@@ -4,6 +4,7 @@
  */
 package org.hibernate.bytecode.spi;
 
+import org.hibernate.bytecode.enhance.spi.interceptor.AbstractLazyLoadInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.BytecodeLazyAttributeInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.LazyAttributeLoadingInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.LazyAttributesMetadata;
@@ -56,7 +57,7 @@ public interface BytecodeEnhancementMetadata {
 	 *
 	 * @throws NotInstrumentedException Thrown if {@link #isEnhancedForLazyLoading()} returns {@code false}
 	 */
-	LazyAttributeLoadingInterceptor injectInterceptor(
+	AbstractLazyLoadInterceptor injectInterceptor(
 			Object entity,
 			Object identifier,
 			SharedSessionContractImplementor session) throws NotInstrumentedException;

@@ -8,10 +8,12 @@ import java.util.Set;
 
 import org.hibernate.LockMode;
 import org.hibernate.boot.Metadata;
+import org.hibernate.bytecode.enhance.spi.interceptor.AbstractLazyLoadInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.BytecodeLazyAttributeInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.EnhancementAsProxyLazinessInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.LazyAttributeLoadingInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.LazyAttributesMetadata;
+import org.hibernate.bytecode.enhance.spi.interceptor.LightLazyAttributeLoadingInterceptor;
 import org.hibernate.bytecode.spi.BytecodeEnhancementMetadata;
 import org.hibernate.bytecode.spi.NotInstrumentedException;
 import org.hibernate.engine.spi.EntityEntry;
@@ -199,7 +201,7 @@ public final class BytecodeEnhancementMetadataPojoImpl implements BytecodeEnhanc
 	}
 
 	@Override
-	public LazyAttributeLoadingInterceptor injectInterceptor(
+	public AbstractLazyLoadInterceptor injectInterceptor(
 			Object entity,
 			Object identifier,
 			SharedSessionContractImplementor session) {
@@ -216,12 +218,19 @@ public final class BytecodeEnhancementMetadataPojoImpl implements BytecodeEnhanc
 					)
 			);
 		}
-		final LazyAttributeLoadingInterceptor interceptor = new LazyAttributeLoadingInterceptor(
-				getEntityName(),
-				identifier,
-				lazyAttributesMetadata.getLazyAttributeNames(),
-				session
-		);
+		final Set<String> lazyAttributeNames = lazyAttributesMetadata.getLazyAttributeNames();
+		final AbstractLazyLoadInterceptor interceptor;
+		if (lazyAttributeNames.isEmpty()) {
+			interceptor = new LightLazyAttributeLoadingInterceptor(getEntityName(), identifier, session);
+		}
+		else {
+			interceptor = new LazyAttributeLoadingInterceptor(
+					getEntityName(),
+					identifier,
+					lazyAttributeNames,
+					session
+			);
+		}
 
 		injectInterceptor( entity, interceptor, session );
 

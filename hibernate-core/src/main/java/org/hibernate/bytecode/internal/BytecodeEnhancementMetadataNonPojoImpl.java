@@ -4,6 +4,7 @@
  */
 package org.hibernate.bytecode.internal;
 
+import org.hibernate.bytecode.enhance.spi.interceptor.AbstractLazyLoadInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.BytecodeLazyAttributeInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.LazyAttributeLoadingInterceptor;
 import org.hibernate.bytecode.enhance.spi.interceptor.LazyAttributesMetadata;
@@ -49,7 +50,7 @@ public class BytecodeEnhancementMetadataNonPojoImpl implements BytecodeEnhanceme
 	}
 
 	@Override
-	public LazyAttributeLoadingInterceptor injectInterceptor(
+	public AbstractLazyLoadInterceptor injectInterceptor(
 			Object entity,
 			Object identifier,
 			SharedSessionContractImplementor session) throws NotInstrumentedException {
