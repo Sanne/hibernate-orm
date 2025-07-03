@@ -4,7 +4,6 @@
  */
 package org.hibernate.resource.jdbc.internal;
 
-import org.hibernate.HibernateException;
 import org.hibernate.internal.CoreLogging;
 import org.hibernate.internal.CoreMessageLogger;
 
@@ -15,7 +14,24 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+/**
+ * We normally record Statement(s) and their associated ResultSet(s) in a Map
+ * to guarantee proper resource cleanup, however such types will commonly
+ * be implemented in a way to require identity hashcode calculations, which has
+ * been shown to become a drag on overall system efficiency
+ * (There are JVM tunables one can use to improve on the default, but they have
+ * system wide impact which in turn could have undesirable impact on other libraries).
+ * As in the most common case we process a single statement at a time, we
+ * trade some code complexity here by attempting to keep track of such resources
+ * via direct fields only, and overflow to the normal Map usage for the less
+ * common cases.
+ */
 final class ResultsetContainer {
+
+	//Implementation notes:
+	// # if key_1 is non-null, then value_1 is the value it maps to.
+	// # if key_1 is null, then the Map in xref is guaranteed to be empty
+	// # The Map in xref is lazily initialized, but when emptied it's not guaranteed to be made null
 
 	private static final CoreMessageLogger log = CoreLogging.messageLogger( ResourceRegistryStandardImpl.class );
 
@@ -31,30 +47,33 @@ final class ResultsetContainer {
 	private HashMap<Statement, HashMap<ResultSet,Object>> xref;
 
 	public boolean hasRegisteredResources() {
-		return key_1 != null || ( xref != null && !xref.isEmpty() );
+		return key_1 != null; //No need to check the content of xref.
 	}
 
 	public void registerExpectingNew(final Statement statement) {
-		final boolean duplicateRegistration;
+		//We use an assert here as it's a relatively expensive check and I'm fairly confident this would never happen at runtime:
+		//the assertion is useful to keep this confidence by leveraging the testsuite.
+		assert statementNotExisting( statement ) : "JDBC Statement already registered";
 		if ( key_1 == null ) {
-			if ( xref == null ) {
-				//this is the fast-path: most likely and most efficient as we avoid access to xref
-				key_1 = statement;
-				value_1 = EMPTY;
-				duplicateRegistration = false;
-			}
-			else {
-				key_1 = statement;
-				value_1 = EMPTY;
-				duplicateRegistration = xref.containsKey( statement );
-			}
+			//this is the fast-path: most likely case and most efficient as we avoid accessing xref altogether
+			key_1 = statement;
+			value_1 = EMPTY;
 		}
 		else {
-			final HashMap<ResultSet,Object> previousValue = getXrefForWriting().putIfAbsent( statement, EMPTY );
-			duplicateRegistration = previousValue != null;
+			getXrefForWriting().put( statement, EMPTY );
 		}
-		if ( duplicateRegistration ) {
-			throw new HibernateException( "JDBC Statement already registered" );
+	}
+
+	//Assertion helper only:
+	private boolean statementNotExisting(final Statement statement) {
+		if ( key_1 == statement ) {
+			return false;
+		}
+		else if ( xref != null ) {
+			return ! xref.containsKey( statement );
+		}
+		else {
+			return true;
 		}
 	}
 
@@ -70,7 +89,7 @@ final class ResultsetContainer {
 			final HashMap<ResultSet, Object> v = value_1;
 			key_1 = null;
 			value_1 = null;
-			trickleDown(); //uff...
+			trickleDown(); //most expensive operation, but necessary to guarantee the invariants which allow the other optimisations
 			return v;
 		}
 		else if ( xref != null ) {
@@ -80,7 +99,7 @@ final class ResultsetContainer {
 	}
 
 	private void trickleDown() {
-		//Moves the first entry from the map into the fields.
+		//Moves the first entry from the xref map into the fields, if any entry exists in it.
 		if ( xref != null ) {
 			Iterator<Map.Entry<Statement, HashMap<ResultSet, Object>>> iterator = xref.entrySet().iterator(); {
 				if ( iterator.hasNext() ) {
@@ -98,21 +117,18 @@ final class ResultsetContainer {
 		if ( key_1 == statement ) {
 			existingEntry = value_1;
 		}
-		else if ( xref != null ) {
+		else if ( key_1 != null && xref != null ) {
 			existingEntry = xref.get( statement );
 		}
 		else {
 			existingEntry = null;
 		}
 
-		// Keep this at DEBUG level, rather than warn.  Numerous connection pool implementations can return a
-		// proxy/wrapper around the JDBC Statement, causing excessive logging here.  See HHH-8210.
-		if ( existingEntry == null ) {
-			log.debug( "ResultSet statement was not registered (on register)" );
-		}
+		//A debug warning wrapped in an assertion to avoid its overhead in production systems
+		assert warnOnNotNull( existingEntry );
 
 		final HashMap<ResultSet,Object> writeableEntry;
-		if ( existingEntry == null || existingEntry == EMPTY ) {
+		if ( existingEntry == EMPTY || existingEntry == null ) {
 			writeableEntry = new HashMap<>();
 			directPut( statement, writeableEntry );
 		}
@@ -122,11 +138,19 @@ final class ResultsetContainer {
 		return writeableEntry;
 	}
 
+	private boolean warnOnNotNull(HashMap<ResultSet, Object> existingEntry) {
+		// Keep this at DEBUG level, rather than warn.  Numerous connection pool implementations can return a
+		// proxy/wrapper around the JDBC Statement, causing excessive logging here.  See HHH-8210.
+		if ( existingEntry == null ) {
+			log.debug( "ResultSet statement was not registered (on register)" );
+		}
+		return true;
+	}
+
 	private void directPut(final Statement statement, HashMap<ResultSet, Object> entry) {
 		if ( key_1 == statement ) {
 			value_1 = entry;
 		}
-		//We strongly assume that if key1 is null then the map is empty (!)
 		else if ( key_1 == null ) {
 			key_1 = statement;
 			value_1 = entry;
@@ -139,9 +163,9 @@ final class ResultsetContainer {
 	public void forEach(final BiConsumer<Statement, HashMap<ResultSet, Object>> action) {
 		if ( key_1 != null ) {
 			action.accept( key_1, value_1 );
-		}
-		if ( xref != null ) {
-			xref.forEach( action );
+			if ( xref != null ) {
+				xref.forEach( action );
+			}
 		}
 	}
 

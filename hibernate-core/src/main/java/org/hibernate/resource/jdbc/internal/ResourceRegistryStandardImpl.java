@@ -13,7 +13,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
 import org.hibernate.internal.CoreLogging;
 import org.hibernate.internal.CoreMessageLogger;
@@ -140,7 +139,6 @@ public final class ResourceRegistryStandardImpl implements ResourceRegistry {
 			return;
 		}
 		resultSets.forEach( (resultSet, o) -> close( resultSet ) );
-		resultSets.clear();
 	}
 
 	private static void releaseXref(final Statement s, final HashMap<ResultSet, Object> r) {
@@ -375,6 +373,7 @@ public final class ResourceRegistryStandardImpl implements ResourceRegistry {
 
 		public void releaseResources() {
 			closeAll( unassociatedResultSets );
+			unassociatedResultSets.clear();
 
 			if ( blobs != null ) {
 				blobs.forEach( blob -> {
