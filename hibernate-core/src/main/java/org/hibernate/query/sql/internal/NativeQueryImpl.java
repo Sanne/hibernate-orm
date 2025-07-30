@@ -147,6 +147,7 @@ public class NativeQueryImpl<R>
 
 	private final String sqlString;
 	private final String originalSqlString;
+	private final NativeQueryInterpreter interpreter;
 	private final ParameterMetadataImplementor parameterMetadata;
 	private final List<ParameterOccurrence> parameterOccurrences;
 	private final QueryParameterBindings parameterBindings;
@@ -263,6 +264,8 @@ public class NativeQueryImpl<R>
 			@Nullable Class<R> resultClass,
 			SharedSessionContractImplementor session) {
 		super( session );
+		this.interpreter = session.getFactory().getServiceRegistry()
+				.requireService( NativeQueryInterpreter.class );
 		originalSqlString = memento.getOriginalSqlString();
 		querySpaces = new HashSet<>();
 
@@ -290,6 +293,8 @@ public class NativeQueryImpl<R>
 			SharedSessionContractImplementor session) {
 		super( session );
 		originalSqlString = sql;
+		this.interpreter = session.getFactory().getServiceRegistry()
+				.requireService( NativeQueryInterpreter.class );
 		querySpaces = new HashSet<>();
 
 		final ParameterInterpretation parameterInterpretation = resolveParameterInterpretation( sql, session );
@@ -310,6 +315,8 @@ public class NativeQueryImpl<R>
 		super( session );
 		originalSqlString = sql;
 		querySpaces = new HashSet<>();
+		this.interpreter = session.getFactory().getServiceRegistry()
+				.requireService( NativeQueryInterpreter.class );
 
 		final ParameterInterpretation parameterInterpretation = resolveParameterInterpretation( sql, session );
 		sqlString = parameterInterpretation.getAdjustedSqlString();
@@ -485,14 +492,13 @@ public class NativeQueryImpl<R>
 			String sqlString, SharedSessionContractImplementor session) {
 		return getInterpretationCache( session )
 				.resolveNativeQueryParameters( sqlString,
-						s -> parameterInterpretation( sqlString, session ) );
+						s -> parameterInterpretation( sqlString ) );
 	}
 
-	private static ParameterInterpretationImpl parameterInterpretation(
-			String sqlString, SharedSessionContractImplementor session) {
+	private ParameterInterpretationImpl parameterInterpretation(
+			String sqlString) {
 		final ParameterRecognizerImpl parameterRecognizer = new ParameterRecognizerImpl();
-		session.getFactory().getServiceRegistry()
-				.requireService( NativeQueryInterpreter.class )
+		interpreter
 				.recognizeParameters( sqlString, parameterRecognizer );
 		return new ParameterInterpretationImpl( parameterRecognizer );
 	}
