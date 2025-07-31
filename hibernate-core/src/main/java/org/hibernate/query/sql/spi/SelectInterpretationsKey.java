@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
+import org.hibernate.internal.util.collections.Subset;
 import org.hibernate.query.ResultListTransformer;
 import org.hibernate.query.TupleTransformer;
 import org.hibernate.query.spi.QueryInterpretationCache;
@@ -19,14 +20,14 @@ import org.hibernate.sql.results.jdbc.spi.JdbcValuesMappingProducer;
 public class SelectInterpretationsKey implements QueryInterpretationCache.Key {
 	private final String sql;
 	private final JdbcValuesMappingProducer jdbcValuesMappingProducer;
-	private final Collection<String> querySpaces;
+	private final Subset<String> querySpaces;
 	private final int hash;
 
 	@Deprecated(forRemoval = true)
 	public SelectInterpretationsKey(
 			String sql,
 			JdbcValuesMappingProducer jdbcValuesMappingProducer,
-			Collection<String> querySpaces,
+			Subset<String> querySpaces,
 			TupleTransformer<?> tupleTransformer,
 			ResultListTransformer<?> resultListTransformer) {
 		this( sql, jdbcValuesMappingProducer, querySpaces );
@@ -35,7 +36,7 @@ public class SelectInterpretationsKey implements QueryInterpretationCache.Key {
 	public SelectInterpretationsKey(
 			String sql,
 			JdbcValuesMappingProducer jdbcValuesMappingProducer,
-			Collection<String> querySpaces) {
+			Subset<String> querySpaces) {
 		this.sql = sql;
 		this.jdbcValuesMappingProducer = jdbcValuesMappingProducer;
 		this.querySpaces = querySpaces;
@@ -45,7 +46,7 @@ public class SelectInterpretationsKey implements QueryInterpretationCache.Key {
 	private SelectInterpretationsKey(
 			String sql,
 			JdbcValuesMappingProducer jdbcValuesMappingProducer,
-			Collection<String> querySpaces,
+			Subset<String> querySpaces,
 			int hash) {
 		this.sql = sql;
 		this.jdbcValuesMappingProducer = jdbcValuesMappingProducer;
@@ -63,7 +64,7 @@ public class SelectInterpretationsKey implements QueryInterpretationCache.Key {
 		return new SelectInterpretationsKey(
 				sql,
 				jdbcValuesMappingProducer.cacheKeyInstance(),
-				new HashSet<>( querySpaces ),
+				querySpaces.unmodifiableCopy(),
 				hash
 		);
 	}

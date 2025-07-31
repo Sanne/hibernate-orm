@@ -26,6 +26,7 @@ import org.hibernate.FlushMode;
 import org.hibernate.Locking;
 import org.hibernate.internal.CoreLogging;
 import org.hibernate.internal.CoreMessageLogger;
+import org.hibernate.internal.util.collections.Subset;
 import org.hibernate.jpa.spi.NativeQueryArrayTransformer;
 import org.hibernate.jpa.spi.NativeQueryConstructorTransformer;
 import org.hibernate.jpa.spi.NativeQueryListTransformer;
@@ -157,7 +158,7 @@ public class NativeQueryImpl<R>
 	private final QueryOptionsImpl queryOptions = new QueryOptionsImpl();
 
 	private Boolean startsWithSelect;
-	private Set<String> querySpaces;
+	private Subset<String> querySpaces;
 	private Callback callback;
 
 	/**
@@ -1289,11 +1290,11 @@ public class NativeQueryImpl<R>
 
 	@Override
 	public NativeQueryImplementor<R> addSynchronizedQuerySpace(String querySpace) {
-		addQuerySpaces( querySpace );
+		addQuerySpace( querySpace );
 		return this;
 	}
 
-	protected void addQuerySpaces(String... spaces) {
+	protected void addQuerySpace(String spaces) {
 		if ( spaces != null ) {
 			if ( querySpaces == null ) {
 				querySpaces = new HashSet<>();

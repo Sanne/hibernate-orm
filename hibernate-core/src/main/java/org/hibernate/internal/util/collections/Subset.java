@@ -191,4 +191,8 @@ public final class Subset<V> implements Set<V> {
 	public void clear() {
 		this.bitSet.clear();
 	}
+
+	public Subset<V> unmodifiableCopy() {
+		return this; //TODO
+	}
 }
